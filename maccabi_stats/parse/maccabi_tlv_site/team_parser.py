@@ -74,8 +74,9 @@ class MaccabiSiteTeamParser(object):
 
         cards_imgs_bs = first_cards_bs_div.find_all("img")
         if len(cards_imgs_bs) != len(card_events_times):  # TODO - delete me - for tests
-            print("warning - while parsing cards, cards_Events_times len does not match cards_imgs_bs :{content}".format(
-                content=first_cards_bs_div))
+            print(
+                "warning - while parsing cards, cards_Events_times len does not match cards_imgs_bs :{content}".format(
+                    content=first_cards_bs_div))
         cards = zip(card_events_times, cards_imgs_bs)
 
         for card_event_time, card_img_bs in cards:
@@ -119,7 +120,7 @@ class MaccabiSiteTeamParser(object):
         if len(first_substitution_bs_div) == 1:
             return
 
-        # TODO - the lower value from first&seconds substitutins is the subs_in - should check
+        # TODO - the lower value from first&seconds substitutions is the subs_in - should check
         second_substitution_time = substitution_events_times[1]
         if is_line_up or len(substitution_events_times) > 2:
             raise Exception("Wrong")

@@ -6,6 +6,7 @@ from maccabi_stats.models.player_in_game import PlayerInGame
 from maccabi_stats.models.player_game_events import GameEventTypes
 from maccabi_stats.models.team import Team
 
+
 # TODO remove sheran yeini c' in his name (and other captains)
 
 class TeamInGame(Team):

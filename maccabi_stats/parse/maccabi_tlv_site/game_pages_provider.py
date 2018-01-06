@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from maccabi_stats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings
+
 import os
 import requests
 from bs4 import BeautifulSoup
 
-folder_to_save_games_html_files = r"c:\code\maccabi-backup\games"
-folder_to_save_games_events_html_files_pattern = os.path.join(folder_to_save_games_html_files, "game+{game_date}+events")
-folder_to_save_games_squads_html_files_pattern = os.path.join(folder_to_save_games_html_files, "game+{game_date}+squads")
+folder_to_save_games_events_html_files_pattern = os.path.join(get_folder_to_save_games_html_files_from_settings(),
+                                                              "game+{game_date}+events")
+folder_to_save_games_squads_html_files_pattern = os.path.join(get_folder_to_save_games_html_files_from_settings(),
+                                                              "game+{game_date}+squads")
 
 
 def save_game_web_page_to_disk(web_page):
@@ -19,9 +22,11 @@ def save_game_web_page_to_disk(web_page):
     game_squads_web_page_content = requests.get(web_page + "teams").content
 
     game_date = __extract_games_date(web_page)
-    with open(folder_to_save_games_events_html_files_pattern.format(game_date=game_date), 'wb') as maccabi_game_event_file:
+    with open(folder_to_save_games_events_html_files_pattern.format(game_date=game_date),
+              'wb') as maccabi_game_event_file:
         maccabi_game_event_file.write(game_events_web_page_content)
-    with open(folder_to_save_games_squads_html_files_pattern.format(game_date=game_date), 'wb') as maccabi_game_squad_file:
+    with open(folder_to_save_games_squads_html_files_pattern.format(game_date=game_date),
+              'wb') as maccabi_game_squad_file:
         maccabi_game_squad_file.write(game_squads_web_page_content)
 
 

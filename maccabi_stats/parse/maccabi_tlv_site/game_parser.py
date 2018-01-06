@@ -22,7 +22,7 @@ class MaccabiSiteGameParser(object):
         """
 
         competition = bs_content.find("div", "league-title").get_text()
-        fixture = MaccabiSiteGameParser.__get_fixture_if_exists(bs_content, competition)
+        fixture = MaccabiSiteGameParser.__get_fixture_if_exists(bs_content)
 
         date = MaccabiSiteGameParser.__get_full_date(bs_content)
         stadium = bs_content.select_one("div.location div").get_text().split(" ", 1)[1]
@@ -55,7 +55,7 @@ class MaccabiSiteGameParser(object):
         return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team)
 
     @staticmethod
-    def __get_fixture_if_exists(bs_content, competition):
+    def __get_fixture_if_exists(bs_content):
         """
         :type bs_content: bs4.element.Tag
         :return: str
@@ -64,7 +64,7 @@ class MaccabiSiteGameParser(object):
         fixture_div = bs_content.find("div", "round")
         if fixture_div:
             return fixture_div.get_text()
-        else: # TODO - think abour logging errors here
+        else:  # TODO - think about logging errors here
             return "No round found"
 
     @staticmethod
