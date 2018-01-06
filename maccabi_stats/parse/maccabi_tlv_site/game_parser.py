@@ -4,7 +4,7 @@
 
 from maccabi_stats.models.game_data import GameData
 from maccabi_stats.parse.maccabi_tlv_site.team_parser import MaccabiSiteTeamParser
-from maccabi_stats.parse.maccabi_tlv_site.games_from_maccabi_site import get_game_squads_bs_by_link
+from maccabi_stats.parse.maccabi_tlv_site.game_pages_provider import get_game_squads_bs_by_link
 
 from urllib.parse import unquote
 
@@ -64,8 +64,7 @@ class MaccabiSiteGameParser(object):
         fixture_div = bs_content.find("div", "round")
         if fixture_div:
             return fixture_div.get_text()
-        else:
-            print("Cant found round for {competition}".format(competition=competition))
+        else: # TODO - think abour logging errors here
             return "No round found"
 
     @staticmethod

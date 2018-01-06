@@ -1,7 +1,5 @@
-from maccabi_stats.parse.games_crawler import get_all_stuff_wrapped
+from maccabi_stats.parse.parse_from_all_sites import get_parsed_maccabi_games_from_maccabi_site
 
 
 if __name__ == "__main__":
-    games = get_all_stuff_wrapped()
-    old = games.played_before("1.1.2000")
-    print(old.best_scorers)
+    games = get_parsed_maccabi_games_from_maccabi_site()

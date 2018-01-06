@@ -74,7 +74,7 @@ class MaccabiSiteTeamParser(object):
 
         cards_imgs_bs = first_cards_bs_div.find_all("img")
         if len(cards_imgs_bs) != len(card_events_times):  # TODO - delete me - for tests
-            print("ERROR while parsing cards, cards_Events_times len does not match cards_imgs_bs :{content}".format(
+            print("warning - while parsing cards, cards_Events_times len does not match cards_imgs_bs :{content}".format(
                 content=first_cards_bs_div))
         cards = zip(card_events_times, cards_imgs_bs)
 

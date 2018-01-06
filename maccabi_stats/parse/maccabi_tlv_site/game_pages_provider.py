@@ -5,7 +5,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 
-folder_to_save_games_html_files = r"F:\maccabi-code\games"
+folder_to_save_games_html_files = r"c:\code\maccabi-backup\games"
 folder_to_save_games_events_html_files_pattern = os.path.join(folder_to_save_games_html_files, "game+{game_date}+events")
 folder_to_save_games_squads_html_files_pattern = os.path.join(folder_to_save_games_html_files, "game+{game_date}+squads")
 
