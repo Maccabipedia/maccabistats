@@ -6,7 +6,7 @@ import os
 import configparser
 
 
-settings_file_folder_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+settings_file_folder_path = os.path.dirname(os.path.abspath(__file__))
 settings_file_path = os.path.join(settings_file_folder_path, "settings.ini")
 
 
@@ -14,7 +14,9 @@ def __get_config_parser_object():
     """
     :rtype :configparser.ConfigParser
     """
-    return configparser.ConfigParser().read(settings_file_path, encoding='utf-8')
+    c = configparser.ConfigParser()
+    c.read(settings_file_path, encoding='utf-8-sig')
+    return c
 
 
 def get_int_from_settings(section_name, key_name):

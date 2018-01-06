@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabi_stats.stats.maccabi_games_stats import MaccabiGamesStats
-from maccabi_stats.parse.parse_from_all_sites import parse_maccabi_games_from_all_sites
+from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
+from maccabistats.parse.parse_from_all_sites import parse_maccabi_games_from_all_sites
 
 import pickle
 import os

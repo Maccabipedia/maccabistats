@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from collections import Counter
-from maccabi_stats.models.player_in_game import PlayerInGame
-from maccabi_stats.models.player_game_events import GameEventTypes
-from maccabi_stats.models.team import Team
+from maccabistats.models.player_in_game import PlayerInGame
+from maccabistats.models.player_game_events import GameEventTypes
+from maccabistats.models.team import Team
 
 
 # TODO remove sheran yeini c' in his name (and other captains)

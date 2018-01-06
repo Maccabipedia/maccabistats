@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from maccabi_stats.config.config import get_int_from_settings, get_str_from_settings, get_bool_from_settings
+from maccabistats.config.config import get_int_from_settings, get_str_from_settings, get_bool_from_settings
 
 # This file contains all the settings.ini file related
 

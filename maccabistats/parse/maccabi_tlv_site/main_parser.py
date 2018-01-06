@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabi_stats.parse.maccabi_tlv_site.game_parser import MaccabiSiteGameParser
-from maccabi_stats.parse.maccabi_tlv_site.config import get_max_seasons_from_settings, \
+from maccabistats.parse.maccabi_tlv_site.game_parser import MaccabiSiteGameParser
+from maccabistats.parse.maccabi_tlv_site.config import get_max_seasons_from_settings, \
     get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, \
     get_should_use_disk_to_crawl_from_settings
 
@@ -46,7 +46,7 @@ def __enumerate_season_web_pages_content_from_disk():
 
 def __get_parsed_maccabi_games_from_web():
     """ Parse maccabi games from maccabi site.
-    :rtype: list of maccabi_stats.models.game_data.GameData
+    :rtype: list of maccabistats.models.game_data.GameData
     """
 
     maccabi_games = []
@@ -58,7 +58,7 @@ def __get_parsed_maccabi_games_from_web():
 
 def __get_parsed_maccabi_games_from_disk():
     """ Parse maccabi games from local html files (path configured at config file).
-    :rtype: list of maccabi_stats.models.game_data.GameData
+    :rtype: list of maccabistats.models.game_data.GameData
     """
 
     maccabi_games = []

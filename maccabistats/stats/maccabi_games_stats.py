@@ -4,8 +4,8 @@
 from functools import reduce
 from collections import Counter
 
-from maccabi_stats.models.player_game_events import GameEventTypes
-from maccabi_stats.models.competition_types import CompetitionTypes
+from maccabistats.models.player_game_events import GameEventTypes
+from maccabistats.models.competition_types import CompetitionTypes
 
 
 # TODO write wrappers for all
@@ -14,7 +14,7 @@ class MaccabiGamesStats(object):
 
     def __init__(self, maccabi_site_games):
         """
-        :type maccabi_site_games: list of maccabi_stats.models.game_data.GameData
+        :type maccabi_site_games: list of maccabistats.models.game_data.GameData
         """
 
         self.games = maccabi_site_games
@@ -37,7 +37,8 @@ class MaccabiGamesStats(object):
     def available_competitions(self):
         return set(game.competition for game in self.games)
 
-    def get_maccabi_wins(self):
+    @property
+    def maccabi_wins(self):
         """
         :rtype: MaccabiGamesStats
         """
