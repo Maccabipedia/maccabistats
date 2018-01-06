@@ -5,7 +5,7 @@ from functools import reduce
 from collections import Counter
 
 from maccabi_stats.models.player_game_events import GameEventTypes
-from maccabi_stats.parse.maccabi_tlv_site.maccabi_site_game_data import MaccabiSiteGameData
+from maccabi_stats.parse.maccabi_tlv_site.game_parser import MaccabiSiteGameParser
 from maccabi_stats.models.competition_types import CompetitionTypes
 
 
@@ -15,7 +15,7 @@ class MaccabiSiteGamesWrapper(object):
 
     def __init__(self, maccabi_site_games):
         """
-        :type maccabi_site_games: list of MaccabiSiteGameData
+        :type maccabi_site_games: list of MaccabiSiteGameParser
         """
 
         self.games = maccabi_site_games
@@ -132,6 +132,6 @@ class MaccabiSiteGamesWrapper(object):
 
     def __getitem__(self, item):
         """
-        :rtype: MaccabiSiteGameData
+        :rtype: MaccabiSiteGameParser
         """
         return self.games[item]

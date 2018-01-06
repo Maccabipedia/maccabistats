@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabi_stats.parse.maccabi_tlv_site.maccabi_site_game_data import MaccabiSiteGameData
+from maccabi_stats.parse.maccabi_tlv_site.game_parser import MaccabiSiteGameParser
 
 import os
 import requests
@@ -57,7 +57,7 @@ def get_parsed_maccabi_site_seasons():
         print("Found {number} games on this season!\n".format(number=len(wrapped_season_games)))
 
         for game in wrapped_season_games:
-            m = MaccabiSiteGameData(game)
+            m = MaccabiSiteGameParser.parse_game(game)
             maccabi_games.append(m)
 
     return maccabi_games

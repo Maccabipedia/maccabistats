@@ -3,31 +3,28 @@
 
 
 from maccabi_stats.models.game_data import GameData
-from maccabi_stats.parse.maccabi_tlv_site.maccabi_site_team_in_game import MaccabiSiteTeamInGame
+from maccabi_stats.parse.maccabi_tlv_site.team_parser import MaccabiSiteTeamParser
 from maccabi_stats.parse.maccabi_tlv_site.games_from_maccabi_site import get_game_squads_bs_by_link
 
 from urllib.parse import unquote
 
 
-class MaccabiSiteGameData(GameData):
-    """
-    :type maccabi_team: MaccabiSiteTeamInGame
-    :type not_maccabi_team: MaccabiSiteTeamInGame
-    """
+class MaccabiSiteGameParser(object):
 
-    def __init__(self, bs_content):
+    @staticmethod
+    def parse_game(bs_content):
         """
-        Gets an html content which relevant to maccabi game and return GameMetaData object, uses bs4.BeautifulSoup.
+        Gets an html content which relevant to maccabi game and return GameData object, uses bs4.BeautifulSoup.
 
         :param bs_content: the part of the html, like soup.find("article"), where soup is BeautifulSoup object.
         :type bs_content: bs4.element.Tag
-        :return: MaccabiSiteGamesMetaData
+        :return: GameData
         """
 
         competition = bs_content.find("div", "league-title").get_text()
-        fixture = self.__get_fixture_if_exists(bs_content, competition)
+        fixture = MaccabiSiteGameParser.__get_fixture_if_exists(bs_content, competition)
 
-        date = self.__get_full_date(bs_content)
+        date = MaccabiSiteGameParser.__get_full_date(bs_content)
         stadium = bs_content.select_one("div.location div").get_text().split(" ", 1)[1]
 
         maccabi_final_score = int(bs_content.select_one("span.ss.maccabi.h").get_text())
@@ -38,28 +35,24 @@ class MaccabiSiteGameData(GameData):
         maccabi_team_name = "מכבי תל אביב"
         not_maccabi_team_name = bs_content.select_one("div.holder.notmaccabi.nn").get_text()
 
-        self.maccabi_is_home_team = bs_content.select_one("div.matchresult.Home") is not None
+        maccabi_is_home_team = bs_content.select_one("div.matchresult.Home") is not None
 
         game_content_web_page = unquote(bs_content.find("a", href=True).get("href"))
         squads_bs_page_content = get_game_squads_bs_by_link(game_content_web_page)
-        # save_game_web_page_to_disk(self.game_content_web_page)
+        # TODO: move this to another static method -> save_game_web_page_to_disk(self.game_content_web_page)
 
-        self.maccabi_team, self.not_maccabi_team = MaccabiSiteGameData.__get_teams(squads_bs_page_content,
-                                                                                   maccabi_team_name,
-                                                                                   not_maccabi_team_name,
-                                                                                   maccabi_final_score,
-                                                                                   not_maccabi_final_score)
-        referee = MaccabiSiteGameData.__get_referee(squads_bs_page_content)
-        crowd = MaccabiSiteGameData.__get_crowd(squads_bs_page_content)
+        maccabi_team, not_maccabi_team = MaccabiSiteGameParser.__get_teams(squads_bs_page_content,
+                                                                           maccabi_team_name,
+                                                                           not_maccabi_team_name,
+                                                                           maccabi_final_score,
+                                                                           not_maccabi_final_score)
+        referee = MaccabiSiteGameParser.__get_referee(squads_bs_page_content)
+        crowd = MaccabiSiteGameParser.__get_crowd(squads_bs_page_content)
 
-        if self.maccabi_is_home_team:
-            super(MaccabiSiteGameData, self).__init__(competition, fixture, date, stadium, crowd, referee,
-                                                      self.maccabi_team,
-                                                      self.not_maccabi_team)
-        else:
-            super(MaccabiSiteGameData, self).__init__(competition, fixture, date, stadium, crowd, referee,
-                                                      self.not_maccabi_team,
-                                                      self.maccabi_team)
+        home_team, away_team = (maccabi_team, not_maccabi_team) if maccabi_is_home_team else (
+            not_maccabi_team, maccabi_team)
+
+        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, maccabi_is_home_team)
 
     @staticmethod
     def __get_fixture_if_exists(bs_content, competition):
@@ -97,10 +90,10 @@ class MaccabiSiteGameData(GameData):
         :rtype: MaccabiSiteTeamInGame, MaccabiSiteTeamInGame
         """
 
-        maccabi_team_in_game = MaccabiSiteTeamInGame(bs_content.select("article div.teams div.p50.yellow"),
-                                                     maccabi_team_name, maccabi_score)
+        maccabi_team_in_game = MaccabiSiteTeamParser.parse_team(bs_content.select("article div.teams div.p50.yellow"),
+                                                                maccabi_team_name, maccabi_score)
 
-        not_maccabi_team_in_game = MaccabiSiteTeamInGame(
+        not_maccabi_team_in_game = MaccabiSiteTeamParser.parse_team(
             [div for div in bs_content.select("article div.teams div.p50") if "yellow" not in div["class"]],
             not_maccabi_team_name, not_maccabi_score)
 
@@ -131,18 +124,3 @@ class MaccabiSiteGameData(GameData):
             return crowd_div_bs.get_text().strip()
         else:
             return "Cant found crowd"
-
-    @property
-    def maccabi_score(self):
-        if self.maccabi_is_home_team:
-            return self.home_team.score
-        else:
-            return self.away_team.score
-
-    @property
-    def maccabi_score_diff(self):
-        diff = self.home_team.score - self.away_team.score
-        if self.maccabi_is_home_team:
-            return diff
-        else:
-            return (-1) * diff
