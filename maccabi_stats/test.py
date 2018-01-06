@@ -1,4 +1,4 @@
-from maccabi_stats.games_crawler import get_all_stuff_wrapped
+from maccabi_stats.parse.games_crawler import get_all_stuff_wrapped
 
 
 if __name__ == "__main__":

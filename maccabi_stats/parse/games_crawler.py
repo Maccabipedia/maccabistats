@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabi_stats.maccabi_site_games_wrapper import MaccabiSiteGamesWrapper
+from maccabi_stats.stats.maccabi_site_games_wrapper import MaccabiSiteGamesWrapper
 
 import pickle
 import os

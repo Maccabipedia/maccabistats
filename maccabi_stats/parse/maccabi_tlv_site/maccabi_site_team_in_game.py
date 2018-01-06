@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabi_stats.team_in_game import TeamInGame
-from maccabi_stats.player_in_game import PlayerInGame
-from maccabi_stats.player_game_events import GameEvent, GameEventTypes
+from maccabi_stats.models.team_in_game import TeamInGame
+from maccabi_stats.models.player_in_game import PlayerInGame
+from maccabi_stats.models.player_game_events import GameEvent, GameEventTypes
 
 from datetime import timedelta
 

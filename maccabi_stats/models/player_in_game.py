@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabi_stats.player_game_events import GameEvent, GameEventTypes
-from maccabi_stats.player import Player
+from maccabi_stats.models.player_game_events import GameEvent, GameEventTypes
+from maccabi_stats.models.player import Player
 
 from pprint import pformat
 
@@ -43,7 +43,6 @@ class PlayerInGame(Player):
 
     def get_as_normal_player(self):
         return Player(self.name, self.number)
-
 
     @property
     def played_in_game(self):
