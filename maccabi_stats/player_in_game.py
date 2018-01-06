@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from get_stats.player_game_events import GameEvent, GameEventTypes
-from get_stats.player import Player
+from maccabi_stats.player_game_events import GameEvent, GameEventTypes
+from maccabi_stats.player import Player
 
 from pprint import pformat
 

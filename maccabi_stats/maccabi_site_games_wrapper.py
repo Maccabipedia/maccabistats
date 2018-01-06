@@ -4,9 +4,9 @@
 from functools import reduce
 from collections import Counter
 
-from get_stats.player_game_events import GameEventTypes
-from get_stats.maccabi_site_game_data import MaccabiSiteGameData
-from get_stats.competition_types import CompetitionTypes
+from maccabi_stats.player_game_events import GameEventTypes
+from maccabi_stats.maccabi_site_game_data import MaccabiSiteGameData
+from maccabi_stats.competition_types import CompetitionTypes
 
 
 # TODO write wrappers for all

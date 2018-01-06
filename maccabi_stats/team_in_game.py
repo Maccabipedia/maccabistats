@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from collections import Counter
-from get_stats.player_in_game import PlayerInGame
-from get_stats.player_game_events import GameEventTypes
+from maccabi_stats.player_in_game import PlayerInGame
+from maccabi_stats.player_game_events import GameEventTypes
 
 
 # TODO remove sheran yeini c' in his name (and other captains)

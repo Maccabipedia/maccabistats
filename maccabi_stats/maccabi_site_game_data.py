@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-from get_stats.game_data import GameData
-from get_stats.maccabi_site_team_in_game import MaccabiSiteTeamInGame
-from get_stats.games_from_maccabi_site import get_game_squads_bs_by_link
+from maccabi_stats.game_data import GameData
+from maccabi_stats.maccabi_site_team_in_game import MaccabiSiteTeamInGame
+from maccabi_stats.games_from_maccabi_site import get_game_squads_bs_by_link
 
 from urllib.parse import unquote
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from get_stats.maccabi_site_game_data import MaccabiSiteGameData
+from maccabi_stats.maccabi_site_game_data import MaccabiSiteGameData
 
 import os
 import requests
