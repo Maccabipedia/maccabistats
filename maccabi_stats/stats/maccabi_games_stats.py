@@ -37,6 +37,12 @@ class MaccabiGamesStats(object):
     def available_competitions(self):
         return set(game.competition for game in self.games)
 
+    def get_maccabi_wins(self):
+        """
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games if game.is_maccabi_win])
+
     def get_games_against_team(self, team_name):
         """
         :param team_name: str.

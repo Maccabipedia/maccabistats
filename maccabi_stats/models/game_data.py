@@ -97,6 +97,11 @@ class GameData(object):
         else:
             return self.home_team
 
+    @property
+    def is_maccabi_win(self):
+        """ :rtype: bool """
+        return self.maccabi_score_diff > 0
+
     def __repr__(self):
         return "Game between {self.home_team.name} (home) - {self.away_team.name} (away)\n" \
                "Results : {self.home_team.score} - {self.away_team.score}\n" \
