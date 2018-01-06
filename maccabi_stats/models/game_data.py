@@ -5,7 +5,7 @@ import datetime
 
 
 class GameData(object):
-    def __init__(self, competition, fixture, date, stadium, crowd, referee, home_team, away_team, maccabi_is_home_team):
+    def __init__(self, competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team):
         """
         :param competition: cup, league and so on.
         :type competition: str.
@@ -16,7 +16,7 @@ class GameData(object):
         :type referee: str.
         :type home_team: TeamInGame.
         :type away_team: TeamInGame.
-        :type maccabi_is_home_team: bool.
+        :type is_maccabi_home_team: bool.
         """
 
         self.competition = competition
@@ -27,7 +27,7 @@ class GameData(object):
         self.referee = referee
         self.home_team = home_team
         self.away_team = away_team
-        self.maccabi_is_home_team = maccabi_is_home_team
+        self.is_maccabi_home_team = is_maccabi_home_team
 
     def played_before(self, date):
         """
@@ -83,7 +83,7 @@ class GameData(object):
     def maccabi_team(self):
         """ :rtype: TeamInGame """
 
-        if self.maccabi_is_home_team:
+        if self.is_maccabi_home_team:
             return self.home_team
         else:
             return self.away_team
@@ -92,7 +92,7 @@ class GameData(object):
     def not_maccabi_team(self):
         """ :rtype: TeamInGame """
 
-        if self.maccabi_is_home_team:
+        if self.is_maccabi_home_team:
             return self.away_team
         else:
             return self.home_team

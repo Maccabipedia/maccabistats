@@ -35,7 +35,7 @@ class MaccabiSiteGameParser(object):
         maccabi_team_name = "מכבי תל אביב"
         not_maccabi_team_name = bs_content.select_one("div.holder.notmaccabi.nn").get_text()
 
-        maccabi_is_home_team = bs_content.select_one("div.matchresult.Home") is not None
+        is_maccabi_home_team = bs_content.select_one("div.matchresult.Home") is not None
 
         game_content_web_page = unquote(bs_content.find("a", href=True).get("href"))
         squads_bs_page_content = get_game_squads_bs_by_link(game_content_web_page)
@@ -49,10 +49,10 @@ class MaccabiSiteGameParser(object):
         referee = MaccabiSiteGameParser.__get_referee(squads_bs_page_content)
         crowd = MaccabiSiteGameParser.__get_crowd(squads_bs_page_content)
 
-        home_team, away_team = (maccabi_team, not_maccabi_team) if maccabi_is_home_team else (
+        home_team, away_team = (maccabi_team, not_maccabi_team) if is_maccabi_home_team else (
             not_maccabi_team, maccabi_team)
 
-        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, maccabi_is_home_team)
+        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team)
 
     @staticmethod
     def __get_fixture_if_exists(bs_content, competition):

@@ -5,17 +5,16 @@ from functools import reduce
 from collections import Counter
 
 from maccabi_stats.models.player_game_events import GameEventTypes
-from maccabi_stats.parse.maccabi_tlv_site.game_parser import MaccabiSiteGameParser
 from maccabi_stats.models.competition_types import CompetitionTypes
 
 
 # TODO write wrappers for all
 
-class MaccabiSiteGamesWrapper(object):
+class MaccabiGamesStats(object):
 
     def __init__(self, maccabi_site_games):
         """
-        :type maccabi_site_games: list of MaccabiSiteGameParser
+        :type maccabi_site_games: list of maccabi_stats.models.game_data.GameData
         """
 
         self.games = maccabi_site_games
@@ -23,16 +22,16 @@ class MaccabiSiteGamesWrapper(object):
     @property
     def home_games(self):
         """
-        :rtype: MaccabiSiteGamesWrapper
+        :rtype: MaccabiGamesStats
         """
-        return MaccabiSiteGamesWrapper([game for game in self.games if game.maccabi_is_home_team])
+        return MaccabiGamesStats([game for game in self.games if game.is_maccabi_home_team])
 
     @property
     def away_games(self):
         """
-        :rtype: MaccabiSiteGamesWrapper
+        :rtype: MaccabiGamesStats
         """
-        return MaccabiSiteGamesWrapper([game for game in self.games if not game.maccabi_is_home_team])
+        return MaccabiGamesStats([game for game in self.games if not game.is_maccabi_home_team])
 
     @property
     def available_competitions(self):
@@ -41,25 +40,25 @@ class MaccabiSiteGamesWrapper(object):
     def get_games_against_team(self, team_name):
         """
         :param team_name: str.
-        :rtype: MaccabiSiteGamesWrapper
+        :rtype: MaccabiGamesStats
         """
-        return MaccabiSiteGamesWrapper([game for game in self.games if team_name == game.not_maccabi_team.name])
+        return MaccabiGamesStats([game for game in self.games if team_name == game.not_maccabi_team.name])
 
     def played_before(self, date):
-        return MaccabiSiteGamesWrapper([game for game in self.games if game.played_before(date)])
+        return MaccabiGamesStats([game for game in self.games if game.played_before(date)])
 
     def played_after(self, date):
-        return MaccabiSiteGamesWrapper([game for game in self.games if game.played_after(date)])
+        return MaccabiGamesStats([game for game in self.games if game.played_after(date)])
 
     def get_games_by_competition(self, competition_type):
         """
         :type competition_type: CompetitionTypes or str
-        :rtype: MaccabiSiteGamesWrapper
+        :rtype: MaccabiGamesStats
         """
         if type(competition_type) is str:
-            return MaccabiSiteGamesWrapper([game for game in self.games if game.competition == competition_type])
+            return MaccabiGamesStats([game for game in self.games if game.competition == competition_type])
         elif type(competition_type) is CompetitionTypes:
-            return MaccabiSiteGamesWrapper([game for game in self.games if game.competition == competition_type.value])
+            return MaccabiGamesStats([game for game in self.games if game.competition == competition_type.value])
         else:
             raise Exception("Enter string or CompetitionType")
 

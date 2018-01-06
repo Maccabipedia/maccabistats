@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabi_stats.stats.maccabi_site_games_wrapper import MaccabiSiteGamesWrapper
+from maccabi_stats.stats.maccabi_games_stats import MaccabiGamesStats
 
 import pickle
 import os
@@ -15,4 +15,4 @@ def get_all_the_stuff():
 
 
 def get_all_stuff_wrapped():
-    return MaccabiSiteGamesWrapper(get_all_the_stuff())
+    return MaccabiGamesStats(get_all_the_stuff())

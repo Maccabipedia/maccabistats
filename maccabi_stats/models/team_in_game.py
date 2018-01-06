@@ -4,11 +4,11 @@
 from collections import Counter
 from maccabi_stats.models.player_in_game import PlayerInGame
 from maccabi_stats.models.player_game_events import GameEventTypes
-
+from maccabi_stats.models.team import Team
 
 # TODO remove sheran yeini c' in his name (and other captains)
 
-class TeamInGame(object):
+class TeamInGame(Team):
     def __init__(self, name, coach, score, players):
         """
         :type name: str.
@@ -17,7 +17,7 @@ class TeamInGame(object):
         :type players: list of PlayerInGame
         """
 
-        self.name = name
+        super(TeamInGame, self).__init__(name)
         self.coach = coach
         self.score = score
         self.players = players
@@ -114,7 +114,9 @@ class TeamInGame(object):
         # Return counter of 1 of all played players in game
         return Counter({player: 1 for player in self.played_players})
 
+    # TODO : call super method for team name
     def __repr__(self):
-        return "Name: {self.name} \n" \
+        return "{team_repr}" \
+               "Scored: {self.score}\n" \
                "Coach: {self.coach}\n" \
-               "Players: {self.players}\n\n".format(self=self)
+               "Players: {self.players}\n\n".format(team_repr=super(TeamInGame, self).__repr__(), self=self)
