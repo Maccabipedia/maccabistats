@@ -117,6 +117,10 @@ class MaccabiGamesStats(object):
         return self.__get_players_with_most_of_this_event(GameEventTypes.LINE_UP)
 
     @property
+    def most_captains_players(self):
+        return self.__get_players_with_most_of_this_event(GameEventTypes.CAPTAIN)
+
+    @property
     def most_played_players(self):
         """
         :rtype: Counter

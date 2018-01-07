@@ -8,6 +8,9 @@ from maccabistats.models.player_game_events import GameEvent, GameEventTypes
 from datetime import timedelta
 
 
+CAPTAIN_IDENTIFY_IN_PLAYER_NAME = "(ק)"
+
+
 class MaccabiSiteTeamParser(object):
 
     @staticmethod
@@ -45,6 +48,10 @@ class MaccabiSiteTeamParser(object):
         player_name = player_bs_content.find(text=True, recursive=False).strip()
         player_number = player_bs_content.find('b').get_text()
         events = []
+
+        if CAPTAIN_IDENTIFY_IN_PLAYER_NAME in player_name:
+            events.append(GameEvent(GameEventTypes.CAPTAIN, 0))
+            player_name = player_name.replace(CAPTAIN_IDENTIFY_IN_PLAYER_NAME, "").strip()
 
         if is_line_up:
             events.append(GameEvent(GameEventTypes.LINE_UP, 0))

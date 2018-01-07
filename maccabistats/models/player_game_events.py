@@ -14,6 +14,7 @@ class GameEventTypes(Enum):
     SUBSTITUTION_IN = 'Substitution-In'
     SUBSTITUTION_OUT = 'Substitution-Out'
     GOAL_ASSIST = 'Assist-Goal'
+    CAPTAIN = 'Captain'
 
 
 class GameEvent(object):

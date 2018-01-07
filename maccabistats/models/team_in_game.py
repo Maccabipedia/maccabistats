@@ -32,7 +32,8 @@ class TeamInGame(Team):
             GameEventTypes.GOAL_ASSIST: self.assist_players_with_score_amount,
             GameEventTypes.LINE_UP: self.lineup_players_with_score_amount,
             GameEventTypes.YELLOW_CARD: self.yellow_carded_players_with_amount,
-            GameEventTypes.RED_CARD: self.red_carded_players_with_amount}
+            GameEventTypes.RED_CARD: self.red_carded_players_with_amount,
+            GameEventTypes.CAPTAIN: self.captains_players_with_amount}
 
     # TODO: add captain as event
 
@@ -70,6 +71,19 @@ class TeamInGame(Team):
     def played_players(self):
         return [player for player in self.players if player.played_in_game]
 
+    @property
+    def captain(self):
+        captains = [player for player in self.players if player.has_event(GameEventTypes.CAPTAIN)]
+
+        if len(captains) > 1:
+            print("something bad happen! found {caps} captains, returning the first 1!".format(caps=len(captains)))
+            return captains[0]
+        elif captains:
+            return captains[0]
+        else:
+            print("Cant find any captain for this game :(")
+            return PlayerInGame("Not a captain", 0, [])
+
     def __get_players_with_most_of_this_event(self, event_type):
         """
         :type event_type: GameEventTypes
@@ -106,6 +120,10 @@ class TeamInGame(Team):
     @property
     def red_carded_players_with_amount(self):
         return self.__get_players_with_most_of_this_event(GameEventTypes.RED_CARD)
+
+    @property
+    def captains_players_with_amount(self):
+        return self.__get_players_with_most_of_this_event(GameEventTypes.CAPTAIN)
 
     @property
     def played_players_with_amount(self):
