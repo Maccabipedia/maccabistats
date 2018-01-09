@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from collections import Counter
 from maccabistats.models.player_in_game import PlayerInGame
 from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.models.team import Team
 
+from collections import Counter
+import logging
 
-# TODO remove sheran yeini c' in his name (and other captains)
 
 class TeamInGame(Team):
     def __init__(self, name, coach, score, players):
@@ -76,12 +76,12 @@ class TeamInGame(Team):
         captains = [player for player in self.players if player.has_event(GameEventTypes.CAPTAIN)]
 
         if len(captains) > 1:
-            print("something bad happen! found {caps} captains, returning the first 1!".format(caps=len(captains)))
+            logging.warning("Found {caps} captains, returning the first 1!".format(caps=len(captains)))
             return captains[0]
         elif captains:
             return captains[0]
         else:
-            print("Cant find any captain for this game :(")
+            logging.warning("Cant find any captain for this game :(")
             return PlayerInGame("Not a captain", 0, [])
 
     def __get_players_with_most_of_this_event(self, event_type):
