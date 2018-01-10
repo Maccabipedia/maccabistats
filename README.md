@@ -41,4 +41,5 @@ old_home_wins.best_scorers
 
 * Atm, players assist does not implemented.
 * Players which opened as (captain or had different shirt number between games) will be counted as different players.
+* Ignoring events after 120 min (in game_events_parser -> fully_game_time_without_penalties)
 

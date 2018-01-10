@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -16,7 +15,7 @@ serialized_maccabi_games_file_path = os.path.join(serialized_maccabi_games_folde
 def get_maccabi_stats(file_name=serialized_maccabi_games_file_path):
     """
     :param file_name: pickled maccabi games (probably MaccabiGamesStats object).
-    :rtype: MaccabiGamesStats.
+    :rtype: MaccabiGamesStats
     """
     with open(file_name, 'rb') as f:
         return MaccabiGamesStats(pickle.load(f))

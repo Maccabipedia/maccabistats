@@ -1,12 +1,13 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from maccabistats.models.team_in_game import TeamInGame
 from maccabistats.models.player_in_game import PlayerInGame
-from maccabistats.models.player_game_events import GameEvent, GameEventTypes
+from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalGameEvent
 
 from datetime import timedelta
 import logging
+
+logger = logging.getLogger(__name__)
 
 CAPTAIN_IDENTIFY_IN_PLAYER_NAME = "(ק)"
 
@@ -50,15 +51,15 @@ class MaccabiSiteTeamParser(object):
         events = []
 
         if CAPTAIN_IDENTIFY_IN_PLAYER_NAME in player_name:
-            events.append(GameEvent(GameEventTypes.CAPTAIN, 0))
+            events.append(GameEvent(GameEventTypes.CAPTAIN, timedelta(minutes=0)))
             player_name = player_name.replace(CAPTAIN_IDENTIFY_IN_PLAYER_NAME, "").strip()
 
         if is_line_up:
-            events.append(GameEvent(GameEventTypes.LINE_UP, 0))
+            events.append(GameEvent(GameEventTypes.LINE_UP, timedelta(minutes=0)))
 
         for goal_minute in player_bs_content.select_one("div.goals").get_text().split():
             events.append(
-                GameEvent(GameEventTypes.GOAL_SCORE, MaccabiSiteTeamParser.__strip_geresh_as_timedelta(goal_minute)))
+                GoalGameEvent(MaccabiSiteTeamParser.__strip_geresh_as_timedelta(goal_minute)))
 
         MaccabiSiteTeamParser.__append_card_events_for_player(player_bs_content, events)
         MaccabiSiteTeamParser.__append_substitution_events_for_player(player_bs_content, events, is_line_up)
@@ -76,14 +77,22 @@ class MaccabiSiteTeamParser(object):
 
         first_cards_bs_div = cards_bs_div[0]
         card_events_times = first_cards_bs_div.get_text().strip().split()
-        if not card_events_times:  # No cards events
-            return
-
         cards_imgs_bs = first_cards_bs_div.find_all("img")
-        if len(cards_imgs_bs) != len(card_events_times):
-            logging.warning(
-                "While parsing cards - cards_Events_times len does not match cards_imgs_bs :{content}".format(
-                    content=first_cards_bs_div))
+
+        # This player got no cards, need to check both :
+        # because there are old games that recorded yellow cards without the minute the player got it in the game
+        if not card_events_times and not cards_imgs_bs:
+            return
+        elif not card_events_times and len(cards_imgs_bs) > 0:
+            logger.warning(
+                "Found card img without time near it, probably from old game, cards times: {times}, cards imgs {imgs}".format(
+                    times=card_events_times, imgs=cards_imgs_bs))
+            card_events_times.append('0')
+        elif len(card_events_times) > len(cards_imgs_bs):
+            logger.warning(
+                "Found more cards times than imgs, cards times: {times}, cards imgs {imgs}".format(
+                    times=card_events_times, imgs=cards_imgs_bs))
+
         cards = zip(card_events_times, cards_imgs_bs)
 
         for card_event_time, card_img_bs in cards:
@@ -106,13 +115,16 @@ class MaccabiSiteTeamParser(object):
         """
 
         substitution_bs_div = [div for div in player_bs_content.select("div") if 'exchange' in div['id']]
-        if len(substitution_bs_div) > 1:
-            raise Exception("Found 2 substitution divs! - {content}".format(content=substitution_bs_div))
 
         first_substitution_bs_div = substitution_bs_div[0]
+
+        # There are cases which only the exchange picture appear without minute, we count that as subs at min 0.
+        handle_old_subs = substitution_bs_div[0].select_one("img")
         substitution_events_times = first_substitution_bs_div.get_text().strip().split()
-        if not substitution_events_times:  # No substitutions events
+        if not substitution_events_times and not handle_old_subs:  # No substitutions events
             return
+        elif not substitution_events_times and handle_old_subs:
+            substitution_events_times.append('0')
 
         # First Substitution:
         first_substitution_time = substitution_events_times[0]

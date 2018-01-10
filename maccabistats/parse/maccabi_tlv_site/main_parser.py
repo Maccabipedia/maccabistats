@@ -1,7 +1,6 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from maccabistats.parse.maccabi_tlv_site.game_parser import MaccabiSiteGameParser
+from maccabistats.parse.maccabi_tlv_site.game_squads_parser import MaccabiSiteGameSquadsParser
 from maccabistats.parse.maccabi_tlv_site.config import get_max_seasons_from_settings, \
     get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, \
     get_should_use_disk_to_crawl_from_settings
@@ -10,6 +9,8 @@ import os
 import requests
 import logging
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger(__name__)
 
 folder_to_save_seasons_html_files_pattern = os.path.join(get_folder_to_save_seasons_html_files_from_settings(),
                                                          "season-{season_number}")
@@ -52,7 +53,7 @@ def __get_parsed_maccabi_games_from_web():
 
     maccabi_games = []
     for season_number, season_web_page_content in enumerate(__enumerate_season_web_pages_content_from_web()):
-        logging.info("Parsing season number {s_n}".format(s_n=season_number))
+        logger.info("Parsing season number {s_n}".format(s_n=season_number))
         maccabi_games.extend(__parse_games_from_season_page_content(season_web_page_content))
 
     return maccabi_games
@@ -65,7 +66,7 @@ def __get_parsed_maccabi_games_from_disk():
 
     maccabi_games = []
     for season_number, season_web_page_content in enumerate(__enumerate_season_web_pages_content_from_disk()):
-        logging.info("Parsing season number {s_n}".format(s_n=season_number))
+        logger.info("Parsing season number {s_n}".format(s_n=season_number))
         maccabi_games.extend(__parse_games_from_season_page_content(season_web_page_content))
 
     return maccabi_games
@@ -73,26 +74,26 @@ def __get_parsed_maccabi_games_from_disk():
 
 def __parse_games_from_season_page_content(maccabi_season_web_page_content):
     bs_games_elements = __extract_games_bs_elements(maccabi_season_web_page_content)
-    logging.info("Found {number} games on this season!".format(number=len(bs_games_elements)))
+    logger.info("Found {number} games on this season!".format(number=len(bs_games_elements)))
 
-    return [MaccabiSiteGameParser.parse_game(bs_game_element) for bs_game_element in bs_games_elements]
+    return [MaccabiSiteGameSquadsParser.parse_game(bs_game_element) for bs_game_element in bs_games_elements]
 
 
 def get_parsed_maccabi_games_from_maccabi_site():
     try:
         if get_should_use_disk_to_crawl_from_settings():
-            logging.info("Trying to iterate seasons pages from disk")
+            logger.info("Trying to iterate seasons pages from disk")
             return __get_parsed_maccabi_games_from_disk()
         else:
-            logging.info("Decided not to use disk to crawl (from settings)")
+            logger.info("Decided not to use disk to crawl (from settings)")
     except Exception:
-        logging.exception("Exception while trying to parse maccabi-tlv site pages from disk.")
+        logger.exception("Exception while trying to parse maccabi-tlv site pages from disk.")
 
     try:
-        logging.info("Trying to iterate seasons pages from web")
+        logger.info("Trying to iterate seasons pages from web")
         return __get_parsed_maccabi_games_from_web()
     except Exception:
-        logging.exception("Exception while trying to parse maccabi-tlv site pages from web.")
+        logger.exception("Exception while trying to parse maccabi-tlv site pages from web.")
 
     raise Exception("Could not parse maccabi games from disk or web")
 
@@ -107,6 +108,6 @@ def save_maccabi_seasons_web_pages_to_disk(folder_path=folder_to_save_seasons_ht
         season_web_page_link = get_season_page_pattern_from_settings().format(season_number=season_number)
         season_web_page_content = requests.get(season_web_page_link).content
 
-        logging.info("Writing {file_name} to disk".format(file_name=season_web_page_link))
+        logger.info("Writing {file_name} to disk".format(file_name=season_web_page_link))
         with open(folder_path.format(season_number=season_number), 'wb') as maccabi_site_file:
             maccabi_site_file.write(season_web_page_content)

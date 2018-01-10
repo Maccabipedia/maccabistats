@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from maccabistats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings

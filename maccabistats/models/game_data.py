@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import datetime
@@ -14,8 +13,8 @@ class GameData(object):
         :type stadium: str.
         :type crowd: str.
         :type referee: str.
-        :type home_team: TeamInGame.
-        :type away_team: TeamInGame.
+        :type home_team: maccabistats.models.team_in_game.TeamInGame
+        :type away_team: maccabistats.models.team_in_game.TeamInGame
         :type is_maccabi_home_team: bool.
         """
 
