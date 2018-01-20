@@ -7,6 +7,11 @@ import logging
 import os
 
 log_file_path = os.path.join(os.environ["appdata"], "maccabistats", "maccabistats.log")
+log_file_folder_path = os.path.dirname(log_file_path)
+
+if not os.path.isdir(log_file_folder_path):
+    os.makedirs(log_file_folder_path)
+
 logger = logging.getLogger()
 main_formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 
