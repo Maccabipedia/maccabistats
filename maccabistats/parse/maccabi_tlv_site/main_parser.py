@@ -38,7 +38,6 @@ def __enumerate_season_web_pages_content_from_web():
 def __enumerate_season_web_pages_content_from_disk():
     """
     :rtype: tuple of (str, int)
-    # TODO - should return tuple with ,season number?
     """
     for season_number in range(get_max_seasons_from_settings()):
         season_web_page_file_path = folder_to_save_seasons_html_files_pattern.format(season_number=season_number)
@@ -103,7 +102,6 @@ def save_maccabi_seasons_web_pages_to_disk(folder_path=folder_to_save_seasons_ht
     Iterate over maccabi site seasons link and saves them to disk
     :param folder_path: where to save the html files.
     """
-    # TODO: add read from config - where to save season links
     for season_number in range(get_max_seasons_from_settings()):
         season_web_page_link = get_season_page_pattern_from_settings().format(season_number=season_number)
         season_web_page_content = requests.get(season_web_page_link).content

@@ -33,7 +33,7 @@ class MaccabiSiteGameEventsParser(object):
         self.not_maccabi_team = not_maccabi_team
         self.events_bs_content_list = self.bs_content.select("article div.play-by-play-homepage ul.play-by-play li")
 
-        # TODO discover ho to init defaultdict in oneliner
+        # TODO - this should be oneliner
         self.event_type_to_handler_function = defaultdict(self.__handle_unknown_event)
         self.event_type_to_handler_function["red"] = self.__handle_red_card_event
         self.event_type_to_handler_function["yellow"] = self.__handle_yellow_card_event
@@ -130,7 +130,7 @@ class MaccabiSiteGameEventsParser(object):
         player_name = event_text.replace("כרטיס צהוב שני ל", "").strip()
         player = self.__find_one_player_with_name(player_name)
 
-        # TODO - think about adding second yellow event
+        # TODO - do we need second yellow event?
         yellow_event = GameEvent(GameEventTypes.YELLOW_CARD, event_time_in_minute)
         try:
             player_event = self.__get_player_event(player, yellow_event)

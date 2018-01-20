@@ -85,7 +85,7 @@ class MaccabiSiteTeamParser(object):
             return
         elif not card_events_times and len(cards_imgs_bs) > 0:
             logger.warning(
-                "Found card img without time near it, probably from old game, cards times: {times}, cards imgs {imgs}".format(
+                "Found card img without time, probably from old game, cards times: {times}, cards imgs {imgs}".format(
                     times=card_events_times, imgs=cards_imgs_bs))
             card_events_times.append('0')
         elif len(card_events_times) > len(cards_imgs_bs):

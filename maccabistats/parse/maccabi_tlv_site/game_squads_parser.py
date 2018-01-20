@@ -40,7 +40,10 @@ class MaccabiSiteGameSquadsParser(object):
 
         game_content_web_page = unquote(bs_content.find("a", href=True).get("href"))
         squads_bs_page_content = get_game_squads_bs_by_link(game_content_web_page)
-        # TODO: move this to another static method -> save_game_web_page_to_disk(self.game_content_web_page)
+
+        # TODO: handle the situation of saving links at first time (add this mode to configuration):
+        # save_game_web_page_to_disk(self.game_content_web_page)
+
         maccabi_team, not_maccabi_team = MaccabiSiteGameSquadsParser.__get_teams(squads_bs_page_content,
                                                                                  maccabi_team_name,
                                                                                  not_maccabi_team_name,
@@ -48,7 +51,7 @@ class MaccabiSiteGameSquadsParser(object):
                                                                                  not_maccabi_final_score)
 
         # Parse game events
-        # TODO - this is for debugging:
+        # TODO - this is for debugging, should find better solution:
         maccabi_team.game_link = not_maccabi_team.game_link = game_content_web_page
         events_bs_page_content = get_game_events_bs_by_link(game_content_web_page)
         game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content)

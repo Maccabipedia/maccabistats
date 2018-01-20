@@ -13,7 +13,6 @@ class GoalTypes(Enum):
 
 
 class GameEventTypes(Enum):
-    # TODO - we should had the type of goal - free-kick, by head, penalty kick and so on
     GOAL_SCORE = 'Score-Goal'
     RED_CARD = 'Red-Card'
     YELLOW_CARD = 'Yellow-Card'

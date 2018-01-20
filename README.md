@@ -43,3 +43,8 @@ old_home_wins.best_scorers
 * Players which opened as (captain or had different shirt number between games) will be counted as different players.
 * Ignoring events after 120 min (in game_events_parser -> fully_game_time_without_penalties)
 
+
+# Optimization 
+ In order to run maccabistats with 'use-disk-to-crawl' = True,  
+ you should have all the html files from maccabi-sites, you can find them here:  
+ https://mega.nz/#F!szxTUDRQ ( key will be available at forum.12p.co.il) 
