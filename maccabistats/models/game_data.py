@@ -4,12 +4,12 @@ import datetime
 
 
 class GameData(object):
-    def __init__(self, competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team):
+    def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team):
         """
         :param competition: cup, league and so on.
         :type competition: str.
         :type fixture: str.
-        :type date: str.
+        :type date_as_hebrew_string: str.
         :type stadium: str.
         :type crowd: str.
         :type referee: str.
@@ -20,7 +20,8 @@ class GameData(object):
 
         self.competition = competition
         self.fixture = fixture
-        self.date = date
+        self.date_as_hebrew_string = date_as_hebrew_string
+        self.date = self.__get_date_as_datetime()
         self.stadium = stadium
         self.crowd = crowd
         self.referee = referee
@@ -37,7 +38,7 @@ class GameData(object):
         if type(date) is str:
             date_args = date.strip().split(".")
             date = datetime.datetime(year=int(date_args[2]), month=int(date_args[1]), day=int(date_args[0]))
-        return date >= self.__get_date_as_datetime()
+        return date >= self.date
 
     def played_after(self, date):
         """
@@ -48,13 +49,13 @@ class GameData(object):
         if type(date) is str:
             date_args = date.strip().split(".")
             date = datetime.datetime(year=int(date_args[2]), month=int(date_args[1]), day=int(date_args[0]))
-        return date <= self.__get_date_as_datetime()
+        return date <= self.date
 
     def __get_date_as_datetime(self):
         """
         :rtype: datetime.datetime
         """
-        date_args = self.date.strip().split(" ")
+        date_args = self.date_as_hebrew_string.strip().split(" ")
         return datetime.datetime(year=int(date_args[2]), month=GameData.__get_month_num_from_hebrew(date_args[1]),
                                  day=int(date_args[0]))
 

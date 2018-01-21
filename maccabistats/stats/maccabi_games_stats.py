@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
+from itertools import groupby
+
 from maccabistats.stats.coaches import MaccabiGamesCoachesStats
 from maccabistats.stats.players import MaccabiGamesPlayersStats
 
@@ -66,6 +68,20 @@ class MaccabiGamesStats(object):
             return MaccabiGamesStats([game for game in self.games if game.competition == competition_type])
         else:
             raise Exception("Enter string or CompetitionType")
+
+    def get_games_sorted_by_date(self):
+        """
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats(sorted(self.games, key=lambda g: g.date))
+
+    def get_longest_win_streak(self):
+        """
+        :rtype: int
+        """
+        maccabi_results = [game.is_maccabi_win for game in self.get_games_sorted_by_date().games]
+        wins_streak = [len(list(streak_list)) for result, streak_list in groupby(maccabi_results) if result]
+        return max(wins_streak)
 
     def __len__(self):
         return len(self.games)
