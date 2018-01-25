@@ -59,15 +59,23 @@ class MaccabiGamesStats(object):
         """
         return MaccabiGamesStats([game for game in self.games if game.played_after(date)])
 
-    def get_games_by_competition(self, competition_type):
+    def get_games_by_competition(self, competition_types):
         """
-        :type competition_type: CompetitionTypes or str
+        :type competition_types: str or list of str
         :rtype: MaccabiGamesStats
         """
-        if type(competition_type) is str:
-            return MaccabiGamesStats([game for game in self.games if game.competition == competition_type])
-        else:
-            raise Exception("Enter string or CompetitionType")
+
+        if type(competition_types) is str:
+            competition_types = [competition_types]
+
+        return MaccabiGamesStats([game for game in self.games if game.competition in competition_types])
+
+    def get_first_league_games(self):
+        """ Return only the first league games - from all years
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in ["ליגת העל", "ליגת לאומית", "ליגת Winner", "ליגה א'"]])
 
     def get_longest_win_streak(self):
         """
@@ -79,7 +87,7 @@ class MaccabiGamesStats(object):
 
     def get_longest_win_streak_with_games(self):
         """
-        :return: int, maccabistats.models.game_data.GameData, maccabistats.models.game_data.GameData
+        :return: int, list of maccabistats.models.game_data.GameData
         """
         maccabi_results = [game.is_maccabi_win for game in self.games]
         wins_streaks = [len(list(streak_list)) for result, streak_list in groupby(maccabi_results) if result]
@@ -90,14 +98,11 @@ class MaccabiGamesStats(object):
             # Count only wins, if we reach the max wins streak we should stop!
             current_results_length = len(list(current_results))
             if result and max_win_streak == current_results_length:
-                    break
+                break
             else:
                 games_before_wins_streak += current_results_length
 
-        win_streak_start_game = self.games[games_before_wins_streak]
-        win_streak_end_game = self.games[games_before_wins_streak + max_win_streak - 1]
-
-        return max_win_streak, win_streak_start_game, win_streak_end_game
+        return max_win_streak, self.games[games_before_wins_streak: games_before_wins_streak + max_win_streak]
 
     def __len__(self):
         return len(self.games)
