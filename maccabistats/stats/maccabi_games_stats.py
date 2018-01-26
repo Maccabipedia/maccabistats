@@ -37,6 +37,10 @@ class MaccabiGamesStats(object):
         return set(game.competition for game in self.games)
 
     @property
+    def available_opponents(self):
+        return set(game.not_maccabi_team.name for game in self.games)
+
+    @property
     def maccabi_wins(self):
         """
         :rtype: MaccabiGamesStats
