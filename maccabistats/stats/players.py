@@ -16,8 +16,7 @@ class MaccabiGamesPlayersStats(object):
         :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         """
 
-        self.maccabi_games_stats = maccabi_games_stats
-        self.games = self.maccabi_games_stats.games
+        self.games = maccabi_games_stats.games
 
     def __get_players_from_all_games_with_most_of_this_condition(self, condition):
         """

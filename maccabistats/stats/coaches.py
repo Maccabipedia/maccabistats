@@ -13,8 +13,7 @@ class MaccabiGamesCoachesStats(object):
         :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         """
 
-        self.maccabi_games_stats = maccabi_games_stats
-        self.games = self.maccabi_games_stats.games
+        self.games = maccabi_games_stats.games
 
     @property
     def most_trained_coach(self):
