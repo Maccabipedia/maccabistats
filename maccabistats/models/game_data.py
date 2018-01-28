@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import json
 
 
 class GameData(object):
-    def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team):
+    def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
+                 is_maccabi_home_team):
         """
         :param competition: cup, league and so on.
         :type competition: str.
@@ -101,6 +103,20 @@ class GameData(object):
     def is_maccabi_win(self):
         """ :rtype: bool """
         return self.maccabi_score_diff > 0
+
+    def json_dict(self):
+        """
+        :rtype: dict
+        """
+        return dict(stadium=self.stadium,
+                    date=self.date.isoformat(),
+                    crowd=self.crowd,
+                    referee=self.referee,
+                    home_team=self.home_team.json_dict(),
+                    away_team=self.away_team.json_dict())
+
+    def to_json(self):
+        return json.dumps(self.json_dict())
 
     def __repr__(self):
         return "Game between {self.home_team.name} (home) - {self.away_team.name} (away)\n" \
