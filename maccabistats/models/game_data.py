@@ -112,6 +112,8 @@ class GameData(object):
                     date=self.date.isoformat(),
                     crowd=self.crowd,
                     referee=self.referee,
+                    competition=self.competition,
+                    fixture=self.fixture,
                     home_team=self.home_team.json_dict(),
                     away_team=self.away_team.json_dict())
 
