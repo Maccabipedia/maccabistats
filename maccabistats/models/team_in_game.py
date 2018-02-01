@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import logging
+import json
+
 from maccabistats.models.player_in_game import PlayerInGame
 from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.models.team import Team
 
 from collections import Counter
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -155,6 +157,17 @@ class TeamInGame(Team):
             GameEventTypes.PENALTY_MISSED: self.penalty_missed_players_with_amount}
 
         return event_type_to_property_of_most_common_players[event_type]
+
+    def json_dict(self):
+        """
+        :rtype: dict
+        """
+        return dict(name=self.name,
+                    score=self.score,
+                    coach=self.coach)
+
+    def to_json(self):
+        return json.dumps(self.json_dict)
 
     def __str__(self):
         return "{team_repr}" \
