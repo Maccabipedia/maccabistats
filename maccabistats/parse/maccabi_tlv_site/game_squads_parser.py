@@ -118,7 +118,7 @@ class MaccabiSiteGameSquadsParser(object):
 
         referee_div_bs = bs_content.select_one("div.info div.referee")
         if referee_div_bs:
-            return referee_div_bs.get_text().strip()
+            return referee_div_bs.get_text().strip("שופט:").strip()
         else:
             return "Cant found referee"
 
@@ -131,6 +131,6 @@ class MaccabiSiteGameSquadsParser(object):
 
         crowd_div_bs = bs_content.select_one("div.info div.viewers")
         if crowd_div_bs:
-            return crowd_div_bs.get_text().strip()
+            return crowd_div_bs.get_text().strip("צופים:").strip()
         else:
             return "Cant found crowd"

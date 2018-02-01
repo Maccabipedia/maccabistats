@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
+import maccabistats
 
 setup(
     name='maccabistats',
-    version='1.0',
+    version=maccabistats.version,
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
