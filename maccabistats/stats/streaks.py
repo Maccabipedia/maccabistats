@@ -2,6 +2,9 @@
 
 
 from itertools import groupby
+from datetime import timedelta
+
+from maccabistats.models.player_game_events import GameEventTypes
 
 
 # This class will handle all streaks statistics.
@@ -27,6 +30,10 @@ class MaccabiGamesStreaksStats(object):
         games_fulfill_condition = [condition(game) for game in self.games]
         streak_by_condition = [len(list(streak_list)) for condition_fulfill, streak_list in
                                groupby(games_fulfill_condition) if condition_fulfill]
+
+        if not streak_by_condition:  # In case were handling empty streak, just return empty list of games.
+            return self.maccabi_games_stats.create_maccabi_stats_from_games([])
+
         max_streak_by_condition = max(streak_by_condition)
 
         games_before_streak = 0
@@ -106,3 +113,25 @@ class MaccabiGamesStreaksStats(object):
 
     def get_longest_clean_sheet_length(self):
         return len(self.get_longest_clean_sheet_games())
+
+    def get_longest_goals_from_bench_games(self):
+
+        def scored_after_subs_in(player):
+            """ :type player: maccabistats.models.player_in_game.PlayerInGame """
+            if not player.scored:
+                return False
+
+            min_goal_time = min(goal.time_occur for goal in player.get_events_by_type(GameEventTypes.GOAL_SCORE))
+            subs_in_time = player.get_events_by_type(GameEventTypes.SUBSTITUTION_IN)[0].time_occur
+
+            # Avoid bugs in maccabi site which registered players as subs in min 0.
+            if subs_in_time == timedelta(seconds=0):
+                return False
+
+            return min_goal_time >= subs_in_time
+
+        return self._get_longest_streak_by_condition(
+            lambda g: any(scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench))
+
+    def get_longest_goals_from_bench_length(self):
+        return len(self.get_longest_goals_from_bench_games())

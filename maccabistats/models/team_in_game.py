@@ -32,8 +32,8 @@ class TeamInGame(Team):
 
     @property
     def players_from_bench(self):
-        return [player for player in self.players if
-                player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
+        return [player for player in self.players if not player.has_event_type(GameEventTypes.LINE_UP) and
+                player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
 
     @property
     def not_played_players(self):

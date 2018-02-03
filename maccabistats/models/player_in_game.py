@@ -66,6 +66,13 @@ class PlayerInGame(Player):
         """
         return self.has_event_type(GameEventTypes.LINE_UP) or self.has_event_type(GameEventTypes.SUBSTITUTION_IN)
 
+    @property
+    def scored(self):
+        """
+        :rtype: bool
+        """
+        return self.has_event_type(GameEventTypes.GOAL_SCORE)
+
     def get_event_by_similar_event(self, event_to_find):
         """  Return events that equals to the given event.
         :type event_to_find: GameEvent

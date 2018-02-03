@@ -83,7 +83,7 @@ class GameData(object):
 
     @property
     def maccabi_team(self):
-        """ :rtype: TeamInGame """
+        """ :rtype: maccabistats.models.team_in_game.TeamInGame """
 
         if self.is_maccabi_home_team:
             return self.home_team
@@ -92,7 +92,7 @@ class GameData(object):
 
     @property
     def not_maccabi_team(self):
-        """ :rtype: TeamInGame """
+        """ :rtype: maccabistats.models.team_in_game.TeamInGame """
 
         if self.is_maccabi_home_team:
             return self.away_team

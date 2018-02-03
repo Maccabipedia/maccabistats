@@ -4,6 +4,9 @@
 from maccabistats.stats.coaches import MaccabiGamesCoachesStats
 from maccabistats.stats.players import MaccabiGamesPlayersStats
 from maccabistats.stats.streaks import MaccabiGamesStreaksStats
+from maccabistats.stats.average import MaccabiGamesAverageStats
+from maccabistats.stats.results import MaccabiGamesResultsStats
+from maccabistats import version as maccabistatsversion
 
 
 class MaccabiGamesStats(object):
@@ -17,6 +20,9 @@ class MaccabiGamesStats(object):
         self.coaches = MaccabiGamesCoachesStats(self)
         self.players = MaccabiGamesPlayersStats(self)
         self.streaks = MaccabiGamesStreaksStats(self)
+        self.averages = MaccabiGamesAverageStats(self)
+        self.results = MaccabiGamesResultsStats(self)
+        self.version = maccabistatsversion
 
     @property
     def home_games(self):
@@ -41,18 +47,30 @@ class MaccabiGamesStats(object):
         return set(game.not_maccabi_team.name for game in self.games)
 
     @property
+    def available_stadiums(self):
+        return set(game.stadium for game in self.games)
+
+    @property
+    def available_players(self):
+        players = []
+        [players.extend(game.maccabi_team.players) for game in self.games]
+
+        return set([player.get_as_normal_player() for player in players])
+
+    @property
+    def available_referees(self):
+        return set(game.referee for game in self.games)
+
+    @property
+    def available_coaches(self):
+        return set(game.maccabi_team.coach for game in self.games)
+
+    @property
     def maccabi_wins(self):
         """
         :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats([game for game in self.games if game.is_maccabi_win])
-
-    def get_games_against_team(self, team_name):
-        """
-        :param team_name: str.
-        :rtype: MaccabiGamesStats
-        """
-        return MaccabiGamesStats([game for game in self.games if team_name == game.not_maccabi_team.name])
 
     def played_before(self, date):
         return MaccabiGamesStats([game for game in self.games if game.played_before(date)])
@@ -73,6 +91,42 @@ class MaccabiGamesStats(object):
             competition_types = [competition_types]
 
         return MaccabiGamesStats([game for game in self.games if game.competition in competition_types])
+
+    def get_games_by_stadium(self, stadium_name):
+        """
+        :param stadium_name: str.
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games if stadium_name == game.stadium])
+
+    def get_games_against_team(self, team_name):
+        """
+        :param team_name: str.
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games if team_name == game.not_maccabi_team.name])
+
+    def get_games_by_coach(self, coach_name):
+        """
+        :param coach_name: str.
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games if coach_name == game.maccabi_team.coach])
+
+    def get_games_by_referee(self, referee_name):
+        """
+        :param referee_name: str.
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games if referee_name == game.referee])
+
+    def get_games_by_player_name(self, player_name):
+        """
+        :param player_name: str.
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games
+                                  if player_name in [p.name.strip() for p in game.maccabi_team.played_players]])
 
     def get_first_league_games(self):
         """ Return only the first league games - from all years
