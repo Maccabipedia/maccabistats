@@ -5,8 +5,10 @@ from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 import logging
 import os
+from pathlib import Path
 
-log_file_path = os.path.join(os.environ["appdata"], "maccabistats", "maccabistats.log")
+log_root_folder_path = Path.home().as_posix()
+log_file_path = os.path.join(log_root_folder_path, "maccabistats-logs", "maccabistats.log")
 log_file_folder_path = os.path.dirname(log_file_path)
 
 if not os.path.isdir(log_file_folder_path):
