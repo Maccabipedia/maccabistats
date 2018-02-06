@@ -1,0 +1,88 @@
+------ Version 1.3.0 ------
+
+	Add useful imports to maccabistats.__init__.
+	average -> averages.
+	Fix bug of empty maccabi_game_stats object when getting players stats.
+	Add referees stats (similar to coaches).
+	Add tie streak to streaks.py.
+	Add change-log.
+	Add most:
+		winner, loser, unbeaten, clean-sheet (not maccabi team scored 0 goals).
+		to players stats, all is calculated by games scores.
+	Add game.events to get all events (both teams) ordered by time_occur.
+
+------ Version 1.2.0 ------
+
+	This version created just to reupload to pypi
+
+
+
+------ Version 1.1.0 ------
+
+	## Summary ##
+	
+		Support getting all available opponents (from filtered games)
+		TeamInGame & GameData is jsonable !
+		Enable logging on linux
+		require py3+
+
+
+
+------ Version 1.0.0 ------
+
+
+	## Summary ##
+	
+		Support getting all available competitions (from filtered games)
+	
+	## Filtering ##
+	
+		Support filtering maccabi games by:
+			* Home games
+			* Away games
+			* Game played date
+			* Competition
+			* Wins
+			* First league games
+	
+		Support finding maccabi games (also filtered) *longest* streaks by:
+			* Wins
+			* Unbeaten
+			* Score at least X goals
+			* Score Exactly X goals
+			* Game score diff at least X
+			* Game score diff exactly X
+			* Clean Sheet
+			* Lambda condition
+			
+		Support finding maccabi games (also filtered) top players that match condition, like:
+			* Best scorers
+			* Scorers by free-kick
+			* Scorers by head
+			* Scorers by own goals
+			* Best assisters
+			* Got yellow card
+			* Got red card
+			* Substitute in
+			* Substitute out
+			* Played as captain
+			* Most played
+			
+		Support finding maccabi games (also filtered) top coaches that match condition, like:
+			* Most Trained
+			* Most winner
+			* Most winner by percentage
+			* Most loser
+			* Most loser by percentage
+			
+			
+	
+	## Configuration ##
+	
+		Support crawling maccabi-tlv.co.il site for football games (since 1949 atm).
+		Support crawling games from pre-saved html files from disk.
+
+	
+	
+	
+	

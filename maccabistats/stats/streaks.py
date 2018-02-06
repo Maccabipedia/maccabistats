@@ -24,7 +24,7 @@ class MaccabiGamesStreaksStats(object):
         """
         :param condition: lambda which receive maccabistats.models.game_data.GameData as param and return bool.
         :type condition: callable
-        :return: list of maccabistats.models.game_data.GameData
+        :return: MaccabiGamesStats
         """
 
         games_fulfill_condition = [condition(game) for game in self.games]
@@ -53,6 +53,12 @@ class MaccabiGamesStreaksStats(object):
 
     def get_longest_wins_streak_length(self):
         return len(self.get_longest_wins_streak_games())
+
+    def get_longest_ties_streak_games(self):
+        return self._get_longest_streak_by_condition(lambda g: g.maccabi_score_diff == 0)
+
+    def get_longest_ties_streak_length(self):
+        return len(self.get_longest_ties_streak_games())
 
     def get_longest_unbeaten_streak_games(self):
         return self._get_longest_streak_by_condition(lambda g: g.maccabi_score_diff >= 0)

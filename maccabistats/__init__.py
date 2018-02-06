@@ -1,1 +1,3 @@
-version = "1.2.0"
+from .stats.serialized_games import serialize_maccabi_games, get_maccabi_stats
+
+

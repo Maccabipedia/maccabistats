@@ -46,6 +46,13 @@ class GameEvent(object):
         """
         return self.event_type == other.event_type and self.time_occur == other.time_occur
 
+    def json_dict(self):
+        """
+        :rtype: dict
+        """
+        return dict(event_type=self.event_type.value,
+                    time_occur=str(self.time_occur))
+
 
 class GoalGameEvent(GameEvent):
     def __init__(self, time_occur, goal_type=GoalTypes.UNKNOWN):
@@ -60,3 +67,11 @@ class GoalGameEvent(GameEvent):
     def __repr__(self):
         return "{game_event}\n" \
                "Goal type : {self.goal_type}".format(game_event=super(GoalGameEvent, self).__repr__(), self=self)
+
+    def json_dict(self):
+        """
+        :rtype: dict
+        """
+        base_class_json_dict = super(GoalGameEvent, self).json_dict()
+        base_class_json_dict['goal_type'] = self.goal_type.value
+        return base_class_json_dict

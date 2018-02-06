@@ -104,6 +104,34 @@ class GameData(object):
         """ :rtype: bool """
         return self.maccabi_score_diff > 0
 
+    @property
+    def events(self):
+        """
+        Return all players events from maccabi_team in this game.
+        :return: Each list entry contains:
+                    normal_players dict, event.to_json, team_name.
+                List is ordered by event_time asc.
+        :rtype: list of dict
+        """
+
+        # Maccabi team players events
+        players_events = [dict(player.get_as_normal_player().__dict__,  # Players attributes, normal -> no events.
+                               **event.json_dict(),
+                               team=self.maccabi_team.name)
+                          for player in self.maccabi_team.players
+                          for event in player.events]
+
+        # Not maccabi team players events
+        players_events.extend([dict(player.get_as_normal_player().__dict__,  # Players attributes, normal -> no events.
+                                    **event.json_dict(),
+                                    team=self.not_maccabi_team.name)
+                               for player in self.not_maccabi_team.players
+                               for event in player.events])
+
+        sorted_players_events = sorted(players_events, key=lambda p: p['time_occur'])  # Sort by event time.
+
+        return sorted_players_events
+
     def json_dict(self):
         """
         :rtype: dict
