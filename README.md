@@ -10,6 +10,12 @@ Loading all the games:
 from maccabistats.stats.serialized_games import get_maccabi_stats
 games = get_maccabi_stats()
 ```
+or shorter
+
+```
+from maccabistats import get_maccabi_stats
+games = get_maccabi_stats()
+```
 
 Trying to get only old home wins:
 ```
@@ -48,3 +54,8 @@ old_home_wins.best_scorers
  In order to run maccabistats with 'use-disk-to-crawl' = True,  
  you should have all the html files from maccabi-sites, you can find them here:  
  https://mega.nz/#F!szxTUDRQ ( key will be available at forum.12p.co.il) 
+ 
+ 
+# Versioning
+ATM minor version change 0.X.0 may indicate API CHANGES.
+ 

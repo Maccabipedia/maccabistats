@@ -4,9 +4,11 @@
 from maccabistats.stats.coaches import MaccabiGamesCoachesStats
 from maccabistats.stats.players import MaccabiGamesPlayersStats
 from maccabistats.stats.streaks import MaccabiGamesStreaksStats
-from maccabistats.stats.average import MaccabiGamesAverageStats
+from maccabistats.stats.averages import MaccabiGamesAverageStats
+from maccabistats.stats.referees import MaccabiGamesRefereesStats
+
 from maccabistats.stats.results import MaccabiGamesResultsStats
-from maccabistats import version as maccabistatsversion
+from maccabistats.version import version as maccabistats_version
 
 
 class MaccabiGamesStats(object):
@@ -17,12 +19,15 @@ class MaccabiGamesStats(object):
         """
 
         self.games = sorted(maccabi_site_games, key=lambda g: g.date)  # Sort the games by date
+
         self.coaches = MaccabiGamesCoachesStats(self)
         self.players = MaccabiGamesPlayersStats(self)
         self.streaks = MaccabiGamesStreaksStats(self)
         self.averages = MaccabiGamesAverageStats(self)
         self.results = MaccabiGamesResultsStats(self)
-        self.version = maccabistatsversion
+        self.referees = MaccabiGamesRefereesStats(self)
+
+        self.version = maccabistats_version
 
     @property
     def home_games(self):
@@ -40,30 +45,30 @@ class MaccabiGamesStats(object):
 
     @property
     def available_competitions(self):
-        return set(game.competition for game in self.games)
+        return list(set(game.competition for game in self.games))
 
     @property
     def available_opponents(self):
-        return set(game.not_maccabi_team.name for game in self.games)
+        return list(set(game.not_maccabi_team.name for game in self.games))
 
     @property
     def available_stadiums(self):
-        return set(game.stadium for game in self.games)
+        return list(set(game.stadium for game in self.games))
 
     @property
     def available_players(self):
         players = []
         [players.extend(game.maccabi_team.players) for game in self.games]
 
-        return set([player.get_as_normal_player() for player in players])
+        return list(set([player.get_as_normal_player() for player in players]))
 
     @property
     def available_referees(self):
-        return set(game.referee for game in self.games)
+        return list(set(game.referee for game in self.games))
 
     @property
     def available_coaches(self):
-        return set(game.maccabi_team.coach for game in self.games)
+        return list(set(game.maccabi_team.coach for game in self.games))
 
     @property
     def maccabi_wins(self):
