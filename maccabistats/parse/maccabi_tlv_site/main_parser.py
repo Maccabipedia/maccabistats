@@ -3,7 +3,7 @@
 from maccabistats.parse.maccabi_tlv_site.game_squads_parser import MaccabiSiteGameSquadsParser
 from maccabistats.parse.maccabi_tlv_site.config import get_max_seasons_from_settings, \
     get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, \
-    get_should_use_disk_to_crawl_from_settings
+    get_should_use_disk_to_crawl_when_available_from_settings
 
 import os
 import requests
@@ -80,7 +80,7 @@ def __parse_games_from_season_page_content(maccabi_season_web_page_content):
 
 def get_parsed_maccabi_games_from_maccabi_site():
     try:
-        if get_should_use_disk_to_crawl_from_settings():
+        if get_should_use_disk_to_crawl_when_available_from_settings():
             logger.info("Trying to iterate seasons pages from disk")
             return __get_parsed_maccabi_games_from_disk()
         else:

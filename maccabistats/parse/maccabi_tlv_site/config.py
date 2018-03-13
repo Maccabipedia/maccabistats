@@ -11,11 +11,11 @@ max_seasons = "max-seasons-to-crawl"
 season_page_pattern = "season-page-pattern"
 folder_to_save_seasons_html_files = "folder-to-save-seasons-html-files"
 folder_to_save_games_html_files = "folder-to-save-games-html-files"
-should_use_disk_to_crawl = "use-disk-to-crawl"
+should_use_disk_to_crawl_when_available = "use-disk-to-crawl-when-available"
 
 
-def get_should_use_disk_to_crawl_from_settings():
-    return get_bool_from_settings(section_name_in_settings, should_use_disk_to_crawl)
+def get_should_use_disk_to_crawl_when_available_from_settings():
+    return get_bool_from_settings(section_name_in_settings, should_use_disk_to_crawl_when_available)
 
 
 def get_max_seasons_from_settings():
