@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-from maccabistats.stats.serialized_games import get_maccabi_stats
+from maccabistats.stats.serialized_games import get_maccabi_stats, serialize_maccabi_games
 
 if __name__ == "__main__":
 
-    g = get_maccabi_stats()
-    g[100].events
-    g.home_games.players.most_winner_by_percentage[0:5]
+    serialize_maccabi_games()
     a=6

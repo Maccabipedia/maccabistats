@@ -1,3 +1,7 @@
+------ Version 1.4.0 ------
+
+	Allow to crawl maccabi-tlv site from disk if available. updated game to 14/03/18
+
 ------ Version 1.3.0 ------
 
 	Add useful imports to maccabistats.__init__.

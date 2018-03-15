@@ -20,7 +20,7 @@ main_formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 
 warning_handler = logging.FileHandler(log_file_path, 'w', encoding="utf-8")
 warning_handler.setFormatter(main_formatter)
-warning_handler.setLevel(logging.WARNING)
+warning_handler.setLevel(logging.INFO)
 
 logger.addHandler(warning_handler)
 

@@ -51,8 +51,9 @@ old_home_wins.best_scorers
 
 
 # Optimization 
- In order to run maccabistats with 'use-disk-to-crawl' = True,  
- you should have all the html files from maccabi-sites, you can find them here:  
+ You can use 'use-disk-to-crawl-when-available' to crawl from diskwhen available, each page that will be crawled from internet wil be save on disk.
+ 
+ You can get some of the html files from:
  https://mega.nz/#F!szxTUDRQ ( key will be available at forum.12p.co.il) 
  
  
