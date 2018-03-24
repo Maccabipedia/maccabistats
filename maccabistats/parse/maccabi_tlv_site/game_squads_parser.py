@@ -6,8 +6,11 @@ from maccabistats.parse.maccabi_tlv_site.team_parser import MaccabiSiteTeamParse
 from maccabistats.parse.maccabi_tlv_site.game_pages_provider import get_game_squads_bs_by_link, \
     get_game_events_bs_by_link
 from maccabistats.parse.maccabi_tlv_site.game_events_parser import MaccabiSiteGameEventsParser
-
+import logging
 from urllib.parse import unquote
+from maccabistats.parse.name_normalization import normalize_name
+
+logger = logging.getLogger(__name__)
 
 
 class MaccabiSiteGameSquadsParser(object):
@@ -22,10 +25,12 @@ class MaccabiSiteGameSquadsParser(object):
         :return: GameData
         """
 
+        date = MaccabiSiteGameSquadsParser.__get_full_date(bs_content)
+        logger.info("Parsing game at date - {date}".format(date=date))
+
         competition = bs_content.find("div", "league-title").get_text()
         fixture = MaccabiSiteGameSquadsParser.__get_fixture_if_exists(bs_content)
 
-        date = MaccabiSiteGameSquadsParser.__get_full_date(bs_content)
         stadium = bs_content.select_one("div.location div").get_text().split(" ", 1)[1]
 
         maccabi_final_score = int(bs_content.select_one("span.ss.maccabi.h").get_text())
@@ -41,9 +46,6 @@ class MaccabiSiteGameSquadsParser(object):
         game_content_web_page = unquote(bs_content.find("a", href=True).get("href"))
         squads_bs_page_content = get_game_squads_bs_by_link(game_content_web_page)
 
-        # TODO: handle the situation of saving links at first time (add this mode to configuration):
-        # save_game_web_page_to_disk(self.game_content_web_page)
-
         maccabi_team, not_maccabi_team = MaccabiSiteGameSquadsParser.__get_teams(squads_bs_page_content,
                                                                                  maccabi_team_name,
                                                                                  not_maccabi_team_name,
@@ -57,7 +59,7 @@ class MaccabiSiteGameSquadsParser(object):
         game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content)
         maccabi_team, not_maccabi_team = game_events_parser.enrich_teams_with_events()
 
-        referee = MaccabiSiteGameSquadsParser.__get_referee(squads_bs_page_content)
+        referee = normalize_name(MaccabiSiteGameSquadsParser.__get_referee(squads_bs_page_content))
         crowd = MaccabiSiteGameSquadsParser.__get_crowd(squads_bs_page_content)
 
         home_team, away_team = (maccabi_team, not_maccabi_team) if is_maccabi_home_team else (
