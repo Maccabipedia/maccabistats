@@ -1,4 +1,3 @@
 include *.md
 recursive-include maccabistats *.ini
-recursive-include maccabistats *.games
 include MANIFEST.in
