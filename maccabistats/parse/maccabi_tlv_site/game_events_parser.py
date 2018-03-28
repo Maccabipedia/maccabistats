@@ -4,6 +4,7 @@ from collections import defaultdict
 from datetime import timedelta
 import logging
 
+from maccabistats.parse.name_normalization import normalize_name
 from maccabistats.models.player_game_events import GameEventTypes, GoalGameEvent, GameEvent, GoalTypes
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,17 @@ class ComplicatedEventException(Exception):
 
 
 class MaccabiSiteGameEventsParser(object):
+    """
+    This class is responsible to parse the events from events page and add events that could not be added with squads page, like:
+    subs-in if found in event page and wasn't found in squads page.
+    subs-out for players that have subs-in event in the same game!
+    yellow & red cards that found in events page and can't be found in squads page.
+    assists events.
+    goal type, like by head, by free-kick, by penalty ...
+
+    for other events, if they found in events page and can't be found in squads page log is written, some of them might be a bug while parsing,
+    others might be bug in maccabi site.
+    """
 
     def __init__(self, maccabi_team, not_maccabi_team, bs_content):
         """
@@ -27,6 +39,8 @@ class MaccabiSiteGameEventsParser(object):
         :type maccabi_team: maccabistats.models.team_in_game.TeamInGame
         :type not_maccabi_team: maccabistats.models.team_in_game.TeamInGame
         """
+
+        logger.info("Parsing maccabi-{opponent}".format(opponent=not_maccabi_team.name))
 
         self.bs_content = bs_content
         self.maccabi_team = maccabi_team
@@ -55,7 +69,7 @@ class MaccabiSiteGameEventsParser(object):
             event_text = event_bs_content.select_one("p").get_text().strip()
 
             if fully_game_time_without_penalties <= event_time_in_minute:
-                logger.info("Ignoring event in minute {min}".format(min=event_time_in_minute.seconds/60.0))
+                logger.info("Ignoring event in minute {min}".format(min=event_time_in_minute.seconds / 60.0))
                 continue
             try:
                 # should be like - defaultdict seems to call the default function when just trying to access the key:
@@ -66,10 +80,11 @@ class MaccabiSiteGameEventsParser(object):
                     self.__handle_unknown_event(event_bs_content, event_text, event_time_in_minute)
             except ComplicatedEventException as e:
                 logger.info("ComplicatedEventException : {details}".format(details=str(e)))
-            except CantFindEventException as e:
-                logger.exception("CantFindEventException : {details}".format(details=str(e)))
-            except Exception as e:
-                logger.exception(str(e))
+            except CantFindEventException:
+                logger.exception("\nError parsing {event} at {event_time} from events page".format(event=event_text, event_time=event_time_in_minute))
+            except Exception:
+                logger.exception(
+                    "\nUnknown error while parsing {event} at {event_time} from event page".format(event=event_text, event_time=event_time_in_minute))
 
         return self.maccabi_team, self.not_maccabi_team
 
@@ -79,7 +94,7 @@ class MaccabiSiteGameEventsParser(object):
         :rtype : PlayerInGame
         """
 
-        player_name = player_name.replace("\u202a", "").replace("\u200f", "").strip()
+        player_name = normalize_name(player_name)
 
         if len(player_name) > 20:
             raise ComplicatedEventException(player_name)
@@ -106,11 +121,12 @@ class MaccabiSiteGameEventsParser(object):
         player_event = player.get_event_by_similar_event(event)
 
         if not player_event:
-            logger.warning("Game link : {link}\n"
-                           "Found event : {event}\n"
-                           "Which this player supposed to have: {player}".format(link=self.maccabi_team.game_link,
-                                                                                 event=event, player=player))
-            raise CantFindEventException("cant find event : {event}".format(event=event))
+            raise CantFindEventException(
+                "Found {player_name} event in events page without matching event in squads page.\n"
+                "    Game link : {link}\n"
+                "    Event : {event}\n".format(player_name=player.name,
+                                               link=self.maccabi_team.game_link,
+                                               event=event))
 
         return player_event
 
@@ -158,7 +174,7 @@ class MaccabiSiteGameEventsParser(object):
             self.__get_player_event(player_sub_out, sub_out_event)
             logger.info("Found subs out event: {event}".format(event=sub_out_event))
         except CantFindEventException:
-            player_sub_in.add_event(sub_in_event)
+            player_sub_in.add_event(sub_out_event)
             logger.info("Added subs-out event for player: {player}".format(player=player_name_sub_out))
 
     @staticmethod

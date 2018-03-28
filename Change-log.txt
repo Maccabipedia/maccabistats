@@ -1,3 +1,11 @@
+------ Version 1.5.0 ------
+	
+	Add logging handlers.
+	Add faster logging.
+	Add name normalization for all (players, referees, coaches ...).
+	Fixed bug when crawling new games (saved events page as squad on disk).
+	Removed maccabi.games from repo.	
+
 ------ Version 1.4.0 ------
 
 	Allow to crawl maccabi-tlv site from disk if available. updated game to 14/03/18

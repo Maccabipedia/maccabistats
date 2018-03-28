@@ -35,16 +35,6 @@ def __enumerate_season_web_pages_content_from_web():
         yield requests.get(season_web_page_link).content
 
 
-def __enumerate_season_web_pages_content_from_disk():
-    """
-    :rtype: tuple of (str, int)
-    """
-    for season_number in range(get_max_seasons_from_settings()):
-        season_web_page_file_path = folder_to_save_seasons_html_files_pattern.format(season_number=season_number)
-        with open(season_web_page_file_path, encoding="utf-8") as f:
-            yield f.read()
-
-
 def __get_parsed_maccabi_games_from_web():
     """ Parse maccabi games from maccabi site.
     :rtype: list of maccabistats.models.game_data.GameData
@@ -52,19 +42,6 @@ def __get_parsed_maccabi_games_from_web():
 
     maccabi_games = []
     for season_number, season_web_page_content in enumerate(__enumerate_season_web_pages_content_from_web()):
-        logger.info("Parsing season number {s_n}".format(s_n=season_number))
-        maccabi_games.extend(__parse_games_from_season_page_content(season_web_page_content))
-
-    return maccabi_games
-
-
-def __get_parsed_maccabi_games_from_disk():
-    """ Parse maccabi games from local html files (path configured at config file).
-    :rtype: list of maccabistats.models.game_data.GameData
-    """
-
-    maccabi_games = []
-    for season_number, season_web_page_content in enumerate(__enumerate_season_web_pages_content_from_disk()):
         logger.info("Parsing season number {s_n}".format(s_n=season_number))
         maccabi_games.extend(__parse_games_from_season_page_content(season_web_page_content))
 
@@ -79,15 +56,6 @@ def __parse_games_from_season_page_content(maccabi_season_web_page_content):
 
 
 def get_parsed_maccabi_games_from_maccabi_site():
-    try:
-        if get_should_use_disk_to_crawl_when_available_from_settings():
-            logger.info("Trying to iterate seasons pages from disk")
-            return __get_parsed_maccabi_games_from_disk()
-        else:
-            logger.info("Decided not to use disk to crawl (from settings)")
-    except Exception:
-        logger.exception("Exception while trying to parse maccabi-tlv site pages from disk.")
-
     try:
         logger.info("Trying to iterate seasons pages from web")
         return __get_parsed_maccabi_games_from_web()

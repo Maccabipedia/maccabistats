@@ -57,7 +57,7 @@ def __get_game_events_bs_from_internet(link):
 
 def __download_game_events_page(link):
     game_events_web_page_content = __get_game_events_bs_from_internet(link)
-    __save_game_squads_bs_to_disk(link, game_events_web_page_content)
+    __save_game_events_bs_to_disk(link, game_events_web_page_content)
     return __get_game_events_bs_from_disk(link)
 
 
