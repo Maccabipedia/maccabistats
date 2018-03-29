@@ -2,8 +2,7 @@
 
 from maccabistats.parse.maccabi_tlv_site.game_squads_parser import MaccabiSiteGameSquadsParser
 from maccabistats.parse.maccabi_tlv_site.config import get_max_seasons_from_settings, \
-    get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, \
-    get_should_use_disk_to_crawl_when_available_from_settings
+    get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, get_use_lxml_parser_from_settings
 
 import os
 import requests
@@ -16,13 +15,22 @@ folder_to_save_seasons_html_files_pattern = os.path.join(get_folder_to_save_seas
                                                          "season-{season_number}")
 
 
+def __get_beautifulsoup_parser_name():
+    if get_use_lxml_parser_from_settings():
+        logger.info("Using lxml parser for beautifulsoup")
+        return "lxml"
+    else:
+        logger.info("Using html.parser for beautifulsoup")
+        return "html.parser"
+
+
 def __extract_games_bs_elements(season_web_page_content):
     """
     :param season_web_page_content: str
     :rtype: list of bs4.element.Tag
     """
 
-    soup = BeautifulSoup(season_web_page_content, "html.parser")
+    soup = BeautifulSoup(season_web_page_content, __get_beautifulsoup_parser_name())
     return soup.find_all("article")
 
 
