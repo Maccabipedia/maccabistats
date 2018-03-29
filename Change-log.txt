@@ -1,3 +1,6 @@
+------ Version 1.6.3 ------
+	Normalize coaches and opponents names.
+
 ------ Version 1.6.2 ------
 	Print msg to user when get_maccabi_stats() cant find any file.
 

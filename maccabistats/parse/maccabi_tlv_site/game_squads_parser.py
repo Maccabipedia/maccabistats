@@ -39,7 +39,7 @@ class MaccabiSiteGameSquadsParser(object):
                                        if 'maccabi' not in span.attrs['class']][0])
 
         maccabi_team_name = "מכבי תל אביב"
-        not_maccabi_team_name = bs_content.select_one("div.holder.notmaccabi.nn").get_text()
+        not_maccabi_team_name = normalize_name(bs_content.select_one("div.holder.notmaccabi.nn").get_text())
 
         is_maccabi_home_team = bs_content.select_one("div.matchresult.Home") is not None
 
