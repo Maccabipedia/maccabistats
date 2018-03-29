@@ -1,5 +1,8 @@
 from difflib import SequenceMatcher
-from itertools import permutations
+from itertools import combinations
+import logging
+
+logger = logging.getLogger(__name__)
 
 SIMILARITY_MINIMAL_RATIO = 0.9
 
@@ -22,38 +25,45 @@ class NamingErrorsFinder(object):
         self.games = maccabi_games_stats
         self.minimal_ratio = minimal_ratio_to_alert
 
-    def print_naming_similarities(self):
+    def show_naming_similarities(self):
         """
         Check for all naming errors and print them!
         """
 
-        self.__print_coaches_naming_similarities()
-        self.__print_referees_naming_similarities()
-        self.__print_opponents_naming_similarities()
-        self.__print_stadiums_naming_similarities()
-        self.__print_players_naming_similarities()
+        total_diff = 0
+        total_diff += self.__print_coaches_naming_similarities()
+        total_diff += self.__print_referees_naming_similarities()
+        total_diff += self.__print_opponents_naming_similarities()
+        total_diff += self.__print_stadiums_naming_similarities()
+        total_diff += self.__print_players_naming_similarities()
+
+        return total_diff
 
     # We use set to reduce duplication of the same players (or other object that are equal).
     def __print_coaches_naming_similarities(self):
-        self.__print_couples_naming_similarity(permutations(set(self.games.available_coaches), 2), "Coaches")
+        return self.__print_couples_naming_similarity(combinations(set(self.games.available_coaches), 2), "Coaches")
 
     def __print_referees_naming_similarities(self):
-        self.__print_couples_naming_similarity(permutations(set(self.games.available_referees), 2), "Referees")
+        return self.__print_couples_naming_similarity(combinations(set(self.games.available_referees), 2), "Referees")
 
     def __print_opponents_naming_similarities(self):
-        self.__print_couples_naming_similarity(permutations(set(self.games.available_opponents), 2), "Opponents")
+        return self.__print_couples_naming_similarity(combinations(set(self.games.available_opponents), 2), "Opponents")
 
     def __print_stadiums_naming_similarities(self):
-        self.__print_couples_naming_similarity(permutations(set(self.games.available_stadiums), 2), "Stadiums")
+        return self.__print_couples_naming_similarity(combinations(set(self.games.available_stadiums), 2), "Stadiums")
 
     def __print_players_naming_similarities(self):
-        self.__print_couples_naming_similarity(permutations(set([p.name for p in self.games.available_players]), 2), "Players")
+        return self.__print_couples_naming_similarity(combinations(set([p.name for p in self.games.available_players]), 2), "Players")
 
-    def __print_couples_naming_similarity(self, couples_permutations, prefix_to_print):
-        for couple in couples_permutations:
+    def __print_couples_naming_similarity(self, couples_combinations, prefix_to_print):
+        diff = 0
+        for couple in couples_combinations:
             current_ratio = self.__similarity_of_two_names(*couple)
             if current_ratio > self.minimal_ratio:
-                print("{prefix}: {} - {}, ratio - {ratio}".format(prefix=prefix_to_print, *couple, ratio=round(current_ratio, 2)))
+                diff += 1
+                logger.info("{prefix}: {} - {}, ratio - {ratio}".format(prefix=prefix_to_print, *couple, ratio=round(current_ratio, 2)))
+
+        return diff
 
     @staticmethod
     def __similarity_of_two_names(first, second):
