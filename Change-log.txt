@@ -1,4 +1,7 @@
------- Version 1.6.0 ------
+------ Version 1.6.2 ------
+	Print msg to user when get_maccabi_stats() cant find any file.
+
+------ Version 1.6.1 ------
 	Fix lot of referees naming using manual fixes
 
 ------ Version 1.6.0 ------
