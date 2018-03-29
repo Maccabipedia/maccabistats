@@ -5,3 +5,4 @@ initialize_logging()
 
 from .stats.serialized_games import serialize_maccabi_games, get_maccabi_stats
 from .maccabilogging import faster_logging
+from maccabistats.data_improvement.manual_fixes import run_manual_fixes

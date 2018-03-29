@@ -29,3 +29,17 @@ def serialize_maccabi_games(file_name=serialized_maccabi_games_file_path):
     maccabi_games = parse_maccabi_games_from_all_sites()
     with open(file_name, 'wb') as f:
         pickle.dump(maccabi_games, f)
+
+
+def reserialize_maccabi_games(maccabi_games_stats, file_name=serialized_maccabi_games_file_path):
+    """
+    Reserialize maccabi games stats, after doing manually manipulation (run_manual_fixes) or anything else.
+    :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+    :param file_name: path to pickle maccabi game at
+    """
+
+    if not isinstance(maccabi_games_stats, MaccabiGamesStats):
+        raise RuntimeError("You Should serialize only maccabi games stats object")
+
+    with open(file_name, 'wb') as f:
+        pickle.dump(maccabi_games_stats, f)

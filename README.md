@@ -41,7 +41,7 @@ Or the same for old home wins:
 old_home_wins.best_scorers
 ```
 
-# Crawling maccabi games - Examples
+# Crawling maccabi games
 
 When crawling each page will be saved on your disk to allow optimization for the next time.
 if you just want to get the stats, You can run:
@@ -64,6 +64,13 @@ from maccabistats.data_improvement.manual_fixes import run_manual_fixes
 new_games = run_manual_fixes(games)
 ```
 
+To debug manual fixes, just import any class under data_improvement:
+```
+from maccabistats.data_improvement.naming_fixes import NamingErrorsFinder
+n = NamingErrorsFinder(g)  # g = get_maccabi_stats()
+n.show_naming_similarities()
+```
+
 
 # Logging
 
@@ -79,7 +86,6 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 
 # Known issues
 
-* Atm, players assist does not implemented.
 * Players which opened as (captain or had different shirt number between games) will be counted as different players.
 * Ignoring events after 120 min (in game_events_parser -> fully_game_time_without_penalties)
 
