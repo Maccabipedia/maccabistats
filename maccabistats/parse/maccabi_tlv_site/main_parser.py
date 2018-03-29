@@ -65,6 +65,7 @@ def get_parsed_maccabi_games_from_maccabi_site():
     raise Exception("Could not parse maccabi games from disk or web")
 
 
+# Might be deprecated
 def save_maccabi_seasons_web_pages_to_disk(folder_path=folder_to_save_seasons_html_files_pattern):
     """
     Iterate over maccabi site seasons link and saves them to disk

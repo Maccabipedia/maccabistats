@@ -52,6 +52,19 @@ serialize_maccabi_games(file_name)
 default file_name will be saved to maccabistats package.
 
 
+# Manual fixes
+
+After crawling data from maccabi site there are some manual fixes to be done.
+you can run them manually by:
+```
+from maccabistats import get_maccabi_stats
+games = get_maccabi_stats()
+
+from maccabistats.data_improvement.manual_fixes import run_manual_fixes
+new_games = run_manual_fixes(games)
+```
+
+
 # Logging
 
 All of the log files will be saved at 'maccabistats-logs' folder under the user home folder (pathlib.Path.home())

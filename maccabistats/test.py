@@ -5,7 +5,6 @@ from maccabistats.stats.serialized_games import get_maccabi_stats, serialize_mac
 from maccabistats.maccabilogging import faster_logging
 
 if __name__ == "__main__":
-    faster_logging()
+    #faster_logging()
     serialize_maccabi_games()
-    g = get_maccabi_stats(r"C:\code\maccabi_statistics\maccabistats\stats\_maccabi.games")
     a = 6

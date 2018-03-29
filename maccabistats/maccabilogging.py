@@ -27,6 +27,12 @@ def faster_logging():
     logger.removeHandler(logger.handlers[0])  # Without Debug
 
 
+def remove_live_logging():
+    # Patch
+    logger.info("Removing stdout handlers")
+    logger.removeHandler(logger.handlers[3])  # Without stdout
+
+
 def initialize_logging():
     # Root logger, so all other logger will inherit those handlers.
 

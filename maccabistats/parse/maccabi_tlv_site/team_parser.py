@@ -3,6 +3,7 @@
 from maccabistats.models.team_in_game import TeamInGame
 from maccabistats.models.player_in_game import PlayerInGame
 from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalGameEvent
+from maccabistats.parse.name_normalization import normalize_name
 
 from datetime import timedelta
 import logging
@@ -47,12 +48,16 @@ class MaccabiSiteTeamParser(object):
         """
 
         player_name = player_bs_content.find(text=True, recursive=False).strip()
+        player_name = normalize_name(player_name)
+
         player_number = player_bs_content.find('b').get_text()
         events = []
 
         if CAPTAIN_IDENTIFY_IN_PLAYER_NAME in player_name:
             events.append(GameEvent(GameEventTypes.CAPTAIN, timedelta(minutes=0)))
             player_name = player_name.replace(CAPTAIN_IDENTIFY_IN_PLAYER_NAME, "").strip()
+            # Just to make sure:
+            player_name = normalize_name(player_name)
 
         if is_line_up:
             events.append(GameEvent(GameEventTypes.LINE_UP, timedelta(minutes=0)))
