@@ -17,6 +17,10 @@ def get_maccabi_stats(file_name=serialized_maccabi_games_file_path):
     :param file_name: pickled maccabi games (probably MaccabiGamesStats object).
     :rtype: MaccabiGamesStats
     """
+
+    if not os.path.isfile(file_name):
+        raise RuntimeError("You should have maccabi.games serialized object, you can use maccabistats.serialize_maccabi_games() to do that.")
+
     with open(file_name, 'rb') as f:
         return MaccabiGamesStats(pickle.load(f))
 
