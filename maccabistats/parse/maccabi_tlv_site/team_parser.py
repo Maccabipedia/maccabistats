@@ -35,7 +35,7 @@ class MaccabiSiteTeamParser(object):
         for bench_players_div in bench_players_div.select("li"):
             players.append(MaccabiSiteTeamParser.__parse_player(bench_players_div, False))
 
-        coach = MaccabiSiteTeamParser.__get_coach(bs_contents[2])
+        coach = normalize_name(MaccabiSiteTeamParser.__get_coach(bs_contents[2]))
 
         return TeamInGame(name, coach, score, players)
 
