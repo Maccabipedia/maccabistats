@@ -12,6 +12,11 @@ season_page_pattern = "season-page-pattern"
 folder_to_save_seasons_html_files = "folder-to-save-seasons-html-files"
 folder_to_save_games_html_files = "folder-to-save-games-html-files"
 should_use_disk_to_crawl_when_available = "use-disk-to-crawl-when-available"
+use_lxml_parser = "use-lxml-parser"
+
+
+def get_use_lxml_parser_from_settings():
+    return get_bool_from_settings(section_name_in_settings, use_lxml_parser)
 
 
 def get_should_use_disk_to_crawl_when_available_from_settings():

@@ -1,16 +1,28 @@
 # -*- coding: utf-8 -*-
 
 from maccabistats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings, \
-    get_should_use_disk_to_crawl_when_available_from_settings
+    get_should_use_disk_to_crawl_when_available_from_settings, get_use_lxml_parser_from_settings
 
 import os
 import requests
 from bs4 import BeautifulSoup
+import logging
+
+logger = logging.getLogger(__name__)
 
 folder_to_save_games_events_html_files_pattern = os.path.join(get_folder_to_save_games_html_files_from_settings(),
                                                               "game+{game_date}+events")
 folder_to_save_games_squads_html_files_pattern = os.path.join(get_folder_to_save_games_html_files_from_settings(),
                                                               "game+{game_date}+squads")
+
+
+def __get_beautifulsoup_parser_name():
+    if get_use_lxml_parser_from_settings():
+        logger.info("Using lxml parser for beautifulsoup")
+        return "lxml"
+    else:
+        logger.info("Using html.parser for beautifulsoup")
+        return "html.parser"
 
 
 def save_game_web_page_to_disk(web_page):
@@ -42,7 +54,7 @@ def __get_game_events_bs_from_disk(link):
     game_date = __extract_games_date(link)
 
     with open(folder_to_save_games_events_html_files_pattern.format(game_date=game_date), 'rb') as game_events_file:
-        return BeautifulSoup(game_events_file.read(), "html.parser")
+        return BeautifulSoup(game_events_file.read(), __get_beautifulsoup_parser_name())
 
 
 def __does_game_events_bs_exists_on_disk(link):
@@ -85,7 +97,7 @@ def __get_game_squads_bs_from_disk(link):
     game_date = __extract_games_date(link)
 
     with open(folder_to_save_games_squads_html_files_pattern.format(game_date=game_date), 'rb') as game_squads_file:
-        return BeautifulSoup(game_squads_file.read(), "html.parser")
+        return BeautifulSoup(game_squads_file.read(), __get_beautifulsoup_parser_name())
 
 
 def __does_game_squads_bs_exists_on_disk(link):
