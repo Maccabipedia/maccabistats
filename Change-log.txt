@@ -1,6 +1,12 @@
+------ Version 1.6.0 ------
+
+	 Add manual fixes (each one will be added using the data improvement classes (atm namingErrorFinder).
+	 using the NamingErrorFinder - fix almost every player naming error,
+	 by adding name normalization to the squad page parser.
+
 ------ Version 1.5.1 ------
 
-    Bug-fix: removed maccabi.games from manifest.in
+	Bug-fix: removed maccabi.games from manifest.in
 
 ------ Version 1.5.0 ------
 	
@@ -8,7 +14,7 @@
 	Add faster logging.
 	Add name normalization for all (players, referees, coaches ...).
 	Fixed bug when crawling new games (saved events page as squad on disk).
-	Removed maccabi.games from repo.	
+	Removed maccabi.games from repo.
 
 ------ Version 1.4.0 ------
 
@@ -97,8 +103,3 @@
 	
 		Support crawling maccabi-tlv.co.il site for football games (since 1949 atm).
 		Support crawling games from pre-saved html files from disk.
-
-	
-	
-	
-	
