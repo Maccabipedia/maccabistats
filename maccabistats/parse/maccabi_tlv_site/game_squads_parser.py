@@ -16,12 +16,14 @@ logger = logging.getLogger(__name__)
 class MaccabiSiteGameSquadsParser(object):
 
     @staticmethod
-    def parse_game(bs_content):
+    def parse_game(bs_content, season_string):
         """
         Gets an html content which relevant to maccabi game and return GameData object, uses bs4.BeautifulSoup.
 
         :param bs_content: the part of the html, like soup.find("article"), where soup is BeautifulSoup object.
         :type bs_content: bs4.element.Tag
+        :param season_string: season description, such as : 2000-2001 or 2000-01
+        :type season_string: str
         :return: GameData
         """
 
@@ -65,7 +67,7 @@ class MaccabiSiteGameSquadsParser(object):
         home_team, away_team = (maccabi_team, not_maccabi_team) if is_maccabi_home_team else (
             not_maccabi_team, maccabi_team)
 
-        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team)
+        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team, season_string)
 
     @staticmethod
     def __get_fixture_if_exists(bs_content):

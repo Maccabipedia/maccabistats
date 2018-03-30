@@ -56,11 +56,21 @@ def __get_parsed_maccabi_games_from_web():
     return maccabi_games
 
 
+def __get_season_string_from_season_page_content(season_web_page_content):
+    soup = BeautifulSoup(season_web_page_content, __get_beautifulsoup_parser_name())
+    # TODO try except that better
+    wrapped_season_string = soup.select("main div.dropdown a")[0].get_text()
+    season_string = wrapped_season_string.strip("כל העונות()")
+
+    return season_string
+
+
 def __parse_games_from_season_page_content(maccabi_season_web_page_content):
     bs_games_elements = __extract_games_bs_elements(maccabi_season_web_page_content)
-    logger.info("Found {number} games on this season!".format(number=len(bs_games_elements)))
+    season_string = __get_season_string_from_season_page_content(maccabi_season_web_page_content)
+    logger.info("Found {number} games on this season! {season}".format(number=len(bs_games_elements), season=season_string))
 
-    return [MaccabiSiteGameSquadsParser.parse_game(bs_game_element) for bs_game_element in bs_games_elements]
+    return [MaccabiSiteGameSquadsParser.parse_game(bs_game_element, season_string) for bs_game_element in bs_games_elements]
 
 
 def get_parsed_maccabi_games_from_maccabi_site():
