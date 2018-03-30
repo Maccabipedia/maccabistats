@@ -26,6 +26,12 @@ def __fix_referees_names(game):
             game.referee = referee_best_name
 
 
+def __fix_competitions_names(game):
+    if game.competition == "ליגת לאומית":
+        game.competition = "ליגה לאומית"
+        logger.info("ליגת לאומית->ליגה לאומית")
+
+
 def run_manual_fixes(maccabi_games_stats):
     """
     After running manually all the improvements im data_improvements those fixes added one by one manually.
@@ -36,5 +42,6 @@ def run_manual_fixes(maccabi_games_stats):
     for game in maccabi_games_stats.games:
         __fix_opponents_names(game)
         __fix_referees_names(game)
+        __fix_competitions_names(game)
 
     return maccabi_games_stats

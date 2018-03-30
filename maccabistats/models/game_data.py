@@ -6,18 +6,20 @@ import json
 
 class GameData(object):
     def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
-                 is_maccabi_home_team):
+                 is_maccabi_home_team, season_string):
         """
         :param competition: cup, league and so on.
-        :type competition: str.
-        :type fixture: str.
-        :type date_as_hebrew_string: str.
-        :type stadium: str.
-        :type crowd: str.
-        :type referee: str.
+        :type competition: str
+        :type fixture: str
+        :type date_as_hebrew_string: str
+        :type stadium: str
+        :type crowd: str
+        :type referee: str
         :type home_team: maccabistats.models.team_in_game.TeamInGame
         :type away_team: maccabistats.models.team_in_game.TeamInGame
-        :type is_maccabi_home_team: bool.
+        :type is_maccabi_home_team: bool
+        :param season_string: season description, such as : 2000-2001 or 2000-01
+        :type season_string: str
         """
 
         self.competition = competition
@@ -30,6 +32,7 @@ class GameData(object):
         self.home_team = home_team
         self.away_team = away_team
         self.is_maccabi_home_team = is_maccabi_home_team
+        self.season = season_string
 
     def played_before(self, date):
         """
