@@ -1,3 +1,6 @@
+------ Version 1.7.0 ------
+	Support multi-process crawling - faster, but logging is not process-safe, so dont use them with this mode.
+
 ------ Version 1.6.5 ------
 	Add season identifier for each game.
 	Change "ליגת לאומית" to "ליגה לאומית" in manual fixes.

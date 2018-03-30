@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-import operator
 from functools import reduce
 from collections import Counter
 

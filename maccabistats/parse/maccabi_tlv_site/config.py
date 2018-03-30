@@ -13,6 +13,16 @@ folder_to_save_seasons_html_files = "folder-to-save-seasons-html-files"
 folder_to_save_games_html_files = "folder-to-save-games-html-files"
 should_use_disk_to_crawl_when_available = "use-disk-to-crawl-when-available"
 use_lxml_parser = "use-lxml-parser"
+use_multi_process_crawl = "use_multi-process-crawl"
+crawling_processes_number = "crawling-processes-number"
+
+
+def get_crawling_processes_number_from_settings():
+    return get_int_from_settings(section_name_in_settings, crawling_processes_number)
+
+
+def get_use_multi_process_crawl_from_settings():
+    return get_bool_from_settings(section_name_in_settings, use_multi_process_crawl)
 
 
 def get_use_lxml_parser_from_settings():
