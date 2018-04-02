@@ -38,9 +38,9 @@ def initialize_logging():
 
     logger.setLevel(logging.DEBUG)
 
-    normal_formatter = logging.Formatter('%(asctime)s  %(name)s  %(levelname)s --- %(message)s')
+    normal_formatter = logging.Formatter('%(processName)s(%(process)d):%(asctime)s  %(name)s  %(levelname)s --- %(message)s')
     advanced_formatter = logging.Formatter(
-        '%(asctime)s %(name)s %(levelname)s --- %(funcName)s(l.%(lineno)d) :: %(message)s')
+        '%(processName)s(%(process)d):%(asctime)s %(name)s %(levelname)s --- %(funcName)s(l.%(lineno)d) :: %(message)s')
 
     debug_handler = logging.FileHandler(log_file_path_pattern.format(suffix='all'), 'w', encoding="utf-8")
     debug_handler.setFormatter(advanced_formatter)

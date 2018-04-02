@@ -51,6 +51,9 @@ serialize_maccabi_games(file_name)
 ```
 default file_name will be saved to maccabistats package.
 
+You can 'use_multi-process-crawl' from settings to allow multi-processing,
+BUT atm logging does not support multi-processing, so dont use that if you need to debug anything.
+
 
 # Manual fixes
 
@@ -88,6 +91,7 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 
 * Players which opened as (captain or had different shirt number between games) will be counted as different players.
 * Ignoring events after 120 min (in game_events_parser -> fully_game_time_without_penalties)
+* Logging with multi-process crawling mode isn't working.
 
 
 # Optimization 

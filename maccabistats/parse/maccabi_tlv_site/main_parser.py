@@ -2,12 +2,15 @@
 
 from maccabistats.parse.maccabi_tlv_site.game_squads_parser import MaccabiSiteGameSquadsParser
 from maccabistats.parse.maccabi_tlv_site.config import get_max_seasons_from_settings, \
-    get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, get_use_lxml_parser_from_settings
+    get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, \
+    get_use_lxml_parser_from_settings, get_use_multi_process_crawl_from_settings, get_crawling_processes_number_from_settings
 
 import os
 import requests
 import logging
 from bs4 import BeautifulSoup
+from multiprocessing import Pool
+import itertools
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +37,16 @@ def __extract_games_bs_elements(season_web_page_content):
     return soup.find_all("article")
 
 
-def __enumerate_season_web_pages_content_from_web():
+def __get_season_web_page_content_by_season_number(season_number):
     """
-    :rtype: tuple of (str, int)
+    Returns the current season number page content
+    :param season_number: season number to be requested.
+    :type season_number: int
+    :return: bytes
     """
-    for season_number in range(get_max_seasons_from_settings()):
-        season_web_page_link = get_season_page_pattern_from_settings().format(season_number=season_number)
-        yield requests.get(season_web_page_link).content
+
+    season_web_page_link = get_season_page_pattern_from_settings().format(season_number=season_number)
+    return requests.get(season_web_page_link).content
 
 
 def __get_parsed_maccabi_games_from_web():
@@ -49,9 +55,9 @@ def __get_parsed_maccabi_games_from_web():
     """
 
     maccabi_games = []
-    for season_number, season_web_page_content in enumerate(__enumerate_season_web_pages_content_from_web()):
+    for season_number in range(get_max_seasons_from_settings()):
         logger.info("Parsing season number {s_n}".format(s_n=season_number))
-        maccabi_games.extend(__parse_games_from_season_page_content(season_web_page_content))
+        maccabi_games.extend(__parse_games_from_season_number(season_number))
 
     return maccabi_games
 
@@ -65,7 +71,25 @@ def __get_season_string_from_season_page_content(season_web_page_content):
     return season_string
 
 
-def __parse_games_from_season_page_content(maccabi_season_web_page_content):
+def __get_parsed_maccabi_games_from_web_multi_process():
+    """
+    Parse maccabi games same as __get_parsed_maccabi_games_from_web, just with multiprocess.
+    :return: list of maccabistats.models.game_data.GameData
+    """
+
+    crawling_processes = get_crawling_processes_number_from_settings()
+    logger.info("Crawling with {num} processes".format(num=crawling_processes))
+
+    maccabi_seasons_numbers = range(get_max_seasons_from_settings())
+    with Pool(crawling_processes) as pool:
+        maccabi_games = list(itertools.chain.from_iterable(pool.map(__parse_games_from_season_number, maccabi_seasons_numbers)))
+
+    return maccabi_games
+
+
+def __parse_games_from_season_number(season_number):
+    maccabi_season_web_page_content = __get_season_web_page_content_by_season_number(season_number)
+
     bs_games_elements = __extract_games_bs_elements(maccabi_season_web_page_content)
     season_string = __get_season_string_from_season_page_content(maccabi_season_web_page_content)
     logger.info("Found {number} games on this season! {season}".format(number=len(bs_games_elements), season=season_string))
@@ -76,7 +100,12 @@ def __parse_games_from_season_page_content(maccabi_season_web_page_content):
 def get_parsed_maccabi_games_from_maccabi_site():
     try:
         logger.info("Trying to iterate seasons pages from web")
-        return __get_parsed_maccabi_games_from_web()
+        if get_use_multi_process_crawl_from_settings():
+            logger.info("Crawling maccabi games with multi process!")
+            return __get_parsed_maccabi_games_from_web_multi_process()
+        else:
+            logger.info("Crawling maccabi games with one process!")
+            return __get_parsed_maccabi_games_from_web()
     except Exception:
         logger.exception("Exception while trying to parse maccabi-tlv site pages from web.")
 
