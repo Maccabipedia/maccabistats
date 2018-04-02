@@ -1,3 +1,6 @@
+------ Version 1.7.1 ------
+	Added all ref (to manual_fixes) saw with NamingErrorFinder.
+
 ------ Version 1.7.0 ------
 	Support multi-process crawling - faster, but logging is not process-safe, so dont use them with this mode.
 
