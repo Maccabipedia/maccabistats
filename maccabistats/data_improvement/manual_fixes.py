@@ -1,3 +1,5 @@
+from maccabistats.data_improvement.fix_specific_games import fix_specific_games
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,6 +23,12 @@ _referees_name_fixes = [("איתן שמואלביץ", ["איתן שמואלבי�
                         ("מרכוס עוזיאל", ["מרקוס עוזיאל"]),
                         ]
 
+# The format is like referees above.
+_players_name_fixes = [("מיקו בלו", ["מנחם 'מיקו' בלו"]),
+                       ("יוסף מרימוביץ'", ["יוסל'ה מרימוביץ'"]),
+                       ("טל בן חיים (הבלם)", ["טל בן חיים"]),
+                       ]
+
 
 def __fix_opponents_names(game):
     if game.not_maccabi_team.name == "עירוני קרית שמונה":
@@ -41,6 +49,25 @@ def __fix_competitions_names(game):
         logger.info("ליגת לאומית->ליגה לאומית")
 
 
+def __fix_maccabi_players_names(game):
+    for player in game.maccabi_team.players:
+        for player_best_name, player_similar_names in _players_name_fixes:
+            if player.name in player_similar_names:
+                logger.info("Changing player name from :{old}->{new}".format(old=player.name, new=player_best_name))
+                player.name = player_best_name
+
+
+# TODO fix that in crawling
+def __fix_seasons(game):
+    """
+    Remove ' / ' from season and replace it with ' - '.
+    """
+
+    if "/" in game.season:
+        logger.info("Replacing '/' with '-' in game season")
+        game.season = game.season.replace('/', '-')
+
+
 def run_manual_fixes(maccabi_games_stats):
     """
     After running manually all the improvements im data_improvements those fixes added one by one manually.
@@ -52,5 +79,9 @@ def run_manual_fixes(maccabi_games_stats):
         __fix_opponents_names(game)
         __fix_referees_names(game)
         __fix_competitions_names(game)
+        __fix_maccabi_players_names(game)
+        __fix_seasons(game)
+
+    fix_specific_games(maccabi_games_stats)
 
     return maccabi_games_stats

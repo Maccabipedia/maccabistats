@@ -13,6 +13,18 @@ class MaccabiGamesResultsStats(object):
         self.games = maccabi_games_stats.games
 
     @property
+    def total_goals_against_maccabi(self):
+        return sum([game.not_maccabi_team.score for game in self.games])
+
+    @property
+    def total_goals_for_maccabi(self):
+        return sum([game.maccabi_score for game in self.games])
+
+    @property
+    def total_goals_diff_for_maccabi(self):
+        return self.total_goals_for_maccabi - self.total_goals_against_maccabi
+
+    @property
     def wins_count(self):
         return len([game for game in self.games if game.is_maccabi_win])
 

@@ -1,3 +1,15 @@
+------ Version 1.8.0 ------
+	Add to manual_fixes player names fix to adapt players names to maccabipedia.
+	Add MaccabiGamesStats.get_players_by_name to search for similar player names.
+	Add lxml to requirement for faster parsing.
+	Creating the folders from settings that responsible for saving the html files, only if not exists.
+
+	Add comeback statistics! (MaccabiGamesStats.comebacks).
+	Add to manual_fixes - fix specific games - most of them games which should count one opponent goal as own goal,
+	    The parsing from maccabi fail to parse this.
+
+	Add support for seasons statistics! (MaccabiGamesStats.seasons).
+
 ------ Version 1.7.1 ------
 	Added all ref (to manual_fixes) saw with NamingErrorFinder.
 

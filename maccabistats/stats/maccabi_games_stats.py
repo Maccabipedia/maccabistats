@@ -6,6 +6,8 @@ from maccabistats.stats.players import MaccabiGamesPlayersStats
 from maccabistats.stats.streaks import MaccabiGamesStreaksStats
 from maccabistats.stats.averages import MaccabiGamesAverageStats
 from maccabistats.stats.referees import MaccabiGamesRefereesStats
+from maccabistats.stats.comebacks import MaccabiGamesComebacksStats
+from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
 
 from maccabistats.stats.results import MaccabiGamesResultsStats
 from maccabistats.version import version as maccabistats_version
@@ -26,6 +28,8 @@ class MaccabiGamesStats(object):
         self.averages = MaccabiGamesAverageStats(self)
         self.results = MaccabiGamesResultsStats(self)
         self.referees = MaccabiGamesRefereesStats(self)
+        self.comebacks = MaccabiGamesComebacksStats(self)
+        self.seasons = MaccabiGamesSeasonsStats(self)
 
         self.version = maccabistats_version
 
@@ -69,6 +73,10 @@ class MaccabiGamesStats(object):
     @property
     def available_coaches(self):
         return list(set(game.maccabi_team.coach for game in self.games))
+
+    @property
+    def available_seasons(self):
+        return sorted(list(set(game.season for game in self.games)))
 
     @property
     def maccabi_wins(self):
@@ -133,12 +141,21 @@ class MaccabiGamesStats(object):
         return MaccabiGamesStats([game for game in self.games
                                   if player_name in [p.name.strip() for p in game.maccabi_team.played_players]])
 
+    def get_games_by_season(self, season):
+        """
+        Return Maccabi games stats object with season games, season may be entered as "1900-01".
+        :param season: season to get game for.
+        :rtype: MaccabiGamesStats
+        """
+
+        return MaccabiGamesStats([game for game in self.games if game.season == season])
+
     def get_first_league_games(self):
         """ Return only the first league games - from all years
         :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats(
-            [game for game in self.games if game.competition in ["ליגת העל", "ליגת לאומית", "ליגת Winner", "ליגה א'"]])
+            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'"]])
 
     @staticmethod
     def create_maccabi_stats_from_games(games):
@@ -148,6 +165,44 @@ class MaccabiGamesStats(object):
         """
 
         return MaccabiGamesStats(games)
+
+    def get_players_by_name(self, player_name):
+        """
+        Return list of players which *CONTAINS* the player_name param.
+        :param player_name: name to search in all players name list.
+        :return: list of maccabistats.models.player_in_game.PlayerInGame
+        """
+
+        return [player for player in self.available_players if player_name in player.name]
+
+    def get_summary(self):
+        summary = {'games': len(self),
+                   "wins": self.results.wins_count,
+                   "wins_by_percentage": self.results.wins_percentage,
+                   "losses": self.results.losses_count,
+                   "losses_by_percentage": self.results.losses_percentage,
+                   "ties": self.results.ties_count,
+                   "ties_by_percentage": self.results.ties_percentage,
+                   "goals_for_maccabi": self.results.total_goals_for_maccabi,
+                   "goals_for_maccabi_avg": self.averages.goals_for_maccabi,
+                   "goals_against_maccabi": self.results.total_goals_against_maccabi,
+                   "goals_against_maccabi_avg": self.averages.goals_against_maccabi,
+                   "goals_diff_for_maccabi": self.results.total_goals_diff_for_maccabi,
+                   "goals_diff_for_maccabi_avg": self.averages.maccabi_diff}
+
+        return summary
+
+    def show_sumamry(self):
+        summary = ("Maccabi games stats object:"
+                   "\n\nGames count: {games}"
+                   "\nWins : {wins} ({wins_by_percentage}%)"
+                   "\nLosses : {losses} ({losses_by_percentage}%)"
+                   "\nTies : {ties} ({ties_by_percentage}%)"
+                   "\n\nGoals for maccabi : {goals_for_maccabi}, {goals_for_maccabi_avg} per game"
+                   "\nGoals against maccabi : {goals_against_maccabi}, {goals_against_maccabi_avg} per game"
+                   "\nGoals diff for maccabi: {goals_diff_for_maccabi}, {goals_diff_for_maccabi} per game").format(**self.get_summary())
+
+        print(summary)
 
     def __len__(self):
         return len(self.games)
