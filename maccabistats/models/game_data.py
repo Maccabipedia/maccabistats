@@ -2,6 +2,7 @@
 
 import datetime
 import json
+from maccabistats.models.player_game_events import GameEventTypes
 
 
 class GameData(object):
@@ -134,6 +135,14 @@ class GameData(object):
         sorted_players_events = sorted(players_events, key=lambda p: p['time_occur'])  # Sort by event time.
 
         return sorted_players_events
+
+    def goals(self):
+        """
+        Return list of game events which their type is goal (ordered by time).
+        :return: list of maccabistats.models.player_game_events.GameEvent
+        """
+
+        return [event for event in self.events if event['event_type'] == GameEventTypes.GOAL_SCORE.value]
 
     def json_dict(self):
         """
