@@ -143,7 +143,7 @@ class MaccabiGamesStats(object):
 
     def get_games_by_season(self, season):
         """
-        Return Maccabi games stats object with season games, season may be entered as "1900-01".
+        Return Maccabi games stats object with season games, season may be entered as "1900/01".
         :param season: season to get game for.
         :rtype: MaccabiGamesStats
         """
@@ -214,4 +214,9 @@ class MaccabiGamesStats(object):
         return self.games[item]
 
     def __repr__(self):
-        return "Contain {size} games".format(size=len(self))
+        summary = "Contain {size} games".format(size=len(self))
+        if len(self) > 0:
+            summary += "(from {start_date} to {end_date})".format(start_date=self[0].date.strftime('%d-%m-%Y'),
+                                                                  end_date=self[-1].date.strftime('%d-%m-%Y'))
+
+        return summary

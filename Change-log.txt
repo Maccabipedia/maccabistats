@@ -1,3 +1,8 @@
+------ Version 1.9.0 ------
+    Change lot of players names with manual-fixes for maccabipedia.
+    Adapt season to be with "/" instead of "-" for maccabipedia.
+    Add get similar streaks for showing streaks with at least of len X by given condition.
+
 ------ Version 1.8.0 ------
 	Add to manual_fixes player names fix to adapt players names to maccabipedia.
 	Add MaccabiGamesStats.get_players_by_name to search for similar player names.
