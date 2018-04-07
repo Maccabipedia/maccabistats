@@ -4,6 +4,7 @@ from maccabistats.parse.maccabi_tlv_site.game_squads_parser import MaccabiSiteGa
 from maccabistats.parse.maccabi_tlv_site.config import get_max_seasons_from_settings, \
     get_season_page_pattern_from_settings, get_folder_to_save_seasons_html_files_from_settings, \
     get_use_lxml_parser_from_settings, get_use_multi_process_crawl_from_settings, get_crawling_processes_number_from_settings
+from maccabistats.maccabilogging import initialize_logging_for_this_process
 
 import os
 import requests
@@ -81,13 +82,26 @@ def __get_parsed_maccabi_games_from_web_multi_process():
     logger.info("Crawling with {num} processes".format(num=crawling_processes))
 
     maccabi_seasons_numbers = range(get_max_seasons_from_settings())
+    logger.info("Starting to parse games using multi processes.")
     with Pool(crawling_processes) as pool:
         maccabi_games = list(itertools.chain.from_iterable(pool.map(__parse_games_from_season_number, maccabi_seasons_numbers)))
+    logger.info("Finished to parse games using multi processes.")
+
+    from maccabistats.maccabilogging import merge_logs_files_from_all_processes
+    merge_logs_files_from_all_processes()
 
     return maccabi_games
 
 
+def __parse_games_from_season_number_multi_process(*args, **kwargs):
+
+    __parse_games_from_season_number(*args, **kwargs)
+
+
 def __parse_games_from_season_number(season_number):
+    initialize_logging_for_this_process()
+    logger.info("Refreshed logging handlers in this process!")
+
     maccabi_season_web_page_content = __get_season_web_page_content_by_season_number(season_number)
 
     bs_games_elements = __extract_games_bs_elements(maccabi_season_web_page_content)

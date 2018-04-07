@@ -6,7 +6,8 @@ from maccabistats.maccabilogging import faster_logging
 
 if __name__ == "__main__":
     # faster_logging()
-    g = get_maccabi_stats()
+    g = serialize_maccabi_games()
+    a=6
     s = g.seasons.get_seasons_stats()
     s.sort_by_wins_count()
     print(s)
