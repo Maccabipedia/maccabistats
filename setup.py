@@ -8,7 +8,7 @@ setup(
     include_package_data=True,
     license='MIT',
     description='Maccabi tel-aviv football team statistics manipulation.',
-    long_description=open('README.md').read(),
+    long_description=open('README.md', encoding="utf-8").read(),
     python_requires='>=3',
     install_requires=["setuptools==28.8.0",
                       "requests==2.18.4",
