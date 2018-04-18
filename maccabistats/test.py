@@ -7,7 +7,8 @@ from maccabistats.maccabilogging import faster_logging
 if __name__ == "__main__":
     # faster_logging()
     g = get_maccabi_stats()
-    s = g.seasons.get_seasons_stats()
-    s.sort_by_wins_count()
-    print(s)
+
+    f = g.get_first_league_games()
+    total = f.streaks.get_similar_losses_streak_by_length(3)
+    b = total[1]
     a = 6

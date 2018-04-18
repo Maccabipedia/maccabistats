@@ -22,6 +22,7 @@ class GameEventTypes(Enum):
     GOAL_ASSIST = 'Assist-Goal'
     CAPTAIN = 'Captain'
     PENALTY_MISSED = 'Penalty missed'
+    BENCHED = "Benched"
 
 
 class GameEvent(object):

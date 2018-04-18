@@ -3,77 +3,137 @@
 Simple package which allow to figure out more about maccabi tel-aviv football team while manipulating statistics.
 Atm all the data parsed from maccabi-tlv site.
 
-# Manipulating Statistics - Examples
 
-Loading all the games:
-```
-from maccabistats.stats.serialized_games import get_maccabi_stats
-games = get_maccabi_stats()
-```
-or shorter
+# TL;DR
+You can get the serialized maccabi games from [mega](https://mega.nz/#F!LOJWkShT!lUJMwyWkvPIAXVkverS-Ng)
+(separate by maccabistats version).
+after that you can just load the games:
 
 ```
 from maccabistats import get_maccabi_stats
-games = get_maccabi_stats()
+games = get_maccabi_stats(youre_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
 ```
 
-Trying to get only old home wins:
+You might want to use:
 ```
-old_games = games.played_before("1.1.2000")
-old_home_games = old_games.home_games
-old_home_wins = old_home_games.maccabi_wins
+games = games.get_first_league_games()
+```
+because there are not only league games.
+
+now, enjoy :)  
+
+# Manipulating maccabi statistics
+
+  ### Loading games
+```
+>>> from maccabistats import get_maccabi_stats
+>>> games = get_maccabi_stats()  # From default file path (inside maccabistats package) when you use serialize_maccabi_games()
+>>> games = get_maccabi_stats(r"C:\maccabi\maccabi.games")  # From local custom file path
 ```
 
-or just:
+Each list of games is from the same type - MaccabiGamesStats.  
+All the below manipulating can be done on every sub-category of games, like:  
+old_games, old_home_games and old_home_wins.  
+ 
+Getting only old home wins:
 ```
-games.played_before("1.1.2000").home_games.maccabi_wins
+>>> old_games = games.played_before("1.1.2000")
+>>> old_home_games = old_games.home_games
+>>> old_home_wins = old_home_games.maccabi_wins
+>>>
+>>> or just:
+>>> games.played_before("1.1.2000").home_games.maccabi_wins
 ```
 
 
+  ### Basic usage
+```
+>>> games.averages.goals_for_maccabi  # Avg goals for maccabi, for all the games in the list.
+>>> games.results.wins_percentage  #  the win % from the games in the list.
+>>>
+>>> game.get_games_* = use to filter games.
+>>> Lets combine all, wins % against hapoel haifa in league games:
+>>> game.get_first_league_games().get_games_against_team("הפועל חיפה").results.wins_percentage
+```
 
-Show best scorers of 'games':
+
+   ### Players
+All of the names are very intuitive, some examples:
 ```
-games.best_scorers
+>>> games.players.best_scorers
+>>> games.players.get_most_winners_by_percentage()
+>>> games.players.most_played
+>>>
+>>> Getting top 5 scored players in league derby:
+>>> games.get_first_league_games().get_games_against_team("הפועל תל אביב").players.best_scorers[0:5]
 ```
 
-Or the same for old home wins:
+   ### Coaches and Referees
+You can get the win\lose percentages of each one just by:
 ```
-old_home_wins.best_scorers
+>>> games.coaches.most_winner_coach_by_percentage
+>>> games.referees.best_referee_by_percentage[0:2]  # Top 2 referees (in all maccabi games history).
+>>>
+>>> Getting best drby coaches:
+>>> games.get_first_league_games().get_games_against_team("הפועל תל אביב").coaches.most_winner_coach_by_percentage
 ```
+
+
+   ### Comebacks
+You can get the craziest maccabi comebacks:
+```
+>>> games.comebacks.won_from_exactly_two_goal_diff()
+>>> games.comebacks.won_from_exactly_x_goal_diff(goals=3)  # Wow!
+```
+
+   ### Streaks
+You can get the longest (or by streak length) streaks of any subset of maccabi games:
+```
+>>> games.streaks.get_longest_* = use to get the longest streak by condition, like:
+>>> games.streaks.get_longest_clean_sheet_games()  #  Games in a row without goal against maccabi.
+>>>
+>>> games.streak.get_similar_* = use to get similar with len of at least X and by condition.
+>>> # All the unbeaten rows of at least len of 20:
+>>> games.streaks.get_similar_unbeaten_streak_by_length(minimum_streak_length=20)   
+```
+
+
+   ### Seasons
+You can get the games grouped by seasons sorted by any condition, such as:
+```
+>>> seasons = games.seasons.get_seasons_stats()  # At default the season will be sorted by year.
+>>> seasons.sort_by_wins_percentage()  # Sort the season by winning percentage, you should print the season object).
+>>> seasons  # Print it
+```
+
 
 # Crawling maccabi games
 
-When crawling each page will be saved on your disk to allow optimization for the next time.
-if you just want to get the stats, You can run:
+When crawling maccabi games each page will be saved on your disk to allow optimization for the next time.
+To serialize maccabi games (it might take some time), use:
 ```
-from maccabistats import serialize_maccabi_games
-serialize_maccabi_games(file_name)
+>>> from maccabistats import serialize_maccabi_games
+>>> serialize_maccabi_games(file_name)  # Default file_name will be stored inside maccabistats package.
 ```
-default file_name will be saved to maccabistats package.
 
-You can 'use_multi-process-crawl' from settings to allow multi-processing,
-BUT atm logging does not support multi-processing, so dont use that if you need to debug anything.
+Manual-fixes will be run after crawling is finished and before serializing to disk.
+
+You can 'use_multi-process-crawl' from settings to allow multi-processing,  
+BUT atm logging does not support multi-processing, so don't use that if you need to debug.
 
 
 # Manual fixes
 
-After crawling data from maccabi site there are some manual fixes to be done.
-you can run them manually by:
+There are some information that need to be fix manually.  
+When serializing maccabi games that done automatically.
+If you Add anything to run_manual_fixes, you can re-run it by:
 ```
-from maccabistats import get_maccabi_stats
-games = get_maccabi_stats()
-
-from maccabistats.data_improvement.manual_fixes import run_manual_fixes
-new_games = run_manual_fixes(games)
+>>> from maccabistats import get_maccabi_stats, run_manual_fixes, serialize_maccabi_games
+>>> 
+>>> games = get_maccabi_stats()
+>>> new_games = run_manual_fixes(games)
+>>> serialize_maccabi_games(new_games)
 ```
-
-To debug manual fixes, just import any class under data_improvement:
-```
-from maccabistats.data_improvement.naming_fixes import NamingErrorsFinder
-n = NamingErrorsFinder(g)  # g = get_maccabi_stats()
-n.show_naming_similarities()
-```
-
 
 # Logging
 
@@ -96,14 +156,14 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 
 # Optimization 
 * You can use 'use-disk-to-crawl-when-available' to crawl from disk when available, each page that will be crawled from internet wil be save on disk. 
-* You can get some of the html files from: https://mega.nz/#F!szxTUDRQ ( key will be available at forum.12p.co.il)
+* For the first time, you can get some of the html files from: https://mega.nz/#F!szxTUDRQ ( key will be available at forum.12p.co.il)
 * You can reduce logging when crawling by use :
 ```
-from maccabistats import faster_logging
-faster_logging() will disable the stdout & debug handlers.
+>>> from maccabistats import faster_logging
+>>> faster_logging() will disable the stdout & debug handlers.
 ```
  
  
 # Versioning
-ATM minor version change 0.X.0 may indicate API CHANGES.
+ATM minor version change 1.X.0 may indicate API CHANGES.
  

@@ -27,6 +27,11 @@ _referees_name_fixes = [("איתן שמואלביץ", ["איתן שמואלבי�
 _players_name_fixes = [("מיקו בלו", ["מנחם 'מיקו' בלו"]),
                        ("יוסף מרימוביץ'", ["יוסל'ה מרימוביץ'"]),
                        ("טל בן חיים (הבלם)", ["טל בן חיים"]),
+                       ("איציק זוהר", ["זוהר"]),
+                       ("בן בן יאיר", ["בן בן-יאיר"]),
+                       ("שאול בן דוד", ["שאול בן דויד"]),
+                       ("אלירן ג'ורג'", ["אלירן ג'ורג"]),
+                       ("גונסאלו גארסיה", ["גונזאלו גארסיה"]),
                        ]
 
 
@@ -60,12 +65,12 @@ def __fix_maccabi_players_names(game):
 # TODO fix that in crawling
 def __fix_seasons(game):
     """
-    Remove ' / ' from season and replace it with ' - '.
+    Remove ' - ' from season and replace it with ' / '.
     """
 
-    if "/" in game.season:
-        logger.info("Replacing '/' with '-' in game season")
-        game.season = game.season.replace('/', '-')
+    if "-" in game.season:
+        logger.info("Replacing '-' with '/' in game season")
+        game.season = game.season.replace('-', '/')
 
 
 def run_manual_fixes(maccabi_games_stats):
