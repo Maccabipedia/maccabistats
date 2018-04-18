@@ -43,6 +43,10 @@ def parse_maccabi_games_from_all_sites():
     maccabi_games_from_maccabi_tlv_site = get_parsed_maccabi_games_from_maccabi_site()
     maccabi_stats_games = MaccabiGamesStats(maccabi_games_from_maccabi_tlv_site)
 
-    maccabi_stats_games_after_manual_fixes = run_manual_fixes(maccabi_stats_games)
+    try:
+        maccabi_stats_games_after_manual_fixes = run_manual_fixes(maccabi_stats_games)
+    except Exception:
+        logger.exception("Could not finish the manual_fixed - you should run again standalone")
+        maccabi_stats_games_after_manual_fixes = maccabi_stats_games
 
     return maccabi_stats_games_after_manual_fixes

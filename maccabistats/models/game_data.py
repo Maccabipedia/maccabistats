@@ -2,12 +2,13 @@
 
 import datetime
 import json
-from maccabistats.models.player_game_events import GameEventTypes
+from dateutil.parser import parse as datetime_parser
+from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
 
 class GameData(object):
     def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
-                 is_maccabi_home_team, season_string):
+                 is_maccabi_home_team, season_string, half_parsed_events):
         """
         :param competition: cup, league and so on.
         :type competition: str
@@ -21,6 +22,8 @@ class GameData(object):
         :type is_maccabi_home_team: bool
         :param season_string: season description, such as : 2000-2001 or 2000-01
         :type season_string: str
+        :param half_parsed_events: events which had problem while parsing or validating, should be use for manipulating the game data later.
+        :type half_parsed_events: list of dict
         """
 
         self.competition = competition
@@ -34,6 +37,7 @@ class GameData(object):
         self.away_team = away_team
         self.is_maccabi_home_team = is_maccabi_home_team
         self.season = season_string
+        self._half_parsed_events = half_parsed_events
 
     def played_before(self, date):
         """
@@ -42,8 +46,7 @@ class GameData(object):
         """
 
         if type(date) is str:
-            date_args = date.strip().split(".")
-            date = datetime.datetime(year=int(date_args[2]), month=int(date_args[1]), day=int(date_args[0]))
+            date = datetime_parser(date)
         return date >= self.date
 
     def played_after(self, date):
@@ -53,8 +56,7 @@ class GameData(object):
         """
 
         if type(date) is str:
-            date_args = date.strip().split(".")
-            date = datetime.datetime(year=int(date_args[2]), month=int(date_args[1]), day=int(date_args[0]))
+            date = datetime_parser(date)
         return date <= self.date
 
     def __get_date_as_datetime(self):
@@ -139,10 +141,29 @@ class GameData(object):
     def goals(self):
         """
         Return list of game events which their type is goal (ordered by time).
+        Each event contains the results of the game as it was AFTER the goal was scored.
         :return: list of maccabistats.models.player_game_events.GameEvent
         """
 
-        return [event for event in self.events if event['event_type'] == GameEventTypes.GOAL_SCORE.value]
+        goals_events = [event for event in self.events if event['event_type'] == GameEventTypes.GOAL_SCORE.value]
+        maccabi_score = not_maccabi_score = 0
+
+        for goal in goals_events:
+            if goal['team'] == "מכבי תל אביב":
+                if goal['goal_type'] == GoalTypes.OWN_GOAL.value:
+                    not_maccabi_score += 1
+                else:
+                    maccabi_score += 1
+            else:
+                if goal['goal_type'] == GoalTypes.OWN_GOAL.value:
+                    not_maccabi_score += 1
+                else:
+                    maccabi_score += 1
+
+            goal['maccabi_score'] = maccabi_score
+            goal['not_maccabi_score'] = not_maccabi_score
+
+        return goals_events
 
     def json_dict(self):
         """

@@ -55,11 +55,10 @@ class MaccabiSiteGameSquadsParser(object):
                                                                                  not_maccabi_final_score)
 
         # Parse game events
-        # TODO - this is for debugging, should find better solution:
-        maccabi_team.game_link = not_maccabi_team.game_link = game_content_web_page
         events_bs_page_content = get_game_events_bs_by_link(game_content_web_page)
-        game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content)
+        game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content, game_content_web_page)
         maccabi_team, not_maccabi_team = game_events_parser.enrich_teams_with_events()
+        halfed_parsed_events = game_events_parser.halfed_parsed_events
 
         referee = normalize_name(MaccabiSiteGameSquadsParser.__get_referee(squads_bs_page_content))
         crowd = MaccabiSiteGameSquadsParser.__get_crowd(squads_bs_page_content)
@@ -67,7 +66,8 @@ class MaccabiSiteGameSquadsParser(object):
         home_team, away_team = (maccabi_team, not_maccabi_team) if is_maccabi_home_team else (
             not_maccabi_team, maccabi_team)
 
-        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team, season_string)
+        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team, season_string,
+                        halfed_parsed_events)
 
     @staticmethod
     def __get_fixture_if_exists(bs_content):

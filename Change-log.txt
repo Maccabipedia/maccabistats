@@ -1,3 +1,11 @@
+------ Version 1.10.0 ------
+    "Solved" many goals without owner, carry them from the parsing time and trying to relate them after all the game is parsed.
+    Allow more date formats as inputs.
+    Fix competitions names for maccabipedia.
+    Add 'ErrorsFinder' class to find errors (run manually).
+    Add Important goals statistics! (maccabi_games_stats.important_goals).
+    Add Graphs! (maccabi_games_stats.graphs).
+
 ------ Version 1.9.1 ------
     Read readme.md file as utf-8
 

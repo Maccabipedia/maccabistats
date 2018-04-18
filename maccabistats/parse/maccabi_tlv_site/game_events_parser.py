@@ -19,6 +19,14 @@ class ComplicatedEventException(Exception):
     pass
 
 
+class TooManySameEventsException(Exception):
+    pass
+
+
+class FoundNoMatchingPlayersByNameException(Exception):
+    pass
+
+
 class MaccabiSiteGameEventsParser(object):
     """
     This class is responsible to parse the events from events page and add events that could not be added with squads page, like:
@@ -32,12 +40,14 @@ class MaccabiSiteGameEventsParser(object):
     others might be bug in maccabi site.
     """
 
-    def __init__(self, maccabi_team, not_maccabi_team, bs_content):
+    def __init__(self, maccabi_team, not_maccabi_team, bs_content, game_link):
         """
         There are 3 divs for each team ordered as: lineup_players, bench_players, coach.
         :type bs_content: bs4.element.Tag
         :type maccabi_team: maccabistats.models.team_in_game.TeamInGame
         :type not_maccabi_team: maccabistats.models.team_in_game.TeamInGame
+        :param game_link: the maccabi-tlv game link, for debugging.
+        :type game_link: str
         """
 
         logger.info("Parsing maccabi-{opponent}".format(opponent=not_maccabi_team.name))
@@ -45,6 +55,10 @@ class MaccabiSiteGameEventsParser(object):
         self.bs_content = bs_content
         self.maccabi_team = maccabi_team
         self.not_maccabi_team = not_maccabi_team
+        self.game_link = game_link
+        # We will save all the parsed events without matching events in squads page, to allow manipulate this data later.
+        self.halfed_parsed_events = []
+
         self.events_bs_content_list = self.bs_content.select("article div.play-by-play-homepage ul.play-by-play li")
 
         # TODO - this should be oneliner
@@ -81,7 +95,7 @@ class MaccabiSiteGameEventsParser(object):
             except ComplicatedEventException as e:
                 logger.info("ComplicatedEventException : {details}".format(details=str(e)))
             except CantFindEventException:
-                logger.exception("\nError parsing {event} at {event_time} from events page".format(event=event_text, event_time=event_time_in_minute))
+                logger.warning("\nError parsing {event} at {event_time} from events page".format(event=event_text, event_time=event_time_in_minute))
             except Exception:
                 logger.exception(
                     "\nUnknown error while parsing {event} at {event_time} from event page".format(event=event_text, event_time=event_time_in_minute))
@@ -105,11 +119,39 @@ class MaccabiSiteGameEventsParser(object):
         if len(players) > 1:
             logger.warning("Found more than 1 player named :{player_name}".format(player_name=player_name))
         elif len(players) == 0:
-            raise Exception("Game link : {link}\n"
-                            "Cant find player with that name : {name}".format(link=self.maccabi_team.game_link,
-                                                                              name=player_name))
+            raise FoundNoMatchingPlayersByNameException("Game link : {link}\n"
+                                                        "Cant find player with that name : {name}".format(link=self.game_link,
+                                                                                                          name=player_name))
 
-        return players[0]
+        # In case there are some players, we prefer the last, attack player is more likely to score\assist goal (those event are the important here).
+        return players[-1]
+
+    def __get_one_player_by_event_details(self, player_name, event):
+        """
+        Find one player that match the event details (event object + player name), that solve the case when two players has the same name.
+        The way to choose between them is by similarity to the given event.
+        :param player_name: the player name to search
+        :type player_name:str
+        :param event: the event to look for similar event on player events.
+        :type event: maccabistats.models.player_game_events.GameEvent
+        :return: PlayerInGame
+        """
+
+        player_name = normalize_name(player_name)
+        if len(player_name) > 20:
+            raise ComplicatedEventException(player_name)
+
+        players_events = [player.get_event_by_similar_event(event) for player in self.maccabi_team.players if player.name == player_name]
+        players_events.extend([player.get_event_by_similar_event(event) for player in self.not_maccabi_team.players if player.name == player_name])
+        players_events = list(filter(lambda e: e is not None, players_events))
+
+        if len(players_events) > 1:
+            logger.warning("Found more than 1 matching player events:{player_name}, event:{event}".format(player_name=player_name, event=event))
+        elif len(players_events) == 0:
+            raise CantFindEventException("Game link : {link}\nCant find player event by given details, player name:{name}, event:{event}"
+                                         .format(link=self.game_link, name=player_name, event=event))
+
+        return players_events[0]
 
     def __get_player_event(self, player, event):
         """ Check whether the given player got event in specific time
@@ -118,15 +160,21 @@ class MaccabiSiteGameEventsParser(object):
         :rtype: maccabistats.models.player_game_events.GameEvent
         """
 
-        player_event = player.get_event_by_similar_event(event)
+        try:
+            player_event = player.get_event_by_similar_event(event)
+        except Exception as e:
+            raise TooManySameEventsException("Probably Found {player_name} more than 1 matching event.\n"
+                                             "    Game link : {link}\n"
+                                             "    Event : {event}\n"
+                                             "    Inner exception : {inner}".format(player_name=player.name,
+                                                                                    link=self.game_link,
+                                                                                    event=event,
+                                                                                    inner=str(e)))
 
         if not player_event:
-            raise CantFindEventException(
-                "Found {player_name} event in events page without matching event in squads page.\n"
-                "    Game link : {link}\n"
-                "    Event : {event}\n".format(player_name=player.name,
-                                               link=self.maccabi_team.game_link,
-                                               event=event))
+            raise CantFindEventException("Found {player_name} event in events page without matching event in squads page.\n"
+                                         "    Game link : {link}\n"
+                                         "    Event : {event}\n".format(player_name=player.name, link=self.game_link, event=event))
 
         return player_event
 
@@ -205,15 +253,25 @@ class MaccabiSiteGameEventsParser(object):
     def __handle_goal_event(self, event_text, event_time_in_minute):
         player_name, goal_event = MaccabiSiteGameEventsParser.__extract_goal_details(event_text, event_time_in_minute)
 
-        player = self.__find_one_player_with_name(player_name)
-        player_event = self.__get_player_event(player, goal_event)
+        try:
+            player_event = self.__get_one_player_by_event_details(player_name, goal_event)
 
-        # Add goal type:
-        if goal_event.goal_type is not GoalTypes.UNKNOWN:
-            player_event.goal_type = goal_event.goal_type
-            logger.info(
-                "Changed goal type to {goal_type} for player: {player}".format(goal_type=goal_event.goal_type,
-                                                                               player=player.name))
+            # Add goal type:
+            if goal_event.goal_type is not GoalTypes.UNKNOWN:
+                player_event.goal_type = goal_event.goal_type
+                logger.info(
+                    "Changed goal type to {goal_type} for player: {player}".format(goal_type=goal_event.goal_type,
+                                                                                   player=player_name))
+        except CantFindEventException:
+            # We should hope no name that belong to two players in the same game will be related to goal.
+            # by manually checking there are none (the above case takes care of them).
+            try:
+                player = self.__find_one_player_with_name(player_name)
+                player.add_event(goal_event)
+                logger.info("Added goal event for player: {player}".format(player=player.name))
+            except FoundNoMatchingPlayersByNameException:
+                logger.info("Adding event to half parsed event:{event}, for name:{name}".format(event=goal_event, name=player_name))
+                self.halfed_parsed_events.append(dict(name=player_name, **goal_event.__dict__))
 
     def __handle_yellow_card_event(self, event_text, event_time_in_minute):
         player_name = event_text.replace("כרטיס צהוב ל", "").strip()
@@ -221,7 +279,11 @@ class MaccabiSiteGameEventsParser(object):
 
         yellow_card_event = GameEvent(GameEventTypes.YELLOW_CARD, event_time_in_minute)
 
-        self.__get_player_event(player, yellow_card_event)
+        try:
+            self.__get_player_event(player, yellow_card_event)
+        except CantFindEventException:
+            player.add_event(yellow_card_event)
+            logger.info("Added yellow card event for player: {player}".format(player=player.name))
 
     def __handle_red_card_event(self, event_text, event_time_in_minute):
         player_name = event_text.replace("כרטיס אדום ל", "").strip()

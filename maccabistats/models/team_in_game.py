@@ -82,7 +82,7 @@ class TeamInGame(Team):
         :rtype: Counter
         """
 
-        return Counter({player: condition(player) for player in self.players if
+        return Counter({player.name: condition(player) for player in self.players if
                         condition(player) > 0})
 
     @property
@@ -136,7 +136,7 @@ class TeamInGame(Team):
         :rtype: Counter
         """
         # Return counter of 1 of all played players in game
-        return Counter({player: 1 for player in self.played_players})
+        return Counter({player.name : 1 for player in self.played_players})
 
     def event_type_to_property_of_most_common_players(self, event_type):
         """
