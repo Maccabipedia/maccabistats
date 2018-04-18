@@ -1,3 +1,6 @@
+------ Version 1.9.1 ------
+    Read readme.md file as utf-8
+
 ------ Version 1.9.0 ------
     Change lot of players names with manual-fixes for maccabipedia.
     Adapt season to be with "/" instead of "-" for maccabipedia.
