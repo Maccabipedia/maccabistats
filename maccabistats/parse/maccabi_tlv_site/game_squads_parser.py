@@ -55,10 +55,8 @@ class MaccabiSiteGameSquadsParser(object):
                                                                                  not_maccabi_final_score)
 
         # Parse game events
-        # TODO - this is for debugging, should find better solution:
-        maccabi_team.game_link = not_maccabi_team.game_link = game_content_web_page
         events_bs_page_content = get_game_events_bs_by_link(game_content_web_page)
-        game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content)
+        game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content, game_content_web_page)
         maccabi_team, not_maccabi_team = game_events_parser.enrich_teams_with_events()
 
         referee = normalize_name(MaccabiSiteGameSquadsParser.__get_referee(squads_bs_page_content))

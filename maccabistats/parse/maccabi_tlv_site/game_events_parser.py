@@ -19,6 +19,10 @@ class ComplicatedEventException(Exception):
     pass
 
 
+class TooManySameEventsException(Exception):
+    pass
+
+
 class MaccabiSiteGameEventsParser(object):
     """
     This class is responsible to parse the events from events page and add events that could not be added with squads page, like:
@@ -32,12 +36,14 @@ class MaccabiSiteGameEventsParser(object):
     others might be bug in maccabi site.
     """
 
-    def __init__(self, maccabi_team, not_maccabi_team, bs_content):
+    def __init__(self, maccabi_team, not_maccabi_team, bs_content, game_link):
         """
         There are 3 divs for each team ordered as: lineup_players, bench_players, coach.
         :type bs_content: bs4.element.Tag
         :type maccabi_team: maccabistats.models.team_in_game.TeamInGame
         :type not_maccabi_team: maccabistats.models.team_in_game.TeamInGame
+        :param game_link: the maccabi-tlv game link, for debugging.
+        :type game_link: str
         """
 
         logger.info("Parsing maccabi-{opponent}".format(opponent=not_maccabi_team.name))
@@ -45,6 +51,7 @@ class MaccabiSiteGameEventsParser(object):
         self.bs_content = bs_content
         self.maccabi_team = maccabi_team
         self.not_maccabi_team = not_maccabi_team
+        self.game_link = game_link
         self.events_bs_content_list = self.bs_content.select("article div.play-by-play-homepage ul.play-by-play li")
 
         # TODO - this should be oneliner
@@ -106,7 +113,7 @@ class MaccabiSiteGameEventsParser(object):
             logger.warning("Found more than 1 player named :{player_name}".format(player_name=player_name))
         elif len(players) == 0:
             raise Exception("Game link : {link}\n"
-                            "Cant find player with that name : {name}".format(link=self.maccabi_team.game_link,
+                            "Cant find player with that name : {name}".format(link=self.game_link,
                                                                               name=player_name))
 
         return players[0]
@@ -118,15 +125,23 @@ class MaccabiSiteGameEventsParser(object):
         :rtype: maccabistats.models.player_game_events.GameEvent
         """
 
-        player_event = player.get_event_by_similar_event(event)
+        try:
+            player_event = player.get_event_by_similar_event(event)
+        except Exception as e:
+            raise TooManySameEventsException("Probably Found {player_name} more than 1 matching event.\n"
+                                             "    Game link : {link}\n"
+                                             "    Event : {event}\n"
+                                             "    Inner exception : {inner}".format(player_name=player.name,
+                                                                                    link=self.game_link,
+                                                                                    event=event,
+                                                                                    inner=str(e)))
 
         if not player_event:
-            raise CantFindEventException(
-                "Found {player_name} event in events page without matching event in squads page.\n"
-                "    Game link : {link}\n"
-                "    Event : {event}\n".format(player_name=player.name,
-                                               link=self.maccabi_team.game_link,
-                                               event=event))
+            raise CantFindEventException("Found {player_name} event in events page without matching event in squads page.\n"
+                                         "    Game link : {link}\n"
+                                         "    Event : {event}\n".format(player_name=player.name,
+                                                                        link=self.game_link,
+                                                                        event=event))
 
         return player_event
 
