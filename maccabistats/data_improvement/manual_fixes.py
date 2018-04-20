@@ -1,4 +1,5 @@
 from maccabistats.data_improvement.fix_specific_games import fix_specific_games
+from maccabistats.models.player_game_events import GameEventTypes, GoalGameEvent
 
 import logging
 
@@ -52,6 +53,9 @@ def __fix_competitions_names(game):
     if game.competition == "ליגת לאומית":
         game.competition = "ליגה לאומית"
         logger.info("ליגת לאומית->ליגה לאומית")
+    elif game.competition == "ליגת Winner":
+        game.competition = "ליגת העל"
+        logger.info("ליגת Winner->ליגת העל")
 
 
 def __fix_maccabi_players_names(game):
@@ -62,7 +66,6 @@ def __fix_maccabi_players_names(game):
                 player.name = player_best_name
 
 
-# TODO fix that in crawling
 def __fix_seasons(game):
     """
     Remove ' - ' from season and replace it with ' / '.
@@ -71,6 +74,97 @@ def __fix_seasons(game):
     if "-" in game.season:
         logger.info("Replacing '-' with '/' in game season")
         game.season = game.season.replace('-', '/')
+
+
+def __fix_half_parsed_goal_events(game):
+    half_parsed_goals = [event for event in game._half_parsed_events if event['event_type'] == GameEventTypes.GOAL_SCORE]
+    if not half_parsed_goals:
+        return
+
+    total_score = game.maccabi_team.score + game.not_maccabi_team.score
+    total_goal_events = len(game.goals())
+
+    if total_score != total_goal_events:
+        logger.info("Found game (date-{date}) with "
+                    "total score of: {total_score}, total goals events: {total_goal_events} and total half parsed goals: {total_half_parsed_goals}"
+                    .format(date=game.date, total_score=total_score, total_goal_events=total_goal_events,
+                            total_half_parsed_goals=len(half_parsed_goals)))
+    else:
+        logger.warning("Total score & total goals events are equals "
+                       "but game (date-{date}) got {num} half parsed goals.".format(date=game.date, num=len(half_parsed_goals)))
+
+    if total_goal_events + len(half_parsed_goals) <= total_score:
+        logger.info("Half parsed goal events seems to missing goals, Adding them!")
+        __add_half_parsed_goals_events_to_game(game, half_parsed_goals)
+    else:
+        logger.warning("Half parsed goals + total goals events does not equal to the total score, something wrong, do nothing.")
+
+
+def __get_player_for_half_parsed_goals_events(game, goal_event):
+    """
+    Trying to search for exact name, after that for first\last name, after that splitting name by dot (if exist) and search for first\last name.
+    """
+    # Trying to find player with the exact name.
+    name = goal_event['name']
+    all_players = game.maccabi_team.players + game.not_maccabi_team.players
+    players = [player for player in all_players if player.name == name]
+    if players:
+        return players[0]
+
+    # Trying to find player with the same first\last name.
+    logger.info("Cant find full player name, trying first\last name:{name}".format(name=name))
+    players = [player for player in all_players if name in player.name.split()]
+    if players:
+        return players[0]
+
+    # Trying dot pattern, like : א.זוהר which might be איציק זוהר
+    logger.info("Cant find first\last player name, trying check for dot pattern name:{name}".format(name=name))
+    if "." in name:
+        first, last = [part.strip() for part in name.split(".")]
+        players = [player for player in all_players if last in player.name.split()]
+        # If we found two players with the same last name, try with the first name.
+        if len(players) > 1:
+            players = [player for player in players if player.name.startswith(first)]
+
+        if players:
+            return players[0]
+
+    return None
+
+
+def __add_half_parsed_goals_events_to_game(game, half_parsed_goals_events):
+    event_to_delete_from_game_half_parsed_event = []
+
+    for event in half_parsed_goals_events:
+        if not event['name']:
+            logger.warning("Found goal (game date - {date}) with empty player name, skipping".format(date=game.date))
+            continue
+
+        player_for_this_event = __get_player_for_half_parsed_goals_events(game, event)
+        if player_for_this_event is None:
+            logger.warning("Could not find any player that match somehow to this name:{name}, skipping this event".format(name=event['name']))
+            continue
+
+        logger.info("Add goal event: {event} to this player:{name} in this game date: {date}"
+                    .format(event=event, name=player_for_this_event.name, date=game.date))
+
+        goal_event = GoalGameEvent(event['time_occur'], event['goal_type'])
+        player_for_this_event.add_event(goal_event)
+        event_to_delete_from_game_half_parsed_event.append(event)
+
+    if event_to_delete_from_game_half_parsed_event:
+        logger.info("Removing half parsed goals events from this game")
+        new_half_parsed_events = [not_added_half_parsed_event for not_added_half_parsed_event in half_parsed_goals_events if
+                              not_added_half_parsed_event not in event_to_delete_from_game_half_parsed_event]
+        game._half_parsed_events = new_half_parsed_events
+
+
+def __remove_youth_games(maccabi_games_stats):
+    # TODO: remove this when we start manipulating youth statistics
+    YOUTH_COMPETITIONS = ['גביע המדינה לנוער', 'ליגת העל לנוער']
+    logger.info("Removing youth games if exists:(")
+    return maccabi_games_stats.create_maccabi_stats_from_games(
+        [game for game in maccabi_games_stats.games if game.competition not in YOUTH_COMPETITIONS])
 
 
 def run_manual_fixes(maccabi_games_stats):
@@ -86,7 +180,13 @@ def run_manual_fixes(maccabi_games_stats):
         __fix_competitions_names(game)
         __fix_maccabi_players_names(game)
         __fix_seasons(game)
+        # ATM, only the important events = goals.
+        try:
+            __fix_half_parsed_goal_events(game)
+        except LookupError:
+            logger.exception("Error while parsing goals half parsed events.")
 
+    maccabi_games_stats = __remove_youth_games(maccabi_games_stats)
     fix_specific_games(maccabi_games_stats)
 
     return maccabi_games_stats

@@ -58,7 +58,7 @@ class MaccabiSiteGameSquadsParser(object):
         events_bs_page_content = get_game_events_bs_by_link(game_content_web_page)
         game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content, game_content_web_page)
         maccabi_team, not_maccabi_team = game_events_parser.enrich_teams_with_events()
-        parsed_events_without_matching_squad_event = game_events_parser.event_without_matching_event_in_squads
+        halfed_parsed_events = game_events_parser.halfed_parsed_events
 
         referee = normalize_name(MaccabiSiteGameSquadsParser.__get_referee(squads_bs_page_content))
         crowd = MaccabiSiteGameSquadsParser.__get_crowd(squads_bs_page_content)
@@ -67,7 +67,7 @@ class MaccabiSiteGameSquadsParser(object):
             not_maccabi_team, maccabi_team)
 
         return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team, season_string,
-                        parsed_events_without_matching_squad_event)
+                        halfed_parsed_events)
 
     @staticmethod
     def __get_fixture_if_exists(bs_content):

@@ -47,6 +47,11 @@ def __fix_beitar_three_two(games):
         david.add_event(goal)
         logger.info("Fixed דוד אמסלם goal - probably does not exists after crawling maccabi-tlv site( appear in events page but not in squads page.")
 
+    if against_beitar_three_two_win._half_parsed_events:
+        logger.info("Removing half parsed goals events from this game ({date}".format(date=against_beitar_three_two_win.date))
+        against_beitar_three_two_win._half_parsed_events = list(
+            filter(lambda event: event['event_type'] != GameEventTypes.GOAL_SCORE, against_beitar_three_two_win._half_parsed_events))
+
 
 def fix_specific_games(games):
     __fix_basel_three_three(games)
