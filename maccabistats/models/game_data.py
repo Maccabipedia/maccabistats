@@ -7,7 +7,7 @@ from maccabistats.models.player_game_events import GameEventTypes
 
 class GameData(object):
     def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
-                 is_maccabi_home_team, season_string):
+                 is_maccabi_home_team, season_string, half_parsed_events):
         """
         :param competition: cup, league and so on.
         :type competition: str
@@ -21,6 +21,8 @@ class GameData(object):
         :type is_maccabi_home_team: bool
         :param season_string: season description, such as : 2000-2001 or 2000-01
         :type season_string: str
+        :param half_parsed_events: events which had problem while parsing or validating, should be use for manipulating the game data later.
+        :type half_parsed_events: list of dict
         """
 
         self.competition = competition
@@ -34,6 +36,7 @@ class GameData(object):
         self.away_team = away_team
         self.is_maccabi_home_team = is_maccabi_home_team
         self.season = season_string
+        self._half_parsed_events = half_parsed_events
 
     def played_before(self, date):
         """

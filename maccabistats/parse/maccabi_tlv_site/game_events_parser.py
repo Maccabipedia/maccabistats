@@ -52,6 +52,9 @@ class MaccabiSiteGameEventsParser(object):
         self.maccabi_team = maccabi_team
         self.not_maccabi_team = not_maccabi_team
         self.game_link = game_link
+        # We will save all the parsed events without matching events in squads page, to allow manipulate this data later.
+        self.event_without_matching_event_in_squads = []
+
         self.events_bs_content_list = self.bs_content.select("article div.play-by-play-homepage ul.play-by-play li")
 
         # TODO - this should be oneliner
@@ -87,8 +90,9 @@ class MaccabiSiteGameEventsParser(object):
                     self.__handle_unknown_event(event_bs_content, event_text, event_time_in_minute)
             except ComplicatedEventException as e:
                 logger.info("ComplicatedEventException : {details}".format(details=str(e)))
-            except CantFindEventException:
+            except CantFindEventException as e:
                 logger.exception("\nError parsing {event} at {event_time} from events page".format(event=event_text, event_time=event_time_in_minute))
+                self.event_without_matching_event_in_squads.append(e.args[1])
             except Exception:
                 logger.exception(
                     "\nUnknown error while parsing {event} at {event_time} from event page".format(event=event_text, event_time=event_time_in_minute))
@@ -139,9 +143,9 @@ class MaccabiSiteGameEventsParser(object):
         if not player_event:
             raise CantFindEventException("Found {player_name} event in events page without matching event in squads page.\n"
                                          "    Game link : {link}\n"
-                                         "    Event : {event}\n".format(player_name=player.name,
-                                                                        link=self.game_link,
-                                                                        event=event))
+                                         "    Event : {event}\n".format(player_name=player.name, link=self.game_link, event=event),
+                                         dict(player.get_as_normal_player().__dict__, **event.__dict__)  # Pass the event details
+                                         )
 
         return player_event
 
