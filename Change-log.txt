@@ -1,3 +1,6 @@
+------ Version 1.10.1 ------
+    Replaced mega.nz link
+
 ------ Version 1.10.0 ------
     "Solved" many goals without owner, carry them from the parsing time and trying to relate them after all the game is parsed.
     Allow more date formats as inputs.

@@ -5,7 +5,7 @@ Atm all the data parsed from maccabi-tlv site.
 
 
 # TL;DR
-You can get the serialized maccabi games from [mega](https://mega.nz/#F!LOJWkShT!lUJMwyWkvPIAXVkverS-Ng)
+You can get the serialized maccabi games from [mega](https://mega.nz/#F!iX4y1CrJ!sCRXAGcImG8nK4jk8hUMEA)
 (separate by maccabistats version).
 after that you can just load the games:
 
