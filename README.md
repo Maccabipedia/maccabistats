@@ -11,7 +11,7 @@ after that you can just load the games:
 
 ```
 from maccabistats import get_maccabi_stats
-games = get_maccabi_stats(youre_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
+games = get_maccabi_stats(your_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
 ```
 
 You might want to use:

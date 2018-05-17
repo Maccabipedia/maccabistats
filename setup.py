@@ -13,5 +13,7 @@ setup(
     install_requires=["setuptools==28.8.0",
                       "requests==2.18.4",
                       "beautifulsoup4==4.6.0",
-                      "lxml==4.1.1"]
+                      "lxml==4.1.1",
+                      "python-dateutil==2.7.2",
+                      "matplotlib==2.2.2"]
 )

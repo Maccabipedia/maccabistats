@@ -12,6 +12,14 @@ serialized_maccabi_games_file_path = os.path.join(serialized_maccabi_games_folde
                                                   serialized_maccabi_games_file_name)
 
 
+def get_maccabi_stats_as_newest_wrapper(file_name=serialized_maccabi_games_file_path):
+    """"
+    Returns the serialized file_name cast to the latest MaccabiGamesStats object, which means that newer functions can be used.
+    """
+
+    return MaccabiGamesStats(get_maccabi_stats(file_name).games)
+
+
 def get_maccabi_stats(file_name=serialized_maccabi_games_file_path):
     """
     :param file_name: pickled maccabi games (probably MaccabiGamesStats object).
@@ -22,7 +30,7 @@ def get_maccabi_stats(file_name=serialized_maccabi_games_file_path):
         raise RuntimeError("You should have maccabi.games serialized object, you can use maccabistats.serialize_maccabi_games() to do that.")
 
     with open(file_name, 'rb') as f:
-        return MaccabiGamesStats(pickle.load(f))
+        return pickle.load(f)
 
 
 def serialize_maccabi_games(file_name=serialized_maccabi_games_file_path):

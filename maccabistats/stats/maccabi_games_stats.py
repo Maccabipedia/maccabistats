@@ -8,9 +8,13 @@ from maccabistats.stats.averages import MaccabiGamesAverageStats
 from maccabistats.stats.referees import MaccabiGamesRefereesStats
 from maccabistats.stats.comebacks import MaccabiGamesComebacksStats
 from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
-
 from maccabistats.stats.results import MaccabiGamesResultsStats
+from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
+from maccabistats.stats.graphs import MaccabiGamesGraphsStats
+
 from maccabistats.version import version as maccabistats_version
+
+from dateutil.parser import parse as datetime_parser
 
 
 class MaccabiGamesStats(object):
@@ -30,6 +34,8 @@ class MaccabiGamesStats(object):
         self.referees = MaccabiGamesRefereesStats(self)
         self.comebacks = MaccabiGamesComebacksStats(self)
         self.seasons = MaccabiGamesSeasonsStats(self)
+        self.important_goals = MaccabiGamesImportantGoalsStats(self)
+        self.graphs = MaccabiGamesGraphsStats(self)
 
         self.version = maccabistats_version
 
@@ -93,6 +99,18 @@ class MaccabiGamesStats(object):
         :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats([game for game in self.games if game.played_after(date)])
+
+    def played_at(self, date):
+        """
+        Currently checking just the: year & month & day.
+        :param date: datetime.datetime or str
+        :return: maccabistats.models.game_data.GameData
+        """
+
+        if type(date) is str:
+            date = datetime_parser(date).date()
+
+        return [game for game in self.games if game.date.date() == date]
 
     def get_games_by_competition(self, competition_types):
         """
@@ -209,7 +227,7 @@ class MaccabiGamesStats(object):
 
     def __getitem__(self, item):
         """
-        :rtype: MaccabiSiteGameParser
+        :rtype: maccabistats.models.game_data.GameData
         """
         return self.games[item]
 

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-from functools import reduce
 from collections import Counter
+from functools import reduce
+from datetime import timedelta
 
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
@@ -35,11 +36,25 @@ class MaccabiGamesPlayersStats(object):
              for game in self.games],
             Counter([]))  # When self.games above is empty, reduce will return this default value.
 
-        # Remove the events by cast player_in_game to 'player' object
-        return Counter(
-            {player_in_game.get_as_normal_player(): players_with_most_event_type[player_in_game] for player_in_game
-             in
-             players_with_most_event_type}).most_common()
+        return players_with_most_event_type.most_common()
+
+    def get_top_scorers_on_last_minutes(self, from_minute=75):
+        from_this_minute_str = str(timedelta(minutes=from_minute))
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: len([event for event in p.events
+                           if event.event_type == GameEventTypes.GOAL_SCORE and str(event.time_occur) > from_this_minute_str]))
+
+    def get_top_players_for_goals_per_game(self, minimum_games_played=10):
+        players_total_played = Counter(dict(self.most_played))
+        players_total_goals = Counter(dict(self.best_scorers))
+
+        best_players = Counter()
+        for player_name, total_games_for_player in players_total_played.items():
+            if total_games_for_player >= minimum_games_played:
+                key_name = "{player} - {total_games} games".format(player=player_name, total_games=total_games_for_player)
+                best_players[key_name] = round(players_total_goals[player_name] / total_games_for_player, 2)
+
+        return best_players.most_common()
 
     @property
     def best_scorers(self):
@@ -124,10 +139,7 @@ class MaccabiGamesPlayersStats(object):
             [game.maccabi_team.played_players_with_amount
              for game in self.games if condition(game)])
 
-        # Remove the events by cast player_in_game to 'player' object
-        return Counter(
-            {player_in_game.get_as_normal_player(): most_played_players_with_game_condition[player_in_game]
-             for player_in_game in most_played_players_with_game_condition}).most_common()
+        return Counter(most_played_players_with_game_condition).most_common()
 
     @property
     def most_winners(self):
