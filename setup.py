@@ -15,5 +15,6 @@ setup(
                       "beautifulsoup4==4.6.0",
                       "lxml==4.1.1",
                       "python-dateutil==2.7.2",
-                      "matplotlib==2.2.2"]
+                      "matplotlib==2.2.2",
+                      "pathlib==1.0.1"]
 )
