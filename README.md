@@ -162,8 +162,19 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 >>> from maccabistats import faster_logging
 >>> faster_logging() will disable the stdout & debug handlers.
 ```
- 
- 
+
+
+# Errors Finder
+
+Manual check for errors might be helpful, this is can be done by:
+```
+>>> from maccabistats import get_maccabi_stats, run_manual_fixes, serialize_maccabi_games
+>>> from maccabistats.error_finder.error_finder import ErrorsFinder
+>>> games = get_maccabi_stats()
+>>> e = ErrorsFinder(games)
+>>> e.get_all_errors_numbers  # run all the manual errors exists
+```
+
 # Versioning
 ATM minor version change 1.X.0 may indicate API CHANGES.
  
