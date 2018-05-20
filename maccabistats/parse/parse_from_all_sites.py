@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from maccabistats.parse.maccabi_tlv_site.main_parser import get_parsed_maccabi_games_from_maccabi_site
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
-from maccabistats.data_improvement.manual_fixes import run_manual_fixes
+from maccabistats.parse.maccabi_tlv_site.maccabi_tlv_site_source import MaccabiTlvSiteSource
+from maccabistats.parse.table.table_source import TableSource
 from maccabistats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings, \
     get_folder_to_save_seasons_html_files_from_settings
+from maccabistats.parse.merge_sources import merge_maccabitlv_and_table
+from maccabistats.data_improvement.manual_fixes import run_general_fixes
 
 import logging
 import os
@@ -29,24 +31,33 @@ def __validate_folders_to_save_maccabi_games_exists():
         os.makedirs(folder_to_save_games)
 
 
-def parse_maccabi_games_from_all_sites():
-    """ Iterate all the sites and merge the output to one list of maccabi games.
+def parse_maccabi_games_from_all_sources(without_rerunning=False):
+    """
+    Iterate all the sources and merge the output to one list of maccabi games.
+
+    :param without_rerunning: whether the sources should be just "combined" from the serialized object on the disk
+                              or rerun again (might be long operation).
     :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
     """
 
     logger.info("Validating setup for crawling is ready.")
     __validate_folders_to_save_maccabi_games_exists()
 
-    logger.info("Starting to parse data from all sites.")
-    logger.info("Starting to parse data from maccabi-tlv site.")
+    maccabi_games_stats_from_all_sources = []
+    maccabistats_sources = [MaccabiTlvSiteSource("Maccabi-tlv site"), TableSource("Table-jsoned")]
+    for source in maccabistats_sources:
+        logger.info("Handle the source: {name}".format(name=source.name))
+        source.parse_maccabi_games(without_rerunning=without_rerunning)
+        source.run_general_fixes()
+        source.run_specific_fixes()
 
-    maccabi_games_from_maccabi_tlv_site = get_parsed_maccabi_games_from_maccabi_site()
-    maccabi_stats_games = MaccabiGamesStats(maccabi_games_from_maccabi_tlv_site)
+        maccabi_games_stats_from_all_sources.append(source.maccabi_games_stats)
 
-    try:
-        maccabi_stats_games_after_manual_fixes = run_manual_fixes(maccabi_stats_games)
-    except Exception:
-        logger.exception("Could not finish the manual_fixed - you should run again standalone")
-        maccabi_stats_games_after_manual_fixes = maccabi_stats_games
+    # todo: write merge logic
 
-    return maccabi_stats_games_after_manual_fixes
+    logger.info("Merging all the sources to one maccabi games stats")
+    merged_maccabistats_games = merge_maccabitlv_and_table(maccabi_games_stats_from_all_sources[0], maccabi_games_stats_from_all_sources[1])
+    logger.info("Running general fixes on merged maccabi games stats object")
+
+    maccabistats_games = run_general_fixes(MaccabiGamesStats(merged_maccabistats_games))
+    return maccabistats_games

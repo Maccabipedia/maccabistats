@@ -1,4 +1,3 @@
-from maccabistats.data_improvement.fix_specific_games import fix_specific_games
 from maccabistats.models.player_game_events import GameEventTypes, GoalGameEvent
 
 import logging
@@ -47,11 +46,38 @@ _competitions_name_fixes = [("גביע אירופה למחזיקות גביע", 
                             ("ליגה א", ["ליגה א'"]),
                             ]
 
+# The format is like players above.
+_teams_name_fixes = [("עירוני קריית שמונה", ["עירוני קרית שמונה", "עירוני קש"]),
+                     ("הפועל כפר סבא", ["הפועל כפס"]),
+                     ("מכבי תל אביב", ["מכבי תא"]),
+                     ("הפועל תל אביב", ["הפועל תא"]),
+                     ("הפועל פתח תקווה", ["הפועל פת"]),
+                     ("מ.ס אשדוד", ["מ.ס. אשדוד"]),
+                     ("עירוני ראשון לציון", ["עירוני ראשלצ"]),
+                     ("הפועל פתח תקווה", ["הפועל פת"]),
+                     ("הכח רמת גן", ["הכח רג"]),
+                     ("הפועל רמת גן", ["הפועל רג"]),
+                     ("הפועל באר שבע", ["הפועל בש"]),
+                     ("מכבי קריית גת", ["מכבי קרית גת"]),
+                     ("הכח מכבי עמידר רמת גן", ["הכח עמידר רג"]),
+                     ("שמשון תל אביב", ["שמשון תא"]),
+                     ("מכבי פתח תקווה", ["מכבי פת"]),
+                     ("מכבי אחי נצרת", ["אחי נצרת"]),
+                     ("הפועל רמת השרון", ["עירוני רמהש"]),
+                     ('בית"ר ירושלים', ["ביתר ירושלים"]),
+                     ('בית"ר תל אביב', ["ביתר תא"]),
+                     ('בית"ר נתניה', ["ביתר נתניה"]),
+                     ]
+
 
 def __fix_opponents_names(game):
-    if game.not_maccabi_team.name == "עירוני קרית שמונה":
-        game.not_maccabi_team.name = "עירוני קריית שמונה"
-        logger.info("Fix עירוני קרית שמונה->עירוני קריית שמונה")
+    for team_best_name, team_similar_names in _teams_name_fixes:
+        if game.home_team.name in team_similar_names:
+            logger.info("Changing home team name from :{old}-->{new}".format(old=game.home_team.name, new=team_best_name))
+            game.home_team.name = team_best_name
+        if game.away_team.name in team_similar_names:
+            logger.info("Changing away team name from :{old}-->{new}".format(old=game.away_team.name, new=team_best_name))
+            game.away_team.name = team_best_name
 
 
 def __fix_referees_names(game):
@@ -74,6 +100,14 @@ def __fix_maccabi_players_names(game):
             if player.name in player_similar_names:
                 logger.info("Changing player name from :{old}->{new}".format(old=player.name, new=player_best_name))
                 player.name = player_best_name
+
+
+def __fix_fixtures(game):
+    # If game played in the first league
+    if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'"]:
+        if isinstance(game.fixture, int):
+            logger.info(f"Adding 'מחזור' prefix to the ame at {game.date})")
+            game.fixture = f"מחזור {game.fixture}"
 
 
 def __fix_seasons(game):
@@ -177,9 +211,9 @@ def __remove_youth_games(maccabi_games_stats):
         [game for game in maccabi_games_stats.games if game.competition not in YOUTH_COMPETITIONS])
 
 
-def run_manual_fixes(maccabi_games_stats):
+def run_general_fixes(maccabi_games_stats):
     """
-    After running manually all the improvements im data_improvements those fixes added one by one manually.
+    General fixes meant to be stuff like renaming of referees\players names and so on, they are does not depend on the source of maccabi games.
     :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
     :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
     """
@@ -190,6 +224,7 @@ def run_manual_fixes(maccabi_games_stats):
         __fix_competitions_names(game)
         __fix_maccabi_players_names(game)
         __fix_seasons(game)
+        __fix_fixtures(game)
         # ATM, only the important events = goals.
         try:
             __fix_half_parsed_goal_events(game)
@@ -197,6 +232,5 @@ def run_manual_fixes(maccabi_games_stats):
             logger.exception("Error while parsing goals half parsed events.")
 
     maccabi_games_stats = __remove_youth_games(maccabi_games_stats)
-    fix_specific_games(maccabi_games_stats)
 
     return maccabi_games_stats
