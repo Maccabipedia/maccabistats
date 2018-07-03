@@ -1,3 +1,6 @@
+------ Version 2.1.0 ------
+    Fix some games dates.
+
 ------ Version 2.0.0 ------
     Supports table maccabi games source, combines all sources outputs to one maccabiGamesStats object (maccabitlv-site & table).
 

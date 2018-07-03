@@ -1,4 +1,5 @@
 import logging
+from maccabistats.parse.table.fix_specific_games import fix_specific_games
 from maccabistats.parse.maccabistats_source import MaccabiStatsSource
 from maccabistats.parse.table.main_parser import get_parsed_maccabi_games_from_json
 
@@ -32,5 +33,9 @@ class TableSource(MaccabiStatsSource):
         Run any specific fixes for this source (such as error within the raw data).
         """
 
-        logger.info("ATM, there are not specific fixes for table source")
+        if self.maccabi_games_stats is None:
+            raise RuntimeError("You should run parse_maccabi_games first")
+
+        logger.info("Running fix specific games for maccabi-tlv site source")
+        self.maccabi_games_stats = fix_specific_games(self.maccabi_games_stats)
 

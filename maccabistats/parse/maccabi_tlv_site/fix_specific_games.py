@@ -1,9 +1,30 @@
 from maccabistats.models.player_game_events import GoalTypes, GameEvent, GameEventTypes
 from datetime import timedelta, datetime
+from dateutil.parser import parse as datetime_parser
 
 import logging
 
 logger = logging.getLogger(__name__)
+
+_games_dates_to_change = [("2012-03-23", "2012-03-24"),  # Against Hapoel Tel aviv
+                          ("2012-01-31", "2012-01-30"),  # Against Kiryat Shmona
+                          ("2011-02-17", "2011-02-19"),  # Against Hapoel PT
+                          ]
+
+
+def __fix_games_date(maccabi_games_stats):
+    for game_dates in _games_dates_to_change:
+        matching_games = maccabi_games_stats.played_at(game_dates[0])
+        if not matching_games:
+            logger.warning(f"Cant find game's original date so it may be changed: {game_dates[0]} (should be {game_dates[1]}), Skipping this game.")
+            continue
+        elif len(matching_games) != 1:
+            logger.warning(f"Found ({len(matching_games)}) games from this date: {game_dates[0]} (should be {game_dates[1]}), Skipping this game.")
+            continue
+
+        game_to_be_changed = matching_games[0]
+        game_to_be_changed.date = datetime_parser(game_dates[1])
+        logger.info(f"Changed game date from {game_dates[0]} -> {game_dates[1]}.")
 
 
 def __fix_basel_three_three(games):
@@ -76,7 +97,10 @@ def fix_specific_games(games):
     __fix_akko_two_zero(games)
     __fix_beitar_three_two(games)
 
-    # Fix dates:
+    # Fix dates & name:
     __fix_hapoel_haifa_four_two_date_99_00(games)
+
+    # Fix just dates:
+    __fix_games_date(games)
 
     return games
