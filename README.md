@@ -20,14 +20,14 @@ games = games.get_first_league_games()
 ```
 because there are not only league games.
 
-now, enjoy :)  
+now, enjoy :)
 
 # Manipulating maccabi statistics
 
   ### Loading games
 ```
 >>> from maccabistats import get_maccabi_stats
->>> games = get_maccabi_stats()  # From default file path (inside maccabistats package) when you use serialize_maccabi_games()
+>>> games = get_maccabi_stats()  # From default folder path (Home folder - %userprofile%)
 >>> games = get_maccabi_stats(r"C:\maccabi\maccabi.games")  # From local custom file path
 ```
 
@@ -113,7 +113,8 @@ When crawling maccabi games each page will be saved on your disk to allow optimi
 To serialize maccabi games (it might take some time), use:
 ```
 >>> from maccabistats import serialize_maccabi_games
->>> serialize_maccabi_games(file_name)  # Default file_name will be stored inside maccabistats package.
+    # The object will be serialized to home folder (%userprofile%) with its version and the current date.
+>>> serialize_maccabi_games(maccabi_games_stats_object)
 ```
 
 Manual-fixes will be run after crawling is finished and before serializing to disk.
@@ -126,18 +127,18 @@ BUT atm logging does not support multi-processing, so don't use that if you need
 
 There are some information that need to be fix manually.  
 When serializing maccabi games that done automatically.
-If you Add anything to run_manual_fixes, you can re-run it by:
+If you Add anything to run_general_fixes, you can re-run it by:
 ```
->>> from maccabistats import get_maccabi_stats, run_manual_fixes, serialize_maccabi_games
+>>> from maccabistats import get_maccabi_stats, run_general_fixes, serialize_maccabi_games
 >>> 
 >>> games = get_maccabi_stats()
->>> new_games = run_manual_fixes(games)
+>>> new_games = run_general_fixes(games)
 >>> serialize_maccabi_games(new_games)
 ```
 
 # Logging
 
-All of the log files will be saved at 'maccabistats-logs' folder under the user home folder (pathlib.Path.home())
+All of the log files will be saved at 'maccabistats\logs' folder under the user home folder (%userprofile%)
 There are several log files, each one has this pattern - maccabistats-{suffix}.log (at the mentioned folder): 
 
 * all - save all log levels
@@ -168,13 +169,9 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 
 Manual check for errors might be helpful, this is can be done by:
 ```
->>> from maccabistats import get_maccabi_stats, run_manual_fixes, serialize_maccabi_games
+>>> from maccabistats import get_maccabi_stats
 >>> from maccabistats.error_finder.error_finder import ErrorsFinder
 >>> games = get_maccabi_stats()
 >>> e = ErrorsFinder(games)
->>> e.get_all_errors_numbers  # run all the manual errors exists
+>>> e.get_all_errors_numbers()  # run all the manual errors exists
 ```
-
-# Versioning
-ATM minor version change 1.X.0 may indicate API CHANGES.
- 

@@ -1,3 +1,6 @@
+------ Version 2.0.0 ------
+    Supports table maccabi games source, combines all sources outputs to one maccabiGamesStats object (maccabitlv-site & table).
+
 ------ Version 1.10.1 ------
     Replaced mega.nz link
 

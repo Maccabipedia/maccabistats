@@ -2,8 +2,8 @@ import logging
 from pathlib import Path
 import os
 
-log_root_folder_path = Path.home().as_posix()
-log_file_path_pattern = os.path.join(log_root_folder_path, "maccabistats-logs", "maccabistats-{suffix}.log")
+maccabistats_root_folder_path = Path.home().as_posix()
+log_file_path_pattern = os.path.join(maccabistats_root_folder_path, "maccabistats", "logs", "maccabistats-{suffix}.log")
 log_file_folder_path = os.path.dirname(log_file_path_pattern)
 
 if not os.path.isdir(log_file_folder_path):

@@ -15,6 +15,7 @@ from maccabistats.stats.graphs import MaccabiGamesGraphsStats
 from maccabistats.version import version as maccabistats_version
 
 from dateutil.parser import parse as datetime_parser
+import datetime
 
 
 class MaccabiGamesStats(object):
@@ -104,11 +105,13 @@ class MaccabiGamesStats(object):
         """
         Currently checking just the: year & month & day.
         :param date: datetime.datetime or str
-        :return: maccabistats.models.game_data.GameData
+        :rtype: list of maccabistats.models.game_data.GameData
         """
 
         if type(date) is str:
             date = datetime_parser(date).date()
+        elif type(date) is datetime.datetime:
+            date = date.date()  # Leave only year & month & day
 
         return [game for game in self.games if game.date.date() == date]
 

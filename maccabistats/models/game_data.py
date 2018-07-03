@@ -8,7 +8,7 @@ from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
 class GameData(object):
     def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
-                 is_maccabi_home_team, season_string, half_parsed_events):
+                 is_maccabi_home_team, season_string, half_parsed_events, date=None):
         """
         :param competition: cup, league and so on.
         :type competition: str
@@ -24,12 +24,15 @@ class GameData(object):
         :type season_string: str
         :param half_parsed_events: events which had problem while parsing or validating, should be use for manipulating the game data later.
         :type half_parsed_events: list of dict
+        :param date: the date the game was played.
+        :type date: datetime.datetime
         """
 
         self.competition = competition
         self.fixture = fixture
+        #todo get this shit out of here
         self.date_as_hebrew_string = date_as_hebrew_string
-        self.date = self.__get_date_as_datetime()
+        self.date = self.__get_date_as_datetime() if date is None else date  # Leave only the year & month & day
         self.stadium = stadium
         self.crowd = crowd
         self.referee = referee
