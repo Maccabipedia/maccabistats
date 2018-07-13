@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from maccabistats.stats.serialized_games import combine_maccabi_stats_sources
+from maccabistats import *
 
 if __name__ == "__main__":
 
-    g = combine_maccabi_stats_sources()
-    a = 6
+
+    g = merge_maccabi_games_from_all_serialized_sources()
+    c = 6

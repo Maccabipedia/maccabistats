@@ -31,23 +31,51 @@ def __validate_folders_to_save_maccabi_games_exists():
         os.makedirs(folder_to_save_games)
 
 
-def parse_maccabi_games_from_all_sources(without_rerunning=False):
+def rerun_sources(sources_to_run=None):
     """
-    Iterate all the sources and merge the output to one list of maccabi games.
+    Rerun maccabi games sources, each source will serialize the data after rerunning.
 
-    :param without_rerunning: whether the sources should be just "combined" from the serialized object on the disk
-                              or rerun again (might be long operation).
-    :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+    :param sources_to_run: Names of the sources to run, should be taken from - maccabistats.parse.sources.SourcesNames.
+                           All the sources will be rerun as default.
+    :type sources_to_run: list or string
     """
 
     logger.info("Validating setup for crawling is ready.")
     __validate_folders_to_save_maccabi_games_exists()
 
-    maccabi_games_stats_from_all_sources = []
-    maccabistats_sources = [MaccabiTlvSiteSource("Maccabi-tlv site"), TableSource("Table-jsoned")]
+    maccabistats_sources = [MaccabiTlvSiteSource(), TableSource()]
+    if sources_to_run:
+        if type(sources_to_run) is not list:
+            sources_to_run = [sources_to_run]
+        maccabistats_sources = filter(lambda s: s.name in sources_to_run, maccabistats_sources)
+
     for source in maccabistats_sources:
-        logger.info("Handle the source: {name}".format(name=source.name))
-        source.parse_maccabi_games(without_rerunning=without_rerunning)
+        logger.info("Parsing the source: {name}".format(name=source.name))
+        source.parse_maccabi_games()
+        source.run_general_fixes()
+        source.run_specific_fixes()
+
+        logger.info("Loading the source: {name}".format(name=source.name))
+        source.serialize_games()
+
+    logger.info("Parsed all the sources")
+
+
+def merge_maccabi_games_from_all_serialized_sources():
+    """
+    Assumes all the sources serialized their data (by calling "run_all_sources" or have somehow the serialized data).
+    Iterate all the sources and merge the maccabi games stats (after running general&specific fixes) to one list of maccabi games.
+
+    :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+    """
+
+    logger.info("Validating setup for crawling is ready.")
+
+    maccabi_games_stats_from_all_sources = []
+    maccabistats_sources = [MaccabiTlvSiteSource(), TableSource()]
+    for source in maccabistats_sources:
+        logger.info("Loading the source: {name}".format(name=source.name))
+        source.load_serialized_games()
         source.run_general_fixes()
         source.run_specific_fixes()
 
