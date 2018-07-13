@@ -81,6 +81,10 @@ def __fix_hapoel_haifa_four_two_date_99_00(games):
     if len(against_hapoel_haifa) > 1:
         logger.warning("Found more than one game that should be fixed at date : 2000-03-01, Taking the first.")
 
+    if not against_hapoel_haifa:
+        logger.info("Found no games at 2000-03-01, probably this game is fixed already")
+        return
+
     against_hapoel_haifa = against_hapoel_haifa[0]
     against_hapoel_haifa.not_maccabi_team.name = "הפועל חיפה"
     against_hapoel_haifa.date = datetime(year=2000, month=1, day=3)

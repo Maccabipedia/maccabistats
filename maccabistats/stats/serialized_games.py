@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
-from maccabistats.parse.parse_from_all_sites import parse_maccabi_games_from_all_sources
 
 import pickle
 import os
@@ -49,24 +48,6 @@ def get_maccabi_stats(file_name=None):
     with open(file_name, 'rb') as f:
         logger.info(f"Loading maccabi games from {file_name}")
         return pickle.load(f)
-
-
-def combine_maccabi_stats_sources():
-    """
-    Combine all the serialized object from all sources to one maccabi games stats objects, this function should be fast - without rerunning sources.
-    :return: MaccabiGamesStats
-    """
-
-    return parse_maccabi_games_from_all_sources(without_rerunning=True)
-
-
-def run_all_maccabi_stats_sources():
-    """
-    Runs all the sources  - does not use the serialized objects is there are any.
-    :return: MaccabiGamesStats
-    """
-
-    return parse_maccabi_games_from_all_sources()
 
 
 def serialize_maccabi_games(maccabi_games_stats, folder_path=_serialized_maccabi_games_folder_path):

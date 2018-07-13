@@ -13,7 +13,7 @@ serialized_sources_path_pattern = os.path.join(home_folder, "maccabistats", "sou
 """
 This class is responsible to set the api for each maccabistats source, the common usage should be :
 
-m = MaccabiStatsSource("maccabi")
+m = MaccabiStatsSource()
 m.parse_maccabi_games()
 m.run_general_fixes()
 m.run_specific_fixes()
@@ -28,24 +28,15 @@ class MaccabiStatsSource(object):
         self.maccabi_games_stats = None
         self._serialized_games_path = serialized_sources_path_pattern.format(source_name=self.name)
 
-    def parse_maccabi_games(self, without_rerunning=False):
+    def parse_maccabi_games(self):
         """
         Parse the raw data and saves it on self.maccabi_games_stats.
-
-        :param without_rerunning: whether this source should be rerun or just use the serialized object.
         """
 
-        if os.path.isfile(self._serialized_games_path):
-            self.maccabi_games_stats = self._load_serialized_games()
-            return
-        elif without_rerunning:
-            raise RuntimeError("While parsing games without rerunning, could not find the serialized object at: {path}".format(
-                path=self._serialized_games_path))
-
-        logger.info("Starting to parse maccabi games from :{name}".format(name="maccabi-tlv site"))
+        logger.info(f"Starting to parse maccabi games from :{self.name}")
         parsed_games = self._rerun_source()
         self.maccabi_games_stats = MaccabiGamesStats(parsed_games)
-        self._serialize_games()
+        self.serialize_games()
 
     def _rerun_source(self):
         """
@@ -72,16 +63,16 @@ class MaccabiStatsSource(object):
 
         self.maccabi_games_stats = run_general_fixes(self.maccabi_games_stats)
 
-    def _load_serialized_games(self):
+    def load_serialized_games(self):
         """
         Load the serialized games to self.maccabi_games_stats
         :return: MaccabiGamesStats
         """
 
         with open(self._serialized_games_path, 'rb') as f:
-            return pickle.load(f)
+            self.maccabi_games_stats = pickle.load(f)
 
-    def _serialize_games(self):
+    def serialize_games(self):
         """
         Serialize the parsed games (without any fixes).
         """
@@ -94,4 +85,3 @@ class MaccabiStatsSource(object):
 
         with open(self._serialized_games_path, 'wb') as f:
             pickle.dump(self.maccabi_games_stats, f)
-

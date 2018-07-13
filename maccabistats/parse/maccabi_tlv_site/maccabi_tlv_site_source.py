@@ -1,6 +1,7 @@
 from maccabistats.parse.maccabi_tlv_site.fix_specific_games import fix_specific_games
 from maccabistats.parse.maccabi_tlv_site.main_parser import get_parsed_maccabi_games_from_maccabi_site
 from maccabistats.parse.maccabistats_source import MaccabiStatsSource
+from maccabistats.parse.sources import SourcesNames
 
 import logging
 
@@ -12,6 +13,9 @@ Implement MaccabiStatsSource that crawl maccabi-tlv site.
 
 
 class MaccabiTlvSiteSource(MaccabiStatsSource):
+
+    def __init__(self):
+        super().__init__(name=SourcesNames.MaccabiTlvSite.value)
 
     def _rerun_source(self):
         """
