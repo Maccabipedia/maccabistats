@@ -9,6 +9,17 @@ logger = logging.getLogger(__name__)
 _games_dates_to_change = [("2012-03-23", "2012-03-24"),  # Against Hapoel Tel aviv
                           ("2012-01-31", "2012-01-30"),  # Against Kiryat Shmona
                           ("2011-02-17", "2011-02-19"),  # Against Hapoel PT
+                          ("2005-10-12", "2005-12-11"),  # Against Hapoel TA
+                          ("2004-07-03", "2004-03-07"),  # Against Hapoel BS
+                          ("2002-05-01", "2002-01-05"),  # Against Hapoel BS
+                          ("2002-04-07", "2002-04-06"),  # Against Maccabi Kiryat Gat
+                          ("2002-01-04", "2002-04-01"),  # Against Hapoel TA
+                          ("2001-10-11", "2001-11-10"),  # Against Hapoel TA
+                          ("2001-11-04", "2001-11-05"),  # Against Beitar
+                          ("2001-05-06", "2001-05-05"),  # Against Beitar
+                          ("2001-03-02", "2001-02-03"),  # Against Maccabi Haifa
+                          ("2000-09-15", "2000-09-16"),  # Against Tzafririm Holon
+                          ("2000-06-11", "2000-11-06"),  # Against Hapoel TA
                           ]
 
 
@@ -91,6 +102,10 @@ def __fix_hapoel_haifa_four_two_date_99_00(games):
     logger.info("Changed the game at data: 2000-03-01 to be at date: 2000-01-03 and replaced the opponent name from הפועל חיפה to מכבי חיפה")
 
 
+def __add_fixtures_numbers(games):
+    games.played_at("2005-04-18")[0].fixture = 28  # Against maccabi haifa.
+
+
 def fix_specific_games(games):
     # TODO separate to two diff function (or any another logic).
 
@@ -106,5 +121,8 @@ def fix_specific_games(games):
 
     # Fix just dates:
     __fix_games_date(games)
+
+    # Add games fixtures
+    __add_fixtures_numbers(games)
 
     return games
