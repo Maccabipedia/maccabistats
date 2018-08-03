@@ -1,5 +1,5 @@
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
-from maccabistats.data_improvement.manual_fixes import run_general_fixes
+from maccabistats.parse.general_fixes import run_general_fixes
 import logging
 import os
 import pickle

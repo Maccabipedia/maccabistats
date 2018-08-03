@@ -1,3 +1,7 @@
+------ Version 2.1.3 ------
+    Moved manual_fixes to maccabistats.parse (and named general_fixes).
+    Add many teams name changes (with and without years range).
+
 ------ Version 2.1.2 ------
     Fix some games dates.
 

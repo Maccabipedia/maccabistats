@@ -6,7 +6,7 @@ from maccabistats.parse.table.table_source import TableSource
 from maccabistats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings, \
     get_folder_to_save_seasons_html_files_from_settings
 from maccabistats.parse.merge_sources import merge_maccabitlv_and_table
-from maccabistats.data_improvement.manual_fixes import run_general_fixes
+from maccabistats.parse.general_fixes import run_general_fixes
 
 import logging
 import os
