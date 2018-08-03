@@ -1,4 +1,5 @@
 from maccabistats.models.player_game_events import GameEventTypes, GoalGameEvent
+from maccabistats.parse.teams_names_changer import teams_names_changer
 
 import logging
 
@@ -46,38 +47,14 @@ _competitions_name_fixes = [("גביע אירופה למחזיקות גביע", 
                             ("ליגה א", ["ליגה א'"]),
                             ]
 
-# The format is like players above.
-_teams_name_fixes = [("עירוני קריית שמונה", ["עירוני קרית שמונה", "עירוני קש"]),
-                     ("הפועל כפר סבא", ["הפועל כפס"]),
-                     ("מכבי תל אביב", ["מכבי תא"]),
-                     ("הפועל תל אביב", ["הפועל תא"]),
-                     ("הפועל פתח תקווה", ["הפועל פת"]),
-                     ("מ.ס אשדוד", ["מ.ס. אשדוד"]),
-                     ("עירוני ראשון לציון", ["עירוני ראשלצ"]),
-                     ("הפועל פתח תקווה", ["הפועל פת"]),
-                     ("הכח רמת גן", ["הכח רג"]),
-                     ("הפועל רמת גן", ["הפועל רג"]),
-                     ("הפועל באר שבע", ["הפועל בש"]),
-                     ("מכבי קריית גת", ["מכבי קרית גת"]),
-                     ("הכח מכבי עמידר רמת גן", ["הכח עמידר רג"]),
-                     ("שמשון תל אביב", ["שמשון תא"]),
-                     ("מכבי פתח תקווה", ["מכבי פת"]),
-                     ("מכבי אחי נצרת", ["אחי נצרת"]),
-                     ("הפועל רמת השרון", ["עירוני רמהש"]),
-                     ('בית"ר ירושלים', ["ביתר ירושלים"]),
-                     ('בית"ר תל אביב', ["ביתר תא"]),
-                     ('בית"ר נתניה', ["ביתר נתניה"]),
-                     ]
 
-
-def __fix_opponents_names(game):
-    for team_best_name, team_similar_names in _teams_name_fixes:
-        if game.home_team.name in team_similar_names:
-            logger.info("Changing home team name from :{old}-->{new}".format(old=game.home_team.name, new=team_best_name))
-            game.home_team.name = team_best_name
-        if game.away_team.name in team_similar_names:
-            logger.info("Changing away team name from :{old}-->{new}".format(old=game.away_team.name, new=team_best_name))
-            game.away_team.name = team_best_name
+def __fix_teams_names(game):
+    if game.not_maccabi_team.name in teams_names_changer:
+        old_team_name = game.not_maccabi_team.name
+        game.not_maccabi_team.name = teams_names_changer[old_team_name].change_name(game)
+        # Some teams names wont be changed (because the mapping is between team original name and the team name along the years)
+        if old_team_name != game.not_maccabi_team.name:
+            logger.info(f"Changing {'Home' if game.is_maccabi_home_team else 'Away'} team name from :{old_team_name}-->{game.not_maccabi_team.name}")
 
 
 def __fix_referees_names(game):
@@ -219,7 +196,7 @@ def run_general_fixes(maccabi_games_stats):
     """
 
     for game in maccabi_games_stats.games:
-        __fix_opponents_names(game)
+        __fix_teams_names(game)
         __fix_referees_names(game)
         __fix_competitions_names(game)
         __fix_maccabi_players_names(game)
