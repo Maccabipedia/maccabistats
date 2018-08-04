@@ -66,7 +66,7 @@ class MaccabiSiteGameSquadsParser(object):
         home_team, away_team = (maccabi_team, not_maccabi_team) if is_maccabi_home_team else (
             not_maccabi_team, maccabi_team)
 
-        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, is_maccabi_home_team, season_string,
+        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, season_string,
                         halfed_parsed_events)
 
     @staticmethod

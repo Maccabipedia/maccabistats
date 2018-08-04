@@ -42,9 +42,8 @@ def parse_to_maccabistats_game(jsoned_game):
     home_team = TeamInGame(jsoned_game['home_team'], None, jsoned_game['home_team_score'], [])
     away_team = TeamInGame(jsoned_game['away_team'], None, jsoned_game['away_team_score'], [])
     date = datetime_parser(jsoned_game['date'])
-    is_maccabi_home_team = True if home_team.name == "מכבי תא" else False
     game = GameData("ליגת העל", jsoned_game["fixture"], "", jsoned_game["stadium"], "", jsoned_game["referee"], home_team, away_team,
-                    is_maccabi_home_team, jsoned_game["season"], [], date)
+                    jsoned_game["season"], [], date)
 
     return game
 
