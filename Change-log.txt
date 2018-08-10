@@ -1,3 +1,6 @@
+------ Version 2.1.5 ------
+    Add option to json maccabi games stats objects.
+
 ------ Version 2.1.4 ------
     Changed game.is_maccabi_home_team to be property (found by: games with opponent named "Maccabi tel aviv").
 

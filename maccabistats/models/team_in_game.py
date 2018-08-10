@@ -167,7 +167,7 @@ class TeamInGame(Team):
                     coach=self.coach)
 
     def to_json(self):
-        return json.dumps(self.json_dict)
+        return json.dumps(self.json_dict())
 
     def __str__(self):
         return "{team_repr}" \

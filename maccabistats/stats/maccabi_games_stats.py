@@ -15,7 +15,12 @@ from maccabistats.stats.graphs import MaccabiGamesGraphsStats
 from maccabistats.version import version as maccabistats_version
 
 from dateutil.parser import parse as datetime_parser
+from tempfile import NamedTemporaryFile
 import datetime
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class MaccabiGamesStats(object):
@@ -224,6 +229,15 @@ class MaccabiGamesStats(object):
                    "\nGoals diff for maccabi: {goals_diff_for_maccabi}, {goals_diff_for_maccabi} per game").format(**self.get_summary())
 
         print(summary)
+
+    def to_json(self):
+        return json.dumps([game.to_json() for game in self.games], indent=4)
+
+    def json_to_temp_file(self):
+        # TODO, there is too much escaped stuff in this function output
+        with NamedTemporaryFile(delete=False, mode='w') as temp_json:
+            logger.info(f"Serializing current maccabi games stats to temporary json file at: {temp_json.name}")
+            temp_json.file.write(self.to_json())
 
     def __len__(self):
         return len(self.games)
