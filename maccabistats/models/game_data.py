@@ -8,7 +8,7 @@ from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
 class GameData(object):
     def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
-                 is_maccabi_home_team, season_string, half_parsed_events, date=None):
+                 season_string, half_parsed_events, date=None):
         """
         :param competition: cup, league and so on.
         :type competition: str
@@ -19,7 +19,6 @@ class GameData(object):
         :type referee: str
         :type home_team: maccabistats.models.team_in_game.TeamInGame
         :type away_team: maccabistats.models.team_in_game.TeamInGame
-        :type is_maccabi_home_team: bool
         :param season_string: season description, such as : 2000-2001 or 2000-01
         :type season_string: str
         :param half_parsed_events: events which had problem while parsing or validating, should be use for manipulating the game data later.
@@ -30,7 +29,7 @@ class GameData(object):
 
         self.competition = competition
         self.fixture = fixture
-        #todo get this shit out of here
+        # todo get this shit out of here
         self.date_as_hebrew_string = date_as_hebrew_string
         self.date = self.__get_date_as_datetime() if date is None else date  # Leave only the year & month & day
         self.stadium = stadium
@@ -38,7 +37,6 @@ class GameData(object):
         self.referee = referee
         self.home_team = home_team
         self.away_team = away_team
-        self.is_maccabi_home_team = is_maccabi_home_team
         self.season = season_string
         self._half_parsed_events = half_parsed_events
 
@@ -89,6 +87,12 @@ class GameData(object):
     @property
     def maccabi_score_diff(self):
         return self.maccabi_team.score - self.not_maccabi_team.score
+
+    @property
+    def is_maccabi_home_team(self):
+        """ :rtype: bool """
+
+        return self.home_team.name in ["מכבי תל אביב", "מכבי תא", 'מכבי ת"א']
 
     @property
     def maccabi_team(self):
