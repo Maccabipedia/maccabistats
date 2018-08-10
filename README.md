@@ -74,7 +74,7 @@ You can get the win\lose percentages of each one just by:
 >>> games.coaches.most_winner_coach_by_percentage
 >>> games.referees.best_referee_by_percentage[0:2]  # Top 2 referees (in all maccabi games history).
 >>>
->>> Getting best drby coaches:
+>>> Getting best derby coaches:
 >>> games.get_first_league_games().get_games_against_team("הפועל תל אביב").coaches.most_winner_coach_by_percentage
 ```
 
@@ -150,7 +150,6 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 
 # Known issues
 
-* Players which opened as (captain or had different shirt number between games) will be counted as different players.
 * Ignoring events after 120 min (in game_events_parser -> fully_game_time_without_penalties)
 * Logging with multi-process crawling mode isn't working.
 
