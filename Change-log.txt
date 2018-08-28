@@ -1,3 +1,6 @@
+------ Version 2.2.2 ------
+    Stadiums names fixes.
+
 ------ Version 2.2.0 ------
     Internal changes (move half parsed goals parsing from general fixes to maccabi tlv site parsing).
 
