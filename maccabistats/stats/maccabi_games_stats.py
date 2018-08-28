@@ -181,7 +181,7 @@ class MaccabiGamesStats(object):
         :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats(
-            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'"]])
+            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'", "ליגה א"]])
 
     @staticmethod
     def create_maccabi_stats_from_games(games):
