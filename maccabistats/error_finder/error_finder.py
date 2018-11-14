@@ -1,8 +1,8 @@
-from maccabistats.models.player_game_events import GameEventTypes
-
-from itertools import chain
 import logging
 from datetime import timedelta
+from itertools import chain
+
+from maccabistats.models.player_game_events import GameEventTypes
 
 logger = logging.getLogger(__name__)
 """ This class responsible to find errors in maccabigamesstats object, such as games that the amount of goals does not match to the final score sum,
@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class ErrorsFinder(object):
     """ Each public function on this class wil lbe run automatically by 'get_all_errors_numbers'. """
+
     def __init__(self, maccabi_games_stats):
         """
         :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
@@ -43,6 +44,19 @@ class ErrorsFinder(object):
 
         return games
 
+    def get_games_with_different_score_and_goals(self):
+        """ Game score should be equal to the last score at the last goal event.
+            Counting only games same goals count and score count (means they wont fail at "get_games_with_missing_goals_events"). """
+
+        games_with_wrong_goals_count = self.get_games_with_missing_goals_events()
+
+        # If the goals count is the same, we can only check for maccabi goals (opponent goals will be equal if maccabi goals is).
+        games = [game for game in self.maccabi_games_stats if
+                 game not in games_with_wrong_goals_count
+                 and (0 if not game.goals() else game.goals()[-1]["maccabi_score"]) != game.maccabi_score]
+
+        return games
+
     def get_players_with_event_but_without_lineup_or_substitution(self):
         """ Every player that has any event should has atleast lineup or substitution in event """
 
@@ -65,4 +79,3 @@ class ErrorsFinder(object):
             error_finder_func = getattr(self, func_name)
             logger.info("{func_name}: returned {count} items".format(func_name=func_name,
                                                                      count=len(error_finder_func())))
-

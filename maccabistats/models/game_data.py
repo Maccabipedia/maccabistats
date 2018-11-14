@@ -163,9 +163,9 @@ class GameData(object):
                     maccabi_score += 1
             else:
                 if goal['goal_type'] == GoalTypes.OWN_GOAL.value:
-                    not_maccabi_score += 1
-                else:
                     maccabi_score += 1
+                else:
+                    not_maccabi_score += 1
 
             goal['maccabi_score'] = maccabi_score
             goal['not_maccabi_score'] = not_maccabi_score
