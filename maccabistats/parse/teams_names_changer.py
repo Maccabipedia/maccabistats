@@ -117,6 +117,8 @@ _teams_names = [
     TeamNameChanger("צפרירים חולון").add_better_name("הפועל חולון", 1940, 1985).add_better_name("הפועל צפרירים חולון", from_year=1985),
     TeamNameChanger("עירוני ראשלצ").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
         .add_better_name("הפועל ראשון לציון", from_year=2008),
+    TeamNameChanger("עירוני ראשון לציון").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
+        .add_better_name("הפועל ראשון לציון", from_year=2008),
     TeamNameChanger("הפועל ראשון לציון").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
         .add_better_name("הפועל ראשון לציון", from_year=2008),
     TeamNameChanger("הפועל רג").add_better_name("הפועל רמת גן", 1927, 1956).add_better_name("הפועל רמת גן גבעתיים", from_year=1956),
