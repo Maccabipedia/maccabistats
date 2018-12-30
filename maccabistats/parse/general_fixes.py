@@ -1,4 +1,5 @@
 from maccabistats.parse.teams_names_changer import teams_names_changer
+from maccabistats.parse.add_manual_games import add_manual_games
 
 import logging
 
@@ -202,5 +203,7 @@ def run_general_fixes(maccabi_games_stats):
         __fix_fixtures(game)
 
     maccabi_games_stats = __remove_youth_games(maccabi_games_stats)
+
+    add_manual_games(maccabi_games_stats)
 
     return maccabi_games_stats
