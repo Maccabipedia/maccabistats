@@ -41,6 +41,7 @@ _games_dates_to_change = [("2012-03-23", "2012-03-24"),  # Against Hapoel Tel av
                           ("1977-04-03", "1977-04-02"),  # Against Maccabi Netanya
                           ("1973-04-08", "1973-04-07"),  # Against Hapoel Marmorek
                           ("1973-01-21", "1973-01-27"),  # Against Maccabi PT
+                          ("1972-01-22", "1972-02-07"),  # Against Bnei Yehuda
                           ("1971-05-30", "1971-05-29"),  # Against Hapoel PT
                           ("1968-06-02", "1968-06-01"),  # Against Hapoel Jerusalem
                           ("1966-12-30", "1966-12-31"),  # Against Hacoh Ramt-Gan
@@ -116,8 +117,13 @@ def __fix_kfar_saba_two_one(games):
     """ Because 1997-08-02 is mismatched with 1997-02-08 we need to identify them by more than date """
 
     logger.info("Changeing kfar-saba 1992-02-08 to 1997-08-02, just the game ended 2-1")
-    against_kfar_saba_to_be_changed = [game for game in games.played_at("1997-02-08") if game.maccabi_team.score == 2][0]
-    against_kfar_saba_to_be_changed.date = datetime_parser("1997-08-02")
+    against_kfar_saba_to_be_changed = [game for game in games.played_at("1997-02-08") if game.maccabi_team.score == 2]
+
+    # IF someday it will be fixed
+    if not against_kfar_saba_to_be_changed:
+        return
+    else:
+        against_kfar_saba_to_be_changed[0].date = datetime_parser("1997-08-02")
 
 
 def __fix_hapoel_haifa_four_two_date_99_00(games):
