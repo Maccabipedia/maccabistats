@@ -20,6 +20,34 @@ _games_dates_to_change = [("2012-03-23", "2012-03-24"),  # Against Hapoel Tel av
                           ("2001-03-02", "2001-02-03"),  # Against Maccabi Haifa
                           ("2000-09-15", "2000-09-16"),  # Against Tzafririm Holon
                           ("2000-06-11", "2000-11-06"),  # Against Hapoel TA
+                          ("2005-04-18", "2005-04-17"),  # Against Maccabi Haifa
+                          ("1998-09-19", "1998-09-26"),  # Against Maccabi Haifa
+                          ("1997-11-02", "1997-11-01"),  # Against Hapoel TA
+                          ("1997-10-26", "1997-10-25"),  # Against Maccabi Herzliya
+                          ("1997-09-08", "1997-08-09"),  # Against Beitar
+                          ("1996-09-06", "1996-09-07"),  # Against Hapoel BS
+                          ("1995-04-28", "1995-04-29"),  # Against Hapoel Beit Shean
+                          ("1994-12-25", "1994-12-24"),  # Against Beitar TA
+                          ("1992-01-06", "1992-01-07"),  # Against Beitar TA
+                          ("1991-06-08", "1991-06-07"),  # Against Maccabi Netanya
+                          ("1991-05-25", "1991-05-24"),  # Against Beitar TA
+                          ("1990-11-10", "1990-11-09"),  # Against Zafririm
+                          ("1988-09-17", "1988-09-16"),  # Against Beitar TA
+                          ("1987-12-26", "1987-12-25"),  # Against Hapoel Lod
+                          ("1986-09-20", "1986-09-19"),  # Against Hapoel Lod
+                          ("1983-05-01", "1983-04-30"),  # Against Hapoel Ramat-Gan
+                          ("1981-04-19", "1981-04-18"),  # Against Hapoel TA
+                          ("1980-05-02", "1980-05-03"),  # Against Hapoel Yahud
+                          ("1977-04-03", "1977-04-02"),  # Against Maccabi Netanya
+                          ("1973-04-08", "1973-04-07"),  # Against Hapoel Marmorek
+                          ("1973-01-21", "1973-01-27"),  # Against Maccabi PT
+                          ("1972-01-22", "1972-02-07"),  # Against Bnei Yehuda
+                          ("1971-05-30", "1971-05-29"),  # Against Hapoel PT
+                          ("1968-06-02", "1968-06-01"),  # Against Hapoel Jerusalem
+                          ("1966-12-30", "1966-12-31"),  # Against Hacoh Ramt-Gan
+                          ("1965-10-16", "1965-10-15"),  # Against Bnei Yehuda
+                          ("1965-06-06", "1965-06-05"),  # Against Hacoh Ramt-Gan
+                          ("1956-04-15", "1956-04-14"),  # Against Maccabi Netanya
                           ]
 
 
@@ -85,6 +113,19 @@ def __fix_beitar_three_two(games):
             filter(lambda event: event['event_type'] != GameEventTypes.GOAL_SCORE, against_beitar_three_two_win._half_parsed_events))
 
 
+def __fix_kfar_saba_two_one(games):
+    """ Because 1997-08-02 is mismatched with 1997-02-08 we need to identify them by more than date """
+
+    logger.info("Changeing kfar-saba 1992-02-08 to 1997-08-02, just the game ended 2-1")
+    against_kfar_saba_to_be_changed = [game for game in games.played_at("1997-02-08") if game.maccabi_team.score == 2]
+
+    # IF someday it will be fixed
+    if not against_kfar_saba_to_be_changed:
+        return
+    else:
+        against_kfar_saba_to_be_changed[0].date = datetime_parser("1997-08-02")
+
+
 def __fix_hapoel_haifa_four_two_date_99_00(games):
     # This game saved on maccabi-tlv site as against maccabi-haifa, that mistake, it should be against hapoel-haifa, round 18 for this season.
     # The original date is: 2000-01-03 (yy-mm-dd).
@@ -103,7 +144,7 @@ def __fix_hapoel_haifa_four_two_date_99_00(games):
 
 
 def __add_fixtures_numbers(games):
-    games.played_at("2005-04-18")[0].fixture = 28  # Against maccabi haifa.
+    pass
 
 
 def __fix_half_parsed_goal_events(game):
@@ -198,6 +239,7 @@ def fix_specific_games(games):
     __fix_hibernians_five_one(games)
     __fix_akko_two_zero(games)
     __fix_beitar_three_two(games)
+    __fix_kfar_saba_two_one(games)
 
     # Fix dates & name:
     __fix_hapoel_haifa_four_two_date_99_00(games)
@@ -206,7 +248,7 @@ def fix_specific_games(games):
     __fix_games_date(games)
 
     # Add games fixtures
-    __add_fixtures_numbers(games)
+    #__add_fixtures_numbers(games)
 
     for game in games:
         # ATM, only the important events = goals.
