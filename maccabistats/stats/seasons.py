@@ -92,6 +92,15 @@ class Seasons(object):
         self._current_sort_attribute_description = "sort by clean sheets percentage"
         self._refresh_sorting()
 
+    def sort_by_goals_ratio(self):
+        """
+        Goals for maccabi / Goals against maccabi
+        """
+
+        self._current_sort_attribute_function = lambda s: s.results.goals_ratio
+        self._current_sort_attribute_description = "sort by goals ratio (Goals for maccabi \ Goals against maccabi)"
+        self._refresh_sorting()
+
 
 # This class will handle all seasons statistics.
 

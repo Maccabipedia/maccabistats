@@ -25,6 +25,14 @@ class MaccabiGamesResultsStats(object):
         return self.total_goals_for_maccabi - self.total_goals_against_maccabi
 
     @property
+    def goals_ratio(self):
+        """
+         Goals for maccabi / Goals against maccabi
+         """
+
+        return round(self.total_goals_for_maccabi / self.total_goals_against_maccabi, 3)
+
+    @property
     def wins_count(self):
         return len([game for game in self.games if game.is_maccabi_win])
 

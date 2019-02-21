@@ -249,7 +249,7 @@ class MaccabiGamesStats(object):
         return self.games[item]
 
     def __repr__(self):
-        summary = "Contain {size} games".format(size=len(self))
+        summary = "Contains {size} games".format(size=len(self))
         if len(self) > 0:
             summary += "(from {start_date} to {end_date})".format(start_date=self[0].date.strftime('%d-%m-%Y'),
                                                                   end_date=self[-1].date.strftime('%d-%m-%Y'))
