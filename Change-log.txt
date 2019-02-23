@@ -1,3 +1,6 @@
+------ Version 2.4.0 ------
+    Add players_streaks, check the best players by any streak that possible on MaccabiGamesStats.
+
 ------ Version 2.2.2 ------
     Stadiums names fixes.
 
