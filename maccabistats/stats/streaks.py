@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+from pprint import pformat
 from itertools import groupby
 from datetime import timedelta
 
@@ -153,3 +153,40 @@ class MaccabiGamesStreaksStats(object):
             return False
 
         return min_goal_time >= subs_in_time
+
+    def _show_streaks(self):
+        print(f"Wins streak: {self.get_longest_wins_streak_games()}\n"
+              f"Similar wins streaks: {pformat(self.get_similar_wins_streak_by_length(len(self.get_longest_wins_streak_games())))})\n\n"
+              f"Ties streak: {self.get_longest_ties_streak_games()}\n"
+              f"Similar ties streaks: {pformat(self.get_similar_ties_streak_by_length(len(self.get_longest_ties_streak_games())))})\n\n"
+              f"Losses streak: {self.get_longest_losses_streak_games()}\n"
+              f"Similar ties streaks: {pformat(self.get_similar_losses_streak_by_length(len(self.get_longest_losses_streak_games())))})\n\n"
+              f"Unbeaten streak: {self.get_longest_unbeaten_streak_games()}\n"
+              f"Similar unbeaten streaks: {pformat(self.get_similar_unbeaten_streak_by_length(len(self.get_longest_unbeaten_streak_games())))})\n\n"
+              f"Score goal streak: {self.get_longest_score_at_least_games(1)}\n"
+              f"Similar score goal streaks: {pformat(self.get_similar_score_at_least_streak_by_length(1, len(self.get_longest_score_at_least_games(1))))})\n\n"
+              f"No goal score streak: {self.get_longest_score_exactly_games(0)}\n"
+              f"Similar no goal score streaks: {pformat(self.get_similar_score_exactly_streak_by_length(0, len(self.get_longest_score_exactly_games(0))))})\n\n"
+              f"Clean sheet streak: {self.get_longest_clean_sheet_games()}\n"
+              f"Similar Clean sheet streaks: {pformat(self.get_similar_clean_sheet_streak_by_length(len(self.get_longest_clean_sheet_games())))})\n\n"
+              f"Goals from bench streak: {self.get_longest_goals_from_bench_games()}\n"
+              f"Similar goals from bench streaks: {pformat(self.get_similar_goals_from_bench_streak_by_length(len(self.get_longest_goals_from_bench_games())))})\n\n"
+              )
+
+    def show_streaks(self):
+        """
+        Prints the best streak in many conditions (each functions of this class),
+        For each streak show any similar streaks (if exists)
+        """
+
+        print("### Overall streaks:\n\n")
+        self._show_streaks()
+
+        print("### Home games streaks:\n\n")
+        self.maccabi_games_stats.home_games.streaks._show_streaks()
+
+        print("### Away games streaks:\n\n")
+        self.maccabi_games_stats.away_games.streaks._show_streaks()
+
+
+

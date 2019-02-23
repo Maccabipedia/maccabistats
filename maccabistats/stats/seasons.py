@@ -49,35 +49,57 @@ class Seasons(object):
         else:
             return list(self.seasons.items())[item][1]
 
+    def _refresh_sorting(self):
+        self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+
     def sort_by_games_count(self):
         self._current_sort_attribute_function = lambda s: len(s)
         self._current_sort_attribute_description = "sort by games count"
-        self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+        self._refresh_sorting()
 
     def sort_by_wins_count(self):
         self._current_sort_attribute_function = lambda s: s.results.wins_count
         self._current_sort_attribute_description = "sort by wins count"
-        self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+        self._refresh_sorting()
 
     def sort_by_wins_percentage(self):
         self._current_sort_attribute_function = lambda s: s.results.wins_percentage
         self._current_sort_attribute_description = "sort by wins percentage"
-        self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+        self._refresh_sorting()
 
     def sort_by_avg_goals_diff(self):
         self._current_sort_attribute_function = lambda s: s.averages.maccabi_diff
         self._current_sort_attribute_description = "sort by average goal diff for maccabi"
-        self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+        self._refresh_sorting()
 
     def sort_by_avg_goals_for_maccabi(self):
         self._current_sort_attribute_function = lambda s: s.averages.goals_for_maccabi
         self._current_sort_attribute_description = "sort by average goals for maccabi"
-        self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+        self._refresh_sorting()
 
     def sort_by_avg_goals_against_maccabi(self):
         self._current_sort_attribute_function = lambda s: s.averages.goals_against_maccabi
         self._current_sort_attribute_description = "sort by average goals against maccabi"
-        self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+        self._refresh_sorting()
+
+    def sort_by_clean_sheet_count(self):
+        self._current_sort_attribute_function = lambda s: s.results.clean_sheets_count
+        self._current_sort_attribute_description = "sort by clean sheets count"
+        self._refresh_sorting()
+
+    def sort_by_clean_sheet_percentage(self):
+        self._current_sort_attribute_function = lambda s: s.results.clean_sheets_percentage
+        self._current_sort_attribute_description = "sort by clean sheets percentage"
+        self._refresh_sorting()
+
+    def sort_by_goals_ratio(self):
+        """
+        Goals for maccabi / Goals against maccabi
+        """
+
+        self._current_sort_attribute_function = lambda s: s.results.goals_ratio
+        self._current_sort_attribute_description = "sort by goals ratio (Goals for maccabi \ Goals against maccabi)"
+        self._refresh_sorting()
 
 
 # This class will handle all seasons statistics.

@@ -25,6 +25,14 @@ class MaccabiGamesResultsStats(object):
         return self.total_goals_for_maccabi - self.total_goals_against_maccabi
 
     @property
+    def goals_ratio(self):
+        """
+         Goals for maccabi / Goals against maccabi
+         """
+
+        return round(self.total_goals_for_maccabi / self.total_goals_against_maccabi, 3)
+
+    @property
     def wins_count(self):
         return len([game for game in self.games if game.is_maccabi_win])
 
@@ -47,3 +55,11 @@ class MaccabiGamesResultsStats(object):
     @property
     def ties_percentage(self):
         return round(self.ties_count / len(self.games), 3)
+
+    @property
+    def clean_sheets_count(self):
+        return len([game for game in self.games if game.not_maccabi_team.score == 0])
+
+    @property
+    def clean_sheets_percentage(self):
+        return round(self.clean_sheets_count / len(self.games), 3)

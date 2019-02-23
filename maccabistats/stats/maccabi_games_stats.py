@@ -11,6 +11,7 @@ from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
 from maccabistats.stats.results import MaccabiGamesResultsStats
 from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
 from maccabistats.stats.graphs import MaccabiGamesGraphsStats
+from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
 
 from maccabistats.version import version as maccabistats_version
 
@@ -42,6 +43,7 @@ class MaccabiGamesStats(object):
         self.seasons = MaccabiGamesSeasonsStats(self)
         self.important_goals = MaccabiGamesImportantGoalsStats(self)
         self.graphs = MaccabiGamesGraphsStats(self)
+        self.players_streaks = MaccabiGamesPlayersStreaksStats(self)
 
         self.version = maccabistats_version
 
@@ -249,7 +251,7 @@ class MaccabiGamesStats(object):
         return self.games[item]
 
     def __repr__(self):
-        summary = "Contain {size} games".format(size=len(self))
+        summary = "Contains {size} games".format(size=len(self))
         if len(self) > 0:
             summary += "(from {start_date} to {end_date})".format(start_date=self[0].date.strftime('%d-%m-%Y'),
                                                                   end_date=self[-1].date.strftime('%d-%m-%Y'))
