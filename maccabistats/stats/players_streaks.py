@@ -3,6 +3,7 @@
 import logging
 
 from progressbar import ProgressBar
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +35,16 @@ class MaccabiGamesPlayersStreaksStats(object):
         """
 
         pbar = ProgressBar()
-        unsorted_players_streaks = dict()
+        players_games = defaultdict(list)
 
-        for player in pbar(self.maccabi_games_stats.available_players):
-            player_games = self.maccabi_games_stats.get_games_by_player_name(player.name)
-            unsorted_players_streaks[player.name] = streak_condition(player_games)
-            logging.info("1 more")
+        for game in pbar(self.games):
+            for player in game.maccabi_team.played_players:
+                players_games[player.name].append(game)
 
+        for player in self.maccabi_games_stats.available_players:
+            players_games[player.name] = self.maccabi_games_stats.create_maccabi_stats_from_games(players_games[player.name])
+
+        unsorted_players_streaks = {player.name: streak_condition(players_games[player.name]) for player in self.maccabi_games_stats.available_players}
         return sorted(unsorted_players_streaks.items(), key=lambda kv: len(kv[1]), reverse=True)[:top_players_count]
 
     def get_players_with_best_unbeaten_streak(self):
