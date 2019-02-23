@@ -59,7 +59,7 @@ class MaccabiGamesPlayersStats(object):
     @property
     def best_scorers(self):
         return self.__get_players_from_all_games_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE))
+            lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE) - p.goals_count_by_goal_type(GoalTypes.OWN_GOAL))
 
     @property
     def best_scorers_by_freekick(self):
@@ -85,6 +85,16 @@ class MaccabiGamesPlayersStats(object):
     def best_assisters(self):
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST))
+
+    @property
+    def most_goals_involved(self):
+        """
+        Top players which involved in goals (score or assist)
+        """
+
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST) + p.event_count_by_type(
+                GameEventTypes.GOAL_SCORE) - p.goals_count_by_goal_type(GoalTypes.OWN_GOAL))
 
     @property
     def most_yellow_carded(self):
