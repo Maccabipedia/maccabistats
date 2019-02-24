@@ -1,27 +1,19 @@
 # -*- coding: utf-8 -*-
 
 
-def stuff():
-    from maccabistats import get_maccabi_stats_as_newest_wrapper
-    g = get_maccabi_stats_as_newest_wrapper()
-    b = g.players_streaks.get_players_with_best_unbeaten_streak()
-    print(b)
-
-
-def prof():
-    import cProfile
-
-    pr = cProfile.Profile()
-    pr.enable()
-
-    # Your function
-    stuff()
-
-    pr.disable()
-    # after your program ends
-    pr.print_stats(sort="calls")
-
+from maccabistats import *
 
 if __name__ == "__main__":
-    stuff()
+    merge_maccabi_games_from_all_input_serialized_sources()
+    rerun_sources("MaccabiPedia")
+
+    """
+    m = load_from_maccabipedia_source()
+    g = get_maccabi_stats_as_newest_wrapper()
+
+    g.players_streaks.get_players_with_best_goal_assisting_streak()
+    m.players_streaks.get_players_with_best_goal_assisting_streak()
+
+    a = 6"""
+
 

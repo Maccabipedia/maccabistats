@@ -3,6 +3,7 @@
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 from maccabistats.parse.maccabi_tlv_site.maccabi_tlv_site_source import MaccabiTlvSiteSource
 from maccabistats.parse.table.table_source import TableSource
+from maccabistats.parse.maccabipedia.maccabipedia_source import MaccabiPediaSource
 from maccabistats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings, \
     get_folder_to_save_seasons_html_files_from_settings
 from maccabistats.parse.merge_sources import merge_maccabitlv_and_table
@@ -31,40 +32,65 @@ def __validate_folders_to_save_maccabi_games_exists():
         os.makedirs(folder_to_save_games)
 
 
-def rerun_sources(sources_to_run=None):
+def _run_source(source):
     """
-    Rerun maccabi games sources, each source will serialize the data after rerunning.
+    Run the given maccabi games stats source, serialized the output to the disk and returns the MaccabiGamesStats final object (after fixes).
 
-    :param sources_to_run: Names of the sources to run, should be taken from - maccabistats.parse.sources.SourcesNames.
-                           All the sources will be rerun as default.
-    :type sources_to_run: list or string
+    :param source: source instance to run
+    :type source: maccabistats.parse.maccabistats_source.MaccabiStatsSource
     """
 
-    logger.info("Validating setup for crawling is ready.")
+    logger.info(f"Running source: {source.name}")
+    logger.info("Validating setup for source crawling is ready.")
     __validate_folders_to_save_maccabi_games_exists()
 
-    maccabistats_sources = [MaccabiTlvSiteSource(), TableSource()]
-    if sources_to_run:
-        if type(sources_to_run) is not list:
-            sources_to_run = [sources_to_run]
-        maccabistats_sources = filter(lambda s: s.name in sources_to_run, maccabistats_sources)
+    logger.info("Parsing the source: {name}".format(name=source.name))
+    source.parse_maccabi_games()
+    source.run_general_fixes()
+    source.run_specific_fixes()
 
-    for source in maccabistats_sources:
-        logger.info("Parsing the source: {name}".format(name=source.name))
-        source.parse_maccabi_games()
-        source.run_general_fixes()
-        source.run_specific_fixes()
+    logger.info("Loading the source: {name}".format(name=source.name))
+    source.serialize_games()
 
-        logger.info("Loading the source: {name}".format(name=source.name))
-        source.serialize_games()
-
-    logger.info("Parsed all the sources")
+    return _load_from_source(source)  # Include general fixes
 
 
-def merge_maccabi_games_from_all_serialized_sources():
+def run_maccabitlv_site_source():
+    """
+    Runs the MaccabiTlv-Site source and serialize its output.
+
+    :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+    """
+
+    return _run_source(MaccabiTlvSiteSource())
+
+
+def run_table_source():
+    """
+    Runs the Table source and serialize its output.
+
+    :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+    """
+
+    return _run_source(TableSource())
+
+
+def run_maccabipedia_source():
+    """
+    Runs the MaccabiPedia source and serialize its output.
+
+    :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+    """
+
+    return _run_source(MaccabiPediaSource())
+
+
+def merge_maccabi_games_from_all_input_serialized_sources():
     """
     Assumes all the sources serialized their data (by calling "run_all_sources" or have somehow the serialized data).
     Iterate all the sources and merge the maccabi games stats (after running general&specific fixes) to one list of maccabi games.
+
+    ATM the input sources are MaccabiTlv-Site and Table (MaccabiPedia does not count as input source [MaccabiPedia is the result]).
 
     :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
     """
@@ -89,3 +115,24 @@ def merge_maccabi_games_from_all_serialized_sources():
 
     maccabistats_games = run_general_fixes(MaccabiGamesStats(merged_maccabistats_games))
     return maccabistats_games
+
+
+def _load_from_source(source):
+    logger.info(f"Loading games from source: {source}")
+    source.load_serialized_games()
+    source.run_general_fixes()
+    source.run_specific_fixes()
+
+    return MaccabiGamesStats(source.maccabi_games_stats)
+
+
+def load_from_maccabipedia_source():
+    return _load_from_source(MaccabiPediaSource())
+
+
+def load_from_table_source():
+    return _load_from_source(TableSource())
+
+
+def load_from_maccabisite_source():
+    return _load_from_source(MaccabiTlvSiteSource())
