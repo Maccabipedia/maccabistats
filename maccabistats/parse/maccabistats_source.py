@@ -77,6 +77,7 @@ class MaccabiStatsSource(object):
         Serialize the parsed games (without any fixes).
         """
 
+        logger.info(f"Serializing source ({self.name} MaccabiGamesStats to: {self._serialized_games_path})")
         if os.path.isfile(self._serialized_games_path):
             # todo: bkup the old file
             # old_file_path = Path(self._serialized_games_path)

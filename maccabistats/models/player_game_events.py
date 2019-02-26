@@ -23,6 +23,7 @@ class GameEventTypes(Enum):
     CAPTAIN = 'Captain'
     PENALTY_MISSED = 'Penalty missed'
     BENCHED = "Benched"
+    UNKNOWN = "Unknown"
 
 
 class GameEvent(object):

@@ -41,7 +41,6 @@ _games_dates_to_change = [("2012-03-23", "2012-03-24"),  # Against Hapoel Tel av
                           ("1977-04-03", "1977-04-02"),  # Against Maccabi Netanya
                           ("1973-04-08", "1973-04-07"),  # Against Hapoel Marmorek
                           ("1973-01-21", "1973-01-27"),  # Against Maccabi PT
-                          ("1972-01-22", "1972-02-07"),  # Against Bnei Yehuda
                           ("1971-05-30", "1971-05-29"),  # Against Hapoel PT
                           ("1968-06-02", "1968-06-01"),  # Against Hapoel Jerusalem
                           ("1966-12-30", "1966-12-31"),  # Against Hacoh Ramt-Gan
@@ -49,6 +48,18 @@ _games_dates_to_change = [("2012-03-23", "2012-03-24"),  # Against Hapoel Tel av
                           ("1965-06-06", "1965-06-05"),  # Against Hacoh Ramt-Gan
                           ("1956-04-15", "1956-04-14"),  # Against Maccabi Netanya
                           ]
+
+_wrong_games_to_remove = [datetime_parser(game_date) for game_date in
+                          ["1972-01-22",  # Against Bnei Yehuda
+                           ]]
+
+
+def __remove_games(maccabi_games_stats):
+    before_len = len(maccabi_games_stats.games)
+    maccabi_games_stats.games = [game for game in maccabi_games_stats.games if game.date not in _wrong_games_to_remove]
+
+    if before_len != len(maccabi_games_stats.games):
+        logger.info(f"Removed {before_len - len(maccabi_games_stats.games)} games)")
 
 
 def __fix_games_date(maccabi_games_stats):
@@ -141,6 +152,30 @@ def __fix_hapoel_haifa_four_two_date_99_00(games):
     against_hapoel_haifa.not_maccabi_team.name = "הפועל חיפה"
     against_hapoel_haifa.date = datetime(year=2000, month=1, day=3)
     logger.info("Changed the game at data: 2000-03-01 to be at date: 2000-01-03 and replaced the opponent name from הפועל חיפה to מכבי חיפה")
+
+
+def __fix_kfar_saba_toto_games_at_2000_2001(games):
+    """
+    Should fix: against kfar saba at 2000-12-09 to be 2000-09-12, and update the result to 3-1 (to kfar saba).
+    Update the second game to be 2-2, the goals are ok.
+    """
+
+    # First Game:
+    logger.info("Changing game against kfar saba from 2000-12-09 to 2000-09-12, and changing the toto games results in 2000-01 against them.")
+    kfar_saba_toto_games = games.get_games_by_competition("גביע הטוטו").get_games_against_team("הפועל כפר סבא")
+    kfar_saba_wrong_date_and_score_game = kfar_saba_toto_games.played_at("2000-12-09")
+    if kfar_saba_wrong_date_and_score_game:
+        kfar_saba_wrong_date_and_score_game = kfar_saba_wrong_date_and_score_game[0]
+        kfar_saba_wrong_date_and_score_game.date = datetime(year=2000, month=9, day=12)
+        kfar_saba_wrong_date_and_score_game.not_maccabi_team.score = 3
+        kfar_saba_wrong_date_and_score_game.maccabi_team.score = 1
+    else:
+        logger.info("Kfar saba game at 2000-12-09 already changed to be 2000-09-12, skipping fixing for this game")
+
+    # Second game:
+    wrong_score_game = kfar_saba_toto_games.played_at("2000-09-26")[0]
+    wrong_score_game.not_maccabi_team.score = 2
+    wrong_score_game.maccabi_team.score = 2
 
 
 def __add_fixtures_numbers(games):
@@ -240,6 +275,7 @@ def fix_specific_games(games):
     __fix_akko_two_zero(games)
     __fix_beitar_three_two(games)
     __fix_kfar_saba_two_one(games)
+    __fix_kfar_saba_toto_games_at_2000_2001(games)
 
     # Fix dates & name:
     __fix_hapoel_haifa_four_two_date_99_00(games)
@@ -247,8 +283,11 @@ def fix_specific_games(games):
     # Fix just dates:
     __fix_games_date(games)
 
+    # Games that seems to be wrong (and should be removed):
+    __remove_games(games)
+
     # Add games fixtures
-    #__add_fixtures_numbers(games)
+    # __add_fixtures_numbers(games)
 
     for game in games:
         # ATM, only the important events = goals.

@@ -35,7 +35,7 @@ Each list of games is from the same type - MaccabiGamesStats.
 All the below manipulating can be done on every sub-category of games, like:  
 old_games, old_home_games and old_home_wins.  
  
-Getting only old home wins:
+Getting only old home wins can be done in this way:
 ```
 >>> old_games = games.played_before("1.1.2000")
 >>> old_home_games = old_games.home_games
@@ -95,6 +95,16 @@ You can get the longest (or by streak length) streaks of any subset of maccabi g
 >>> games.streak.get_similar_* = use to get similar with len of at least X and by condition.
 >>> # All the unbeaten rows of at least len of 20:
 >>> games.streaks.get_similar_unbeaten_streak_by_length(minimum_streak_length=20)   
+```
+
+   ### Players Streaks
+You can get the longest players streaks of any subset of maccabi games:
+```
+>>> # Use to get the players with best streak of scoring (count the game only if the player played).
+>>> games.players_streaks.get_players_with_best_goal_scoring_streak()
+>>>
+>>> # Same for unbeaten:
+>>> games.players_streaks.get_players_with_best_unbeaten_streak()
 ```
 
 
@@ -174,3 +184,18 @@ Manual check for errors might be helpful, this is can be done by:
 >>> e = ErrorsFinder(games)
 >>> e.get_all_errors_numbers()  # run all the manual errors exists
 ```
+
+
+# MaccabiPedia Source
+
+You can manipulate [MaccabiPedia](http:\\www.maccabipedia.co.il) data by downloading it and then loading it 
+(You may have to install some 'advanced' packages such as pywikibot), as the following:
+
+```
+>>> from maccabistats import run_maccabipedia_source
+>>>
+>>> # You should run this once a while, this is a heavy action to do:
+>>> maccabipedia = run_maccabipedia_source()
+>>> # Now you can manipulate maccabipedia data as explain above (its MaccabiGamesStats object, referred as "games" above") 
+```
+
