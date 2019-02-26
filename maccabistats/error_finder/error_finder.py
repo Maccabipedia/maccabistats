@@ -58,11 +58,12 @@ class ErrorsFinder(object):
         return games
 
     def get_players_with_event_but_without_lineup_or_substitution(self):
-        """ Every player that has any event should has atleast lineup or substitution in event """
+        """ Every player that has any event should has atleast lineup or substitution or bench in event """
 
         players = [player for game in self.maccabi_games_stats for player in game.maccabi_team.players + game.not_maccabi_team.players
                    if len(player.events) > 0 and  # Got any event but no lineup or subs in
-                   not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
+                   not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
+                   and not player.has_event_type(GameEventTypes.BENCHED)]
         return players
 
     def get_goals_scored_at_minute_zero(self):
