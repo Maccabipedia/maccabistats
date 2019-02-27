@@ -85,6 +85,7 @@ class MaccabiStatsSource(object):
 
         last_source_games = serialized_source_games[-1]
 
+        logger.info(f"Loading source {self.name} as MaccabiGamesStats from: {last_source_games}")
         with open(last_source_games, 'rb') as f:
             self.maccabi_games_stats = pickle.load(f)
 

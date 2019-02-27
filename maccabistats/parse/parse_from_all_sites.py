@@ -118,7 +118,7 @@ def merge_maccabi_games_from_all_input_serialized_sources():
 
 
 def _load_from_source(source):
-    logger.info(f"Loading games from source: {source}")
+    logger.info(f"Loading games from source: {source.name}")
     source.load_serialized_games()
     source.run_general_fixes()
     source.run_specific_fixes()
