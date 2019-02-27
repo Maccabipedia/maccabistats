@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta
 from itertools import chain
 
+from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 from maccabistats.models.player_game_events import GameEventTypes
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ class ErrorsFinder(object):
         missing_lineup_games = [game for game in self.maccabi_games_stats
                                 if 11 > len(game.not_maccabi_team.lineup_players) or 11 > len(game.maccabi_team.lineup_players)]
 
-        return missing_lineup_games
+        return MaccabiGamesStats(missing_lineup_games)
 
     def get_lineup_players_with_substitution_in(self):
         """ Players that opened on lineup, should'nt has substitution in event. """
@@ -42,7 +43,7 @@ class ErrorsFinder(object):
 
         games = [game for game in self.maccabi_games_stats if game.maccabi_team.score + game.not_maccabi_team.score != len(game.goals())]
 
-        return games
+        return MaccabiGamesStats(games)
 
     def get_games_with_different_score_and_goals(self):
         """ Game score should be equal to the last score at the last goal event.
@@ -55,7 +56,7 @@ class ErrorsFinder(object):
                  game not in games_with_wrong_goals_count
                  and (0 if not game.goals() else game.goals()[-1]["maccabi_score"]) != game.maccabi_score]
 
-        return games
+        return MaccabiGamesStats(games)
 
     def get_players_with_event_but_without_lineup_or_substitution(self):
         """ Every player that has any event should has atleast lineup or substitution or bench in event """
