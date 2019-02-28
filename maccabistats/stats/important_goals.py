@@ -36,13 +36,15 @@ class MaccabiGamesImportantGoalsStats(object):
         important_goals_scorers_names = [goal['name'] for goal in maccabi_important_goals]
         return Counter(important_goals_scorers_names).most_common()
 
-    def get_top_scorers_by_percentage_from_all_their_goals(self, minimum_diff_for_maccabi=-2, maximum_diff_for_maccabi=1, minimum_important_goals=10):
+    def get_top_scorers_by_percentage_from_all_their_goals(self, minimum_diff_for_maccabi=-2, maximum_diff_for_maccabi=1, minimum_important_goals=10,
+                                                           goal_condition=None):
         """
         Return the important goals for each player from his total goals, only for those who scored at least (minimum_important_goals).
         """
 
         players_total_goals = Counter(dict(self.maccabi_games_stats.players.best_scorers))
-        players_important_goals = Counter(dict(self.get_top_scorers(minimum_diff_for_maccabi, maximum_diff_for_maccabi)))
+        players_important_goals = Counter(
+            dict(self.get_top_scorers(minimum_diff_for_maccabi, maximum_diff_for_maccabi, goal_condition=goal_condition)))
 
         best_players = Counter()
         for player_name, total_goals_for_player in players_total_goals.items():
@@ -52,13 +54,14 @@ class MaccabiGamesImportantGoalsStats(object):
 
         return best_players.most_common()
 
-    def get_top_players_for_goals_per_game(self, minimum_diff_for_maccabi=-2, maximum_diff_for_maccabi=1, minimum_games=10):
+    def get_top_players_for_goals_per_game(self, minimum_diff_for_maccabi=-2, maximum_diff_for_maccabi=1, minimum_games=10, goal_condition=None):
         """
         Return the important goals for each player from his total goals, only for those who played at least (minimum_games).
         """
 
         players_total_played = Counter(dict(self.maccabi_games_stats.players.most_played))
-        players_important_goals = Counter(dict(self.get_top_scorers(minimum_diff_for_maccabi, maximum_diff_for_maccabi)))
+        players_important_goals = Counter(
+            dict(self.get_top_scorers(minimum_diff_for_maccabi, maximum_diff_for_maccabi, goal_condition=goal_condition)))
 
         best_players = Counter()
         for player_name, total_games_for_player in players_total_played.items():
@@ -71,3 +74,25 @@ class MaccabiGamesImportantGoalsStats(object):
     def get_top_scorers_in_last_minutes(self, minimum_diff_for_maccabi=-2, maximum_diff_for_maccabi=1, from_minute=75):
         return self.get_top_scorers(minimum_diff_for_maccabi, maximum_diff_for_maccabi,
                                     lambda g: g['time_occur'] > str(timedelta(minutes=from_minute)))
+
+    def get_top_scorers_in_last_minutes_by_percentage_from_all_their_goals(self, minimum_diff_for_maccabi=-2, maximum_diff_for_maccabi=1,
+                                                                           from_minute=75, minimum_important_goals=10):
+        """
+        Return the important goals (in the last minutes) for each player from his total goals, only for those who scored at least (minimum_important_goals).
+        """
+
+        return self.get_top_scorers_by_percentage_from_all_their_goals(minimum_diff_for_maccabi=minimum_diff_for_maccabi,
+                                                                       maximum_diff_for_maccabi=maximum_diff_for_maccabi,
+                                                                       minimum_important_goals=minimum_important_goals,
+                                                                       goal_condition=lambda g: g['time_occur'] > str(timedelta(minutes=from_minute)))
+
+    def get_top_players_for_goals_in_last_minutes_per_game(self, minimum_diff_for_maccabi=-2, maximum_diff_for_maccabi=1, minimum_games=10,
+                                                           from_minute=75):
+        """
+        Return the important goals for each player from his total goals, only for those who played at least (minimum_games).
+        """
+
+        return self.get_top_players_for_goals_per_game(minimum_diff_for_maccabi=minimum_diff_for_maccabi,
+                                                       maximum_diff_for_maccabi=maximum_diff_for_maccabi,
+                                                       minimum_games=minimum_games,
+                                                       goal_condition=lambda g: g['time_occur'] > str(timedelta(minutes=from_minute)))

@@ -33,10 +33,11 @@ class ErrorsFinder(object):
     def get_lineup_players_with_substitution_in(self):
         """ Players that opened on lineup, should'nt has substitution in event. """
 
-        players = [player for game in self.maccabi_games_stats for player in game.maccabi_team.players + game.not_maccabi_team.players
-                   if player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
+        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
+                              game.maccabi_team.players + game.not_maccabi_team.players
+                              if player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
 
-        return players
+        return players_with_games
 
     def get_games_with_missing_goals_events(self):
         """ Total score should be equals to the total goals event """
@@ -61,11 +62,12 @@ class ErrorsFinder(object):
     def get_players_with_event_but_without_lineup_or_substitution(self):
         """ Every player that has any event should has atleast lineup or substitution or bench in event """
 
-        players = [player for game in self.maccabi_games_stats for player in game.maccabi_team.players + game.not_maccabi_team.players
-                   if len(player.events) > 0 and  # Got any event but no lineup or subs in
-                   not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
-                   and not player.has_event_type(GameEventTypes.BENCHED)]
-        return players
+        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
+                              game.maccabi_team.players + game.not_maccabi_team.players
+                              if len(player.events) > 0 and  # Got any event but no lineup or subs in
+                              not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
+                              and not player.has_event_type(GameEventTypes.BENCHED)]
+        return players_with_games
 
     def get_goals_scored_at_minute_zero(self):
         zero_time = str(timedelta(0))

@@ -30,7 +30,8 @@ _EMPTY_SUB_EVENT = ""
 _DUPLICATE_MACCABIPEDIA_EVENT = "DUPLICATE"
 MACCABI_PEDIA_EVENTS = {1: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.LINE_UP,
                                                         111: GameEventTypes.LINE_UP}),  # Special for GK
-                        2: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.BENCHED}),
+                        2: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.BENCHED,
+                                                        211: GameEventTypes.BENCHED}),
                         3: GameEventTypes.GOAL_SCORE,  # Special case, parse also the sub-goal-type
                         4: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.GOAL_ASSIST}),
                         5: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_IN}),
@@ -41,7 +42,7 @@ MACCABI_PEDIA_EVENTS = {1: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEv
                         8: defaultdict(_unknown_event, {81: _DUPLICATE_MACCABIPEDIA_EVENT,
                                                         82: GameEventTypes.PENALTY_MISSED,
                                                         83: GameEventTypes.UNKNOWN,
-                                                        84: _DUPLICATE_MACCABIPEDIA_EVENT}), # No support atm for penalty save
+                                                        84: _DUPLICATE_MACCABIPEDIA_EVENT}),  # No support atm for penalty save
                         11: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})}
 
 MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNKNOWN,
