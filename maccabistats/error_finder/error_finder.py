@@ -74,6 +74,24 @@ class ErrorsFinder(object):
         all_goals = list(chain.from_iterable([game.goals() for game in self.maccabi_games_stats]))
         return list(filter(lambda g: g['time_occur'] == zero_time, all_goals))
 
+    def get_games_with_incorrect_season(self):
+        """ Finds games which their date does not match the seasons (date between seasons). """
+
+        def validate_season(game):
+            if game.season[-2:] == "00":  # We should add 100 year to the max season in this counting system:
+                return int(game.season[:4]) <= game.date.year <= int(game.season[:2] + game.season[-2:]) + 100
+            else:
+                return int(game.season[:4]) <= game.date.year <= int(game.season[:2] + game.season[-2:])
+
+        games_with_incorrect_season = [(game.season, str(game.date), game) for game in self.maccabi_games_stats if not validate_season(game)]
+
+        return games_with_incorrect_season
+
+    def get_players_with_unknown_events(self):
+        players_with_unknown_events = [(player, game) for game in self.maccabi_games_stats for player in
+                                       game.maccabi_team.players + game.not_maccabi_team.players if player.has_event_type(GameEventTypes.UNKNOWN)]
+        return players_with_unknown_events
+
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
         errors_finders = [func for func in dir(self) if

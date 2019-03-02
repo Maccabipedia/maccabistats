@@ -28,22 +28,24 @@ def _unknown_event():
 
 _EMPTY_SUB_EVENT = ""
 _DUPLICATE_MACCABIPEDIA_EVENT = "DUPLICATE"
-MACCABI_PEDIA_EVENTS = {1: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.LINE_UP,
-                                                        111: GameEventTypes.LINE_UP}),  # Special for GK
-                        2: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.BENCHED,
-                                                        211: GameEventTypes.BENCHED}),
-                        3: GameEventTypes.GOAL_SCORE,  # Special case, parse also the sub-goal-type
-                        4: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.GOAL_ASSIST}),
-                        5: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_IN}),
-                        6: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_OUT}),
-                        7: defaultdict(_unknown_event, {71: GameEventTypes.YELLOW_CARD,
-                                                        72: GameEventTypes.YELLOW_CARD,
-                                                        73: GameEventTypes.RED_CARD}),
-                        8: defaultdict(_unknown_event, {81: _DUPLICATE_MACCABIPEDIA_EVENT,
-                                                        82: GameEventTypes.PENALTY_MISSED,
-                                                        83: GameEventTypes.UNKNOWN,
-                                                        84: _DUPLICATE_MACCABIPEDIA_EVENT}),  # No support atm for penalty save
-                        11: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})}
+# If we cant find an event, unknown will be set
+MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event, {1: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.LINE_UP,
+                                                                                    111: GameEventTypes.LINE_UP}),  # Special for GK
+                                                    2: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.BENCHED,
+                                                                                    211: GameEventTypes.BENCHED}),
+                                                    3: GameEventTypes.GOAL_SCORE,  # Special case, parse also the sub-goal-type
+                                                    4: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.GOAL_ASSIST}),
+                                                    5: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_IN}),
+                                                    6: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_OUT}),
+                                                    7: defaultdict(_unknown_event, {71: GameEventTypes.YELLOW_CARD,
+                                                                                    72: GameEventTypes.YELLOW_CARD,
+                                                                                    73: GameEventTypes.RED_CARD}),
+                                                    8: defaultdict(_unknown_event, {81: _DUPLICATE_MACCABIPEDIA_EVENT,
+                                                                                    82: GameEventTypes.PENALTY_MISSED,
+                                                                                    83: GameEventTypes.UNKNOWN,
+                                                                                    84: _DUPLICATE_MACCABIPEDIA_EVENT}),
+                                                    # No support atm for penalty save
+                                                    11: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
 
 MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNKNOWN,
                            31: GoalTypes.UNKNOWN,  # TODO: SHOULD be by foot (no such sub-goal-type today in maccabistats
@@ -93,6 +95,8 @@ class MaccabiPediaParser(object):
 
         if GameEventTypes.GOAL_SCORE == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
             return GoalGameEvent(time_occur=event_time, goal_type=MACCABIPEDIA_GOALS_TYPE[player_event["SubType"]])
+        elif GameEventTypes.UNKNOWN == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
+            return GameEvent(game_event_type=GameEventTypes.UNKNOWN, time_occur=event_time)
         else:
             event_type = MACCABI_PEDIA_EVENTS[player_event["EventType"]][player_event["SubType"]]
             if event_type == _DUPLICATE_MACCABIPEDIA_EVENT:
