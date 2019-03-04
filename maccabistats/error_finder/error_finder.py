@@ -92,6 +92,27 @@ class ErrorsFinder(object):
                                        game.maccabi_team.players + game.not_maccabi_team.players if player.has_event_type(GameEventTypes.UNKNOWN)]
         return players_with_unknown_events
 
+    def get_missing_league_games_fixtures(self):
+        """
+        For each season get the max fixture number and check whether the len of this season games equal to it
+        """
+
+        missing_fixtures_from_all_seasons = []
+
+        seasons = self.maccabi_games_stats.get_first_league_games().seasons.get_seasons_stats()
+        for season in seasons:
+            current_season_fixtures = [game.league_fixture for game in season if game.league_fixture]
+            if not current_season_fixtures:  # If we are dealing with no league games in this season
+                continue
+
+            should_be_fixtures = set(range(1, max(current_season_fixtures) + 1))
+            missing_fixtures = should_be_fixtures.difference(current_season_fixtures)
+
+            if missing_fixtures:
+                [missing_fixtures_from_all_seasons.append((season[0].season, missing_fixture)) for missing_fixture in missing_fixtures]
+
+        return missing_fixtures_from_all_seasons
+
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
         errors_finders = [func for func in dir(self) if

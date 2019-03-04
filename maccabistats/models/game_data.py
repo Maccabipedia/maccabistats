@@ -81,6 +81,13 @@ class GameData(object):
         return months_in_hebrew_to_num[month_name]
 
     @property
+    def league_fixture(self):
+        try:
+            return int(self.fixture.replace("מחזור", ""))
+        except ValueError:
+            return None
+
+    @property
     def maccabi_score(self):
         return self.maccabi_team.score
 
