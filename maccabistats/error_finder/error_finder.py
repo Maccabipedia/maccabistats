@@ -1,9 +1,10 @@
 import logging
+from collections import defaultdict
 from datetime import timedelta
 from itertools import chain
 
-from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 from maccabistats.models.player_game_events import GameEventTypes
+from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
 """ This class responsible to find errors in maccabigamesstats object, such as games that the amount of goals does not match to the final score sum,
@@ -112,6 +113,23 @@ class ErrorsFinder(object):
                 [missing_fixtures_from_all_seasons.append((season[0].season, missing_fixture)) for missing_fixture in missing_fixtures]
 
         return missing_fixtures_from_all_seasons
+
+    def get_double_league_games_fixtures(self):
+        """
+        For each season check whether we have double fixtures (numbers)
+        """
+
+        fixtures_from_all_seasons = defaultdict(list)
+
+        seasons = self.maccabi_games_stats.get_first_league_games().seasons.get_seasons_stats()
+        for season in seasons:
+            if season:  # Any games at this season
+                for game in season:
+                    fixtures_from_all_seasons[f"season {season[0].season} fixture {game.league_fixture}"].append(game)
+
+        double_fixtures = [(season_and_fixture, MaccabiGamesStats(games)) for season_and_fixture, games in fixtures_from_all_seasons.items() if
+                           len(games) > 1]
+        return double_fixtures
 
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
