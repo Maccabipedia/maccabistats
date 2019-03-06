@@ -100,7 +100,7 @@ class ErrorsFinder(object):
 
         missing_fixtures_from_all_seasons = []
 
-        seasons = self.maccabi_games_stats.get_first_league_games().seasons.get_seasons_stats()
+        seasons = self.maccabi_games_stats.league_games.seasons.get_seasons_stats()
         for season in seasons:
             current_season_fixtures = [game.league_fixture for game in season if game.league_fixture]
             if not current_season_fixtures:  # If we are dealing with no league games in this season
@@ -121,7 +121,7 @@ class ErrorsFinder(object):
 
         fixtures_from_all_seasons = defaultdict(list)
 
-        seasons = self.maccabi_games_stats.get_first_league_games().seasons.get_seasons_stats()
+        seasons = self.maccabi_games_stats.league_games.seasons.get_seasons_stats()
         for season in seasons:
             if season:  # Any games at this season
                 for game in season:

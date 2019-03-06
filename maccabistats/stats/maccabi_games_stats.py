@@ -62,6 +62,15 @@ class MaccabiGamesStats(object):
         return MaccabiGamesStats([game for game in self.games if not game.is_maccabi_home_team])
 
     @property
+    def league_games(self):
+        """ Return only the first league games - from all years
+        :rtype: MaccabiGamesStats
+        """
+
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'", "ליגה א"]])
+
+    @property
     def available_competitions(self):
         return list(set(game.competition for game in self.games))
 
@@ -177,13 +186,6 @@ class MaccabiGamesStats(object):
         """
 
         return MaccabiGamesStats([game for game in self.games if game.season == season])
-
-    def get_first_league_games(self):
-        """ Return only the first league games - from all years
-        :rtype: MaccabiGamesStats
-        """
-        return MaccabiGamesStats(
-            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'", "ליגה א"]])
 
     @staticmethod
     def create_maccabi_stats_from_games(games):

@@ -16,7 +16,7 @@ games = get_maccabi_stats(your_maccabi.games_file_path)  # Use the local path yo
 
 You might want to use:
 ```
-games = games.get_first_league_games()
+games = games.league_games
 ```
 because there are not only league games.
 
@@ -53,7 +53,7 @@ Getting only old home wins can be done in this way:
 >>>
 >>> game.get_games_* = use to filter games.
 >>> Lets combine all, wins % against hapoel haifa in league games:
->>> game.get_first_league_games().get_games_against_team("הפועל חיפה").results.wins_percentage
+>>> game.league_games.get_games_against_team("הפועל חיפה").results.wins_percentage
 ```
 
 
@@ -65,7 +65,7 @@ All of the names are very intuitive, some examples:
 >>> games.players.most_played
 >>>
 >>> Getting top 5 scored players in league derby:
->>> games.get_first_league_games().get_games_against_team("הפועל תל אביב").players.best_scorers[0:5]
+>>> games.league_games.get_games_against_team("הפועל תל אביב").players.best_scorers[0:5]
 ```
 
    ### Coaches and Referees
@@ -75,7 +75,7 @@ You can get the win\lose percentages of each one just by:
 >>> games.referees.best_referee_by_percentage[0:2]  # Top 2 referees (in all maccabi games history).
 >>>
 >>> Getting best derby coaches:
->>> games.get_first_league_games().get_games_against_team("הפועל תל אביב").coaches.most_winner_coach_by_percentage
+>>> games.league_games.get_games_against_team("הפועל תל אביב").coaches.most_winner_coach_by_percentage
 ```
 
 
