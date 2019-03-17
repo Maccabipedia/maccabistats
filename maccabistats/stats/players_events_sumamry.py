@@ -54,7 +54,7 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
 
     def __str__(self):
         return f"Total event counting for maccabi players:\n\n" \
-               f"   Goals: {self.total_goals_assists_counted_for_maccabi_players}\n" \
+               f"   Goals: {self.total_goals_scoring_counted_for_maccabi_players}\n" \
                f"        By head: {self.total_head_goals_scoring_counted_for_maccabi_players}\n" \
                f"        By freekick: {self.total_freekicks_goals_scoring_counted_for_maccabi_players}\n" \
                f"        By penalty: {self.total_penalties_goals_scoring_counted_for_maccabi_players}\n" \
