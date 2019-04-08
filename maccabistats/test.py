@@ -4,8 +4,8 @@
 from maccabistats import *
 
 if __name__ == "__main__":
-    merge_maccabi_games_from_all_input_serialized_sources()
-    rerun_sources("MaccabiPedia")
+    run_maccabipedia_source()
+    m = load_from_maccabipedia_source()
 
     """
     m = load_from_maccabipedia_source()

@@ -23,7 +23,7 @@ def merge_maccabitlv_and_table(maccabitlv_site_source, table_source):
     logger.info("Merging maccabitlv site and table sources")
 
     # Table source supporting only league games.
-    maccabitlv_site_league_games = maccabitlv_site_source.get_first_league_games()
+    maccabitlv_site_league_games = maccabitlv_site_source.league_games
 
     # We dont need to merge non-league games
     merged_games = [game for game in maccabitlv_site_source if game not in maccabitlv_site_league_games]

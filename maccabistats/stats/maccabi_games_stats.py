@@ -12,6 +12,8 @@ from maccabistats.stats.results import MaccabiGamesResultsStats
 from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
 from maccabistats.stats.graphs import MaccabiGamesGraphsStats
 from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
+from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
+from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsSummaryStats
 
 from maccabistats.version import version as maccabistats_version
 
@@ -44,6 +46,8 @@ class MaccabiGamesStats(object):
         self.important_goals = MaccabiGamesImportantGoalsStats(self)
         self.graphs = MaccabiGamesGraphsStats(self)
         self.players_streaks = MaccabiGamesPlayersStreaksStats(self)
+        self.teams_streaks = MaccabiGamesTeamsStreaksStats(self)
+        self.players_events_summary = MaccabiGamesPlayersEventsSummaryStats(self)
 
         self.version = maccabistats_version
 
@@ -60,6 +64,15 @@ class MaccabiGamesStats(object):
         :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats([game for game in self.games if not game.is_maccabi_home_team])
+
+    @property
+    def league_games(self):
+        """ Return only the first league games - from all years
+        :rtype: MaccabiGamesStats
+        """
+
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'", "ליגה א"]])
 
     @property
     def available_competitions(self):
@@ -177,13 +190,6 @@ class MaccabiGamesStats(object):
         """
 
         return MaccabiGamesStats([game for game in self.games if game.season == season])
-
-    def get_first_league_games(self):
-        """ Return only the first league games - from all years
-        :rtype: MaccabiGamesStats
-        """
-        return MaccabiGamesStats(
-            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'", "ליגה א"]])
 
     @staticmethod
     def create_maccabi_stats_from_games(games):

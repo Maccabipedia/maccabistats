@@ -208,7 +208,7 @@ class MaccabiGamesPlayersStats(object):
 
         total_players_games = dict(self.most_played)
 
-        players_percentage = [dict(player.__dict__,  # Player attributes
+        players_percentage = [dict(name=player,
                                    percentage=round(
                                        players_ordered_by_game_condition.get(player, 0) * 100 /  # 100 for percentage
                                        total_players_games[player], 3),
