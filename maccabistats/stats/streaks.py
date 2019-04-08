@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pprint import pformat
-from itertools import groupby
+from itertools import groupby, takewhile
 from datetime import timedelta
 
 from maccabistats.models.player_game_events import GameEventTypes
@@ -24,7 +24,8 @@ class MaccabiGamesStreaksStats(object):
         """
         :param condition: lambda which receive maccabistats.models.game_data.GameData as param and return bool.
         :type condition: callable
-        :return: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+
+        :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         """
 
         games_fulfill_condition = [condition(game) for game in self.games]
@@ -54,7 +55,8 @@ class MaccabiGamesStreaksStats(object):
         :type condition: callable
         :param minimum_streak_length: the size of the minimum streak to search for.
         :type minimum_streak_length: int
-        :return: MaccabiGamesStats
+
+        :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         """
 
         games_fulfill_condition = [condition(game) for game in self.games]
@@ -73,11 +75,27 @@ class MaccabiGamesStreaksStats(object):
 
         return similar_streaks
 
+    def _get_current_streak_by_condition(self, condition):
+        """
+        Returns the current streak of games which satisfies the condition
+
+        :param condition: predicate to check for each game
+        :type condition: callable
+
+        :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
+        """
+
+        current_streak = list(takewhile(condition, self.games[::-1]))
+        return self.maccabi_games_stats.create_maccabi_stats_from_games(current_streak)
+
     def get_longest_wins_streak_games(self):
         return self._get_longest_streak_by_condition(lambda g: g.is_maccabi_win)
 
     def get_similar_wins_streak_by_length(self, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.is_maccabi_win, minimum_streak_length=minimum_streak_length)
+
+    def get_current_wins_streak(self):
+        return self._get_current_streak_by_condition(lambda g: g.is_maccabi_win)
 
     def get_longest_ties_streak_games(self):
         return self._get_longest_streak_by_condition(lambda g: g.maccabi_score_diff == 0)
@@ -85,11 +103,17 @@ class MaccabiGamesStreaksStats(object):
     def get_similar_ties_streak_by_length(self, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.maccabi_score_diff == 0, minimum_streak_length=minimum_streak_length)
 
+    def get_current_ties_streak(self):
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_score_diff == 0)
+
     def get_longest_losses_streak_games(self):
         return self._get_longest_streak_by_condition(lambda g: g.maccabi_score_diff < 0)
 
     def get_similar_losses_streak_by_length(self, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.maccabi_score_diff < 0, minimum_streak_length=minimum_streak_length)
+
+    def get_current_losses_streak(self):
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_score_diff < 0)
 
     def get_longest_unbeaten_streak_games(self):
         return self._get_longest_streak_by_condition(lambda g: g.maccabi_score_diff >= 0)
@@ -97,14 +121,23 @@ class MaccabiGamesStreaksStats(object):
     def get_similar_unbeaten_streak_by_length(self, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.maccabi_score_diff >= 0, minimum_streak_length=minimum_streak_length)
 
+    def get_current_unbeaten_streak(self):
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_score_diff >= 0)
+
     def get_longest_score_at_least_games(self, minimum_maccabi_score):
         return self._get_longest_streak_by_condition(lambda g: g.maccabi_score >= minimum_maccabi_score)
 
     def get_similar_score_at_least_streak_by_length(self, minimum_maccabi_score, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.maccabi_score >= minimum_maccabi_score, minimum_streak_length=minimum_streak_length)
 
+    def get_current_score_at_least_streak(self, minimum_maccabi_score):
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_score >= minimum_maccabi_score)
+
     def get_longest_score_exactly_games(self, maccabi_score):
         return self._get_longest_streak_by_condition(lambda g: g.maccabi_score == maccabi_score)
+
+    def get_current_score_exactly_streak(self, maccabi_score):
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_score == maccabi_score)
 
     def get_similar_score_exactly_streak_by_length(self, maccabi_score, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.maccabi_score == maccabi_score, minimum_streak_length=minimum_streak_length)
@@ -115,17 +148,26 @@ class MaccabiGamesStreaksStats(object):
     def get_similar_score_diff_at_least_streak_by_length(self, minimum_maccabi_score_diff, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.maccabi_score_diff >= minimum_maccabi_score_diff, minimum_streak_length=minimum_streak_length)
 
+    def get_current_score_diff_at_least_streak(self, minimum_maccabi_score_diff):
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_score_diff >= minimum_maccabi_score_diff)
+
     def get_longest_score_diff_exactly_games(self, maccabi_score_diff):
         return self._get_longest_streak_by_condition(lambda g: g.maccabi_score_diff == maccabi_score_diff)
 
     def get_similar_score_diff_exactly_streak_by_length(self, maccabi_score_diff, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.maccabi_score_diff == maccabi_score_diff, minimum_streak_length=minimum_streak_length)
 
+    def get_current_score_diff_exactly_streak(self, maccabi_score_diff):
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_score_diff == maccabi_score_diff)
+
     def get_longest_clean_sheet_games(self):
         return self._get_longest_streak_by_condition(lambda g: g.not_maccabi_team.score == 0)
 
     def get_similar_clean_sheet_streak_by_length(self, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: g.not_maccabi_team.score == 0, minimum_streak_length=minimum_streak_length)
+
+    def get_current_clean_sheet_streak(self):
+        return self._get_current_streak_by_condition(lambda g: g.not_maccabi_team.score == 0)
 
     def get_longest_goals_from_bench_games(self):
         return self._get_longest_streak_by_condition(
@@ -134,6 +176,10 @@ class MaccabiGamesStreaksStats(object):
     def get_similar_goals_from_bench_streak_by_length(self, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: any(
             self.__scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench), minimum_streak_length=minimum_streak_length)
+
+    def get_current_goals_from_bench_streak(self):
+        return self._get_current_streak_by_condition(
+            lambda g: any(self.__scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench))
 
     @staticmethod
     def __scored_after_subs_in(player):
@@ -155,7 +201,9 @@ class MaccabiGamesStreaksStats(object):
         return min_goal_time >= subs_in_time
 
     def _show_streaks(self):
-        print(f"Wins streak: {self.get_longest_wins_streak_games()}\n"
+        # TODO: this should be change to better way to design the streaks and the str\repr
+        print(f"Longest streaks:\n"
+              f"Wins streak: {self.get_longest_wins_streak_games()}\n"
               f"Similar wins streaks: {pformat(self.get_similar_wins_streak_by_length(len(self.get_longest_wins_streak_games())))})\n\n"
               f"Ties streak: {self.get_longest_ties_streak_games()}\n"
               f"Similar ties streaks: {pformat(self.get_similar_ties_streak_by_length(len(self.get_longest_ties_streak_games())))})\n\n"
@@ -171,6 +219,15 @@ class MaccabiGamesStreaksStats(object):
               f"Similar Clean sheet streaks: {pformat(self.get_similar_clean_sheet_streak_by_length(len(self.get_longest_clean_sheet_games())))})\n\n"
               f"Goals from bench streak: {self.get_longest_goals_from_bench_games()}\n"
               f"Similar goals from bench streaks: {pformat(self.get_similar_goals_from_bench_streak_by_length(len(self.get_longest_goals_from_bench_games())))})\n\n"
+              f"\n\nCurrent streaks:\n"
+              f"Wins streak: {self.get_current_wins_streak()}\n"
+              f"Ties streak: {self.get_current_ties_streak()}\n"
+              f"Losses streak: {self.get_current_losses_streak()}\n"
+              f"Unbeaten streak: {self.get_current_unbeaten_streak()}\n"
+              f"Score goal streak: {self.get_current_score_at_least_streak(1)}\n"
+              f"No goal score streak: {self.get_current_score_exactly_streak(0)}\n"
+              f"Clean sheet streak: {self.get_current_clean_sheet_games()}\n"
+              f"Goals from bench streak: {self.get_current_goals_from_bench_streak()}\n"
               )
 
     def show_streaks(self):
@@ -179,14 +236,11 @@ class MaccabiGamesStreaksStats(object):
         For each streak show any similar streaks (if exists)
         """
 
-        print("### Overall streaks:\n\n")
+        print("----------------------------------------------------\n### Overall streaks:\n\n")
         self._show_streaks()
 
-        print("### Home games streaks:\n\n")
+        print("----------------------------------------------------\n### Home games streaks:\n\n")
         self.maccabi_games_stats.home_games.streaks._show_streaks()
 
-        print("### Away games streaks:\n\n")
+        print("----------------------------------------------------\n### Away games streaks:\n\n")
         self.maccabi_games_stats.away_games.streaks._show_streaks()
-
-
-

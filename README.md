@@ -105,8 +105,23 @@ You can get the longest players streaks of any subset of maccabi games:
 >>>
 >>> # Same for unbeaten:
 >>> games.players_streaks.get_players_with_best_unbeaten_streak()
+>>>
+>>>
+>>> # Get the players with the best current unbeaten streak
+>>> games.players_streaks.get_players_with_current_unbeaten_streak()
+>>> # Or those who have the best streak of maccabi score a goal with them
+>>> games.players_streaks.get_players_with_current_maccabi_score_goal_streak()
 ```
 
+   ### Teams Streaks
+Very similar to players streak section
+```
+>>> # Get the top winning streak against one team
+>>> games.teams_streaks.get_teams_with_current_win_streak()
+>>>
+>>> # Get the teams with the best unbeaten streak
+>>> games.teams_streak.get_teams_with_current_unbeaten_streak()
+```
 
    ### Seasons
 You can get the games grouped by seasons sorted by any condition, such as:
