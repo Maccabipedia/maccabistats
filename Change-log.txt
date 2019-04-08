@@ -1,3 +1,8 @@
+------ Version 2.6.0 ------
+    Add Teams streak.
+    Add "current" streak (running streaks) for general, players and teams streaks.
+    Add players events summary (for maccabipedia tracking).
+
 ------ Version 2.4.0 ------
     Add players_streaks, check the best players by any streak that possible on MaccabiGamesStats.
 
