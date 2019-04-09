@@ -134,6 +134,10 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.players_streaks._find_player_goal_involving_best_streak(player_name))
 
+    def get_players_with_best_scored_against_maccabi_not_more_than_streak(self, not_maccabi_score):
+        return self._get_players_streak_by_condition(
+            lambda games, player_name: games.streaks.get_longest_scored_against_maccabi_not_more_than_games(not_maccabi_score))
+
     # Current streaks
 
     def get_players_with_current_unbeaten_streak(self):
@@ -222,4 +226,6 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.players_streaks._find_player_goal_involving_current_streak(player_name))
 
-
+    def get_players_with_current_scored_against_maccabi_not_more_than_streak(self, not_maccabi_score):
+        return self._get_players_streak_by_condition(
+            lambda games, player_name: games.streaks.get_current_scored_against_maccabi_not_more_than_streak(not_maccabi_score))
