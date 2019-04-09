@@ -77,7 +77,11 @@ class MaccabiGamesTeamsStreaksStats(object):
 
     def get_teams_with_best_clean_sheets_streak(self):
         return self._get_team_streak_by_condition(lambda games: games.streaks.get_longest_clean_sheet_games())
-    
+
+    def get_teams_with_best_scored_against_maccabi_not_more_than_streak(self, not_maccabi_score):
+        return self._get_team_streak_by_condition(
+            lambda games: games.streaks.get_longest_scored_against_maccabi_not_more_than_games(not_maccabi_score))
+
     # Current streaks:
     def get_teams_with_current_unbeaten_streak(self):
         return self._get_team_streak_by_condition(lambda games: games.streaks.get_current_unbeaten_streak())
@@ -114,4 +118,6 @@ class MaccabiGamesTeamsStreaksStats(object):
     def get_teams_with_current_clean_sheets_streak(self):
         return self._get_team_streak_by_condition(lambda games: games.streaks.get_current_clean_sheet_streak())
 
-
+    def get_teams_with_current_scored_against_maccabi_not_more_than_streak(self, not_maccabi_score):
+        return self._get_team_streak_by_condition(
+            lambda games: games.streaks.get_current_scored_against_maccabi_not_more_than_streak(not_maccabi_score))

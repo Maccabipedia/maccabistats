@@ -169,6 +169,15 @@ class MaccabiGamesStreaksStats(object):
     def get_current_clean_sheet_streak(self):
         return self._get_current_streak_by_condition(lambda g: g.not_maccabi_team.score == 0)
 
+    def get_longest_scored_against_maccabi_not_more_than_games(self, not_maccabi_score):
+        return self._get_longest_streak_by_condition(lambda g: g.not_maccabi_team.score <= not_maccabi_score)
+
+    def get_longest_scored_against_maccabi_not_more_than_streak_by_length(self, not_maccabi_score, minimum_streak_length=0):
+        return self._get_similar_streaks(lambda g: g.not_maccabi_team.score <= not_maccabi_score, minimum_streak_length=minimum_streak_length)
+
+    def get_current_scored_against_maccabi_not_more_than_streak(self, not_maccabi_score):
+        return self._get_current_streak_by_condition(lambda g: g.not_maccabi_team.score <= not_maccabi_score)
+
     def get_longest_goals_from_bench_games(self):
         return self._get_longest_streak_by_condition(
             lambda g: any(self.__scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench))
