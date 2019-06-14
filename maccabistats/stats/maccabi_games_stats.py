@@ -13,6 +13,7 @@ from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
 from maccabistats.stats.graphs import MaccabiGamesGraphsStats
 from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
 from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
+from maccabistats.stats.teams import MaccabiGamesTeamsStats
 from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsSummaryStats
 
 from maccabistats.version import version as maccabistats_version
@@ -47,6 +48,7 @@ class MaccabiGamesStats(object):
         self.graphs = MaccabiGamesGraphsStats(self)
         self.players_streaks = MaccabiGamesPlayersStreaksStats(self)
         self.teams_streaks = MaccabiGamesTeamsStreaksStats(self)
+        self.teams = MaccabiGamesTeamsStats(self)
         self.players_events_summary = MaccabiGamesPlayersEventsSummaryStats(self)
 
         self.version = maccabistats_version

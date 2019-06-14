@@ -2,6 +2,8 @@
 
 # This class will handle all results statistics.
 
+from sys import maxsize
+
 
 class MaccabiGamesResultsStats(object):
 
@@ -30,7 +32,10 @@ class MaccabiGamesResultsStats(object):
          Goals for maccabi / Goals against maccabi
          """
 
-        return round(self.total_goals_for_maccabi / self.total_goals_against_maccabi, 3)
+        if self.total_goals_against_maccabi == 0:
+            return maxsize
+        else:
+            return round(self.total_goals_for_maccabi / self.total_goals_against_maccabi, 3)
 
     @property
     def wins_count(self):

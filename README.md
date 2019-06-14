@@ -123,6 +123,16 @@ Very similar to players streak section
 >>> games.teams_streak.get_teams_with_current_unbeaten_streak()
 ```
 
+   ### Teams statistics
+You can get any game related statistics that will be order all the teams from those who have the most of this condition:
+```
+>>> # Get the teams that maccabi won the most
+>>> games.teams.teams_ordered_by_maccabi_wins()
+>>>
+>>> # Get the teams that maccabi had the most clean sheets games in percentage 
+>>> games.teams.teams_ordered_by_maccabi_clean_sheets_percentage()
+```
+
    ### Seasons
 You can get the games grouped by seasons sorted by any condition, such as:
 ```

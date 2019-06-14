@@ -2,7 +2,6 @@
 
 import logging
 
-from progressbar import ProgressBar
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)

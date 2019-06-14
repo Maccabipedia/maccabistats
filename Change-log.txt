@@ -1,3 +1,6 @@
+------ Version 2.7.0 ------
+    Add Teams statistics.
+
 ------ Version 2.6.0 ------
     Add Teams streak.
     Add "current" streak (running streaks) for general, players and teams streaks.
