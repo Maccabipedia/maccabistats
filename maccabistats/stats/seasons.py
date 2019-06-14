@@ -49,57 +49,78 @@ class Seasons(object):
         else:
             return list(self.seasons.items())[item][1]
 
-    def _refresh_sorting(self):
+    def _refresh_sorting(self, sort_attribute_function, sort_attribute_description):
+        """
+        Updates the current sorting, all the seasons will be sorted using the given callable (gets a seasons item - MaccabiGamesStats).
+        :param sort_attribute_function: The callable to sort the seasons by (gets season item - MaccabiGamesStats)
+        :type sort_attribute_function: callable
+        :param sort_attribute_description: The description wich will be shown when sorting
+        :type sort_attribute_description: basestring
+        """
+        self._current_sort_attribute_function = sort_attribute_function
+        self._current_sort_attribute_description = sort_attribute_description
         self.seasons = OrderedDict(sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
 
+    # Games Results:
     def sort_by_games_count(self):
-        self._current_sort_attribute_function = lambda s: len(s)
-        self._current_sort_attribute_description = "sort by games count"
-        self._refresh_sorting()
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s), sort_attribute_description="sort by games count")
 
     def sort_by_wins_count(self):
-        self._current_sort_attribute_function = lambda s: s.results.wins_count
-        self._current_sort_attribute_description = "sort by wins count"
-        self._refresh_sorting()
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.wins_count, sort_attribute_description="sort by wins count")
 
     def sort_by_wins_percentage(self):
-        self._current_sort_attribute_function = lambda s: s.results.wins_percentage
-        self._current_sort_attribute_description = "sort by wins percentage"
-        self._refresh_sorting()
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.wins_percentage, sort_attribute_description="sort by wins percentage")
 
-    def sort_by_avg_goals_diff(self):
-        self._current_sort_attribute_function = lambda s: s.averages.maccabi_diff
-        self._current_sort_attribute_description = "sort by average goal diff for maccabi"
-        self._refresh_sorting()
+    def sort_by_losses_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.losses_count, sort_attribute_description="sort by losses count")
 
-    def sort_by_avg_goals_for_maccabi(self):
-        self._current_sort_attribute_function = lambda s: s.averages.goals_for_maccabi
-        self._current_sort_attribute_description = "sort by average goals for maccabi"
-        self._refresh_sorting()
+    def sort_by_losses_percentage(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.losses_percentage, sort_attribute_description="sort by losses percentage")
 
-    def sort_by_avg_goals_against_maccabi(self):
-        self._current_sort_attribute_function = lambda s: s.averages.goals_against_maccabi
-        self._current_sort_attribute_description = "sort by average goals against maccabi"
-        self._refresh_sorting()
+    def sort_by_ties_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.ties_count, sort_attribute_description="sort by ties count")
+
+    def sort_by_ties_percentage(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.ties_percentage, sort_attribute_description="sort by ties percentage")
+
+    # Goals manipulations:
+    def sort_by_total_goals_diff(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.total_goals_diff_for_maccabi,
+                              sort_attribute_description="sort by total goals diff for maccabi")
+
+    def sort_by_average_goals_diff_per_game(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.averages.maccabi_diff,
+                              sort_attribute_description="sort by average (per game) goal diff for maccabi")
+
+    def sort_by_total_goals_for_maccabi(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.total_goals_for_maccabi,
+                              sort_attribute_description="sort by total goals for maccabi")
+
+    def sort_by_average_goals_for_maccabi_per_game(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.averages.goals_for_maccabi,
+                              sort_attribute_description="sort by average goals (per game) for maccabi")
+
+    def sort_by_total_goals_against_maccabi(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.total_goals_against_maccabi,
+                              sort_attribute_description="sort by total goals against maccabi")
+
+    def sort_by_average_goals_against_maccabi_per_game(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.averages.goals_against_maccabi,
+                              sort_attribute_description="sort by average goals (per game) against maccabi")
 
     def sort_by_clean_sheet_count(self):
-        self._current_sort_attribute_function = lambda s: s.results.clean_sheets_count
-        self._current_sort_attribute_description = "sort by clean sheets count"
-        self._refresh_sorting()
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.clean_sheets_count, sort_attribute_description="sort by clean sheets count")
 
     def sort_by_clean_sheet_percentage(self):
-        self._current_sort_attribute_function = lambda s: s.results.clean_sheets_percentage
-        self._current_sort_attribute_description = "sort by clean sheets percentage"
-        self._refresh_sorting()
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.clean_sheets_percentage,
+                              sort_attribute_description="sort by clean sheets percentage")
 
     def sort_by_goals_ratio(self):
         """
         Goals for maccabi / Goals against maccabi
         """
-
-        self._current_sort_attribute_function = lambda s: s.results.goals_ratio
-        self._current_sort_attribute_description = "sort by goals ratio (Goals for maccabi \ Goals against maccabi)"
-        self._refresh_sorting()
+        self._refresh_sorting(sort_attribute_function=lambda s: s.results.goals_ratio,
+                              sort_attribute_description="sort by goals ratio (Goals for maccabi \ Goals against maccabi)")
 
 
 # This class will handle all seasons statistics.
