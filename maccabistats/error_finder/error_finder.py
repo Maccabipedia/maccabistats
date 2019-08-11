@@ -131,6 +131,20 @@ class ErrorsFinder(object):
                            len(games) > 1]
         return double_fixtures
 
+    def get_games_without_stadium(self):
+        """
+        Returns the games without defined stadium
+        """
+
+        return [game for game in self.maccabi_games_stats.games if not game.stadium]
+
+    def get_games_without_referee(self):
+        """
+        Returns the games without defined referee
+        """
+
+        return [game for game in self.maccabi_games_stats.games if not game.referee]
+
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
         errors_finders = [func for func in dir(self) if
