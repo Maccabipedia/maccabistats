@@ -50,7 +50,7 @@ _competitions_name_fixes = [("גביע אירופה למחזיקות גביע", 
                             ("פלייאוף הליגה האירופית", ["פלייאוף אירופה ליג"]),
                             ("גביע אופא", ['גביע אופ"א']),
                             ("הליגה האירופית", ["ליגה אירופית"]),
-                            ("ליגת העל", ["ליגת Winner", "ליגת ג׳פניקה"]),
+                            ("ליגת העל", ["ליגת Winner", "ליגת הבורסה לניירות ערך", "ליגת ג׳פניקה"]),
                             ("ליגה לאומית", ["ליגת לאומית"]),
                             ("ליגה א", ["ליגה א'"]),
                             ]
@@ -162,7 +162,7 @@ def __fix_stadiums_names(game):
 
 def __fix_fixtures(game):
     # If game played in the first league
-    if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'"]:
+    if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת הבורסה לניירות ערך", "ליגת Winner", "ליגה א'"]:
         if isinstance(game.fixture, int):
             logger.info(f"Adding 'מחזור' prefix to the ame at {game.date})")
             game.fixture = f"מחזור {game.fixture}"

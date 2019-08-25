@@ -74,7 +74,8 @@ class MaccabiGamesStats(object):
         """
 
         return MaccabiGamesStats(
-            [game for game in self.games if game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגה א'", "ליגה א"]])
+            [game for game in self.games if
+             game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגת הבורסה לניירות ערך", "ליגה א'", "ליגה א"]])
 
     @property
     def available_competitions(self):
