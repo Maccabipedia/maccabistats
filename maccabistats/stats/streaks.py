@@ -235,7 +235,7 @@ class MaccabiGamesStreaksStats(object):
               f"Unbeaten streak: {self.get_current_unbeaten_streak()}\n"
               f"Score goal streak: {self.get_current_score_at_least_streak(1)}\n"
               f"No goal score streak: {self.get_current_score_exactly_streak(0)}\n"
-              f"Clean sheet streak: {self.get_current_clean_sheet_games()}\n"
+              f"Clean sheet streak: {self.get_current_clean_sheet_streak()}\n"
               f"Goals from bench streak: {self.get_current_goals_from_bench_streak()}\n"
               )
 
