@@ -43,6 +43,9 @@ class MaccabiGamesResultsStats(object):
 
     @property
     def wins_percentage(self):
+        if len(self.games) == 0:
+            return maxsize
+
         return round(self.wins_count / len(self.games), 3)
 
     @property
@@ -51,6 +54,9 @@ class MaccabiGamesResultsStats(object):
 
     @property
     def losses_percentage(self):
+        if len(self.games) == 0:
+            return maxsize
+
         return round(self.losses_count / len(self.games), 3)
 
     @property
@@ -59,6 +65,9 @@ class MaccabiGamesResultsStats(object):
 
     @property
     def ties_percentage(self):
+        if len(self.games) == 0:
+            return maxsize
+
         return round(self.ties_count / len(self.games), 3)
 
     @property
@@ -67,4 +76,26 @@ class MaccabiGamesResultsStats(object):
 
     @property
     def clean_sheets_percentage(self):
+        if len(self.games) == 0:
+            return maxsize
+
         return round(self.clean_sheets_count / len(self.games), 3)
+
+    def json_dict(self):
+        """
+        :rtype: dict
+        """
+
+        return dict(wins_count=self.wins_count,
+                    losses_count=self.losses_count,
+                    ties_count=self.ties_count,
+                    clean_sheets_count=self.clean_sheets_count,
+                    wins_percentage=self.wins_percentage,
+                    losses_percentage=self.losses_percentage,
+                    ties_percentage=self.ties_percentage,
+                    clean_sheets_percentage=self.clean_sheets_percentage,
+                    total_goals_for_maccabi=self.total_goals_for_maccabi,
+                    total_goals_against_maccabi=self.total_goals_against_maccabi,
+                    total_goals_diff_for_maccabi=self.total_goals_diff_for_maccabi,
+                    goals_ratio=self.goals_ratio
+                    )
