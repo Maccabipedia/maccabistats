@@ -1,3 +1,6 @@
+------ Version 2.9.0 ------
+    Add "to_json" to the result class
+
 ------ Version 2.8.0 ------
     Add scripts folder, used to save&run some more complicated manipulations.
 
