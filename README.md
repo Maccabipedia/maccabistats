@@ -24,18 +24,19 @@ now, enjoy :)
 
 # Manipulating maccabi statistics
 
-  ### Loading games
+### Loading games
+
 ```
 >>> from maccabistats import get_maccabi_stats
 >>> games = get_maccabi_stats()  # From default folder path (Home folder - %userprofile%)
 >>> games = get_maccabi_stats(r"C:\maccabi\maccabi.games")  # From local custom file path
 ```
-
 Each list of games is from the same type - MaccabiGamesStats.  
 All the below manipulating can be done on every sub-category of games, like:  
 old_games, old_home_games and old_home_wins.  
  
 Getting only old home wins can be done in this way:
+
 ```
 >>> old_games = games.played_before("1.1.2000")
 >>> old_home_games = old_games.home_games
@@ -46,7 +47,8 @@ Getting only old home wins can be done in this way:
 ```
 
 
-  ### Basic usage
+### Basic usage
+
 ```
 >>> games.averages.goals_for_maccabi  # Avg goals for maccabi, for all the games in the list.
 >>> games.results.wins_percentage  #  the win % from the games in the list.
@@ -57,8 +59,9 @@ Getting only old home wins can be done in this way:
 ```
 
 
-   ### Players
+### Players
 All of the names are very intuitive, some examples:
+
 ```
 >>> games.players.best_scorers
 >>> games.players.get_most_winners_by_percentage()
@@ -68,8 +71,9 @@ All of the names are very intuitive, some examples:
 >>> games.league_games.get_games_against_team("הפועל תל אביב").players.best_scorers[0:5]
 ```
 
-   ### Coaches and Referees
+### Coaches and Referees
 You can get the win\lose percentages of each one just by:
+
 ```
 >>> games.coaches.most_winner_coach_by_percentage
 >>> games.referees.best_referee_by_percentage[0:2]  # Top 2 referees (in all maccabi games history).
@@ -79,15 +83,17 @@ You can get the win\lose percentages of each one just by:
 ```
 
 
-   ### Comebacks
+### Comebacks
 You can get the craziest maccabi comebacks:
+
 ```
 >>> games.comebacks.won_from_exactly_two_goal_diff()
 >>> games.comebacks.won_from_exactly_x_goal_diff(goals=3)  # Wow!
 ```
 
-   ### Streaks
+### Streaks
 You can get the longest (or by streak length) streaks of any subset of maccabi games:
+
 ```
 >>> games.streaks.get_longest_* = use to get the longest streak by condition, like:
 >>> games.streaks.get_longest_clean_sheet_games()  #  Games in a row without goal against maccabi.
@@ -97,8 +103,9 @@ You can get the longest (or by streak length) streaks of any subset of maccabi g
 >>> games.streaks.get_similar_unbeaten_streak_by_length(minimum_streak_length=20)   
 ```
 
-   ### Players Streaks
+### Players Streaks
 You can get the longest players streaks of any subset of maccabi games:
+
 ```
 >>> # Use to get the players with best streak of scoring (count the game only if the player played).
 >>> games.players_streaks.get_players_with_best_goal_scoring_streak()
@@ -113,8 +120,9 @@ You can get the longest players streaks of any subset of maccabi games:
 >>> games.players_streaks.get_players_with_current_maccabi_score_goal_streak()
 ```
 
-   ### Teams Streaks
+### Teams Streaks
 Very similar to players streak section
+
 ```
 >>> # Get the top winning streak against one team
 >>> games.teams_streaks.get_teams_with_current_win_streak()
@@ -123,8 +131,9 @@ Very similar to players streak section
 >>> games.teams_streak.get_teams_with_current_unbeaten_streak()
 ```
 
-   ### Teams statistics
+### Teams statistics
 You can get any game related statistics that will be order all the teams from those who have the most of this condition:
+
 ```
 >>> # Get the teams that maccabi won the most
 >>> games.teams.teams_ordered_by_maccabi_wins()
@@ -133,8 +142,9 @@ You can get any game related statistics that will be order all the teams from th
 >>> games.teams.teams_ordered_by_maccabi_clean_sheets_percentage()
 ```
 
-   ### Seasons
+### Seasons
 You can get the games grouped by seasons sorted by any condition, such as:
+
 ```
 >>> seasons = games.seasons.get_seasons_stats()  # At default the season will be sorted by year.
 >>> seasons.sort_by_wins_percentage()  # Sort the season by winning percentage, you should print the season object).
@@ -148,7 +158,7 @@ When crawling maccabi games each page will be saved on your disk to allow optimi
 To serialize maccabi games (it might take some time), use:
 ```
 >>> from maccabistats import serialize_maccabi_games
-    # The object will be serialized to home folder (%userprofile%) with its version and the current date.
+# The object will be serialized to home folder (%userprofile%) with its version and the current date.
 >>> serialize_maccabi_games(maccabi_games_stats_object)
 ```
 

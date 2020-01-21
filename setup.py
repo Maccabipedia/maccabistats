@@ -9,6 +9,7 @@ setup(
     license='MIT',
     description='Maccabi tel-aviv football team statistics manipulation.',
     long_description=open('README.md', encoding="utf-8").read(),
+    long_description_content_type='text/markdown',
     python_requires='>=3',
     install_requires=["setuptools==28.8.0",
                       "requests==2.20.0",
