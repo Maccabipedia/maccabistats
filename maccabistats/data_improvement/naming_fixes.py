@@ -75,3 +75,19 @@ class NamingErrorsFinder(object):
         """
 
         return SequenceMatcher(None, first, second).ratio()
+
+    @staticmethod
+    def get_similar_names(name, optional_similar_names, ratio=SIMILARITY_MINIMAL_RATIO):
+        """
+        Returns the list of similar names from the given list (which above the given ratio)
+        :param name: THe name to check similarity with
+        :type name: str
+        :param optional_similar_names: The names to check similarity against the main name
+        :type optional_similar_names: list of str
+        :param ratio: The minimal ratio of similarity (0.0 - 1.0)
+        :type ratio: float
+        :return: Similar names
+        :rtype: list of str
+        """
+        return [optional_name for optional_name in optional_similar_names if
+                NamingErrorsFinder.__similarity_of_two_names(name, optional_name) > ratio]
