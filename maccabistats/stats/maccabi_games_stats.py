@@ -250,6 +250,14 @@ class MaccabiGamesStats(object):
             logger.info(f"Serializing current maccabi games stats to temporary json file at: {temp_json.name}")
             temp_json.file.write(self.to_json())
 
+    @property
+    def first_game_date(self):
+        return self[0].date.strftime('%d-%m-%Y')
+
+    @property
+    def last_game_date(self):
+        return self[-1].date.strftime('%d-%m-%Y')
+
     def __len__(self):
         return len(self.games)
 
@@ -260,9 +268,16 @@ class MaccabiGamesStats(object):
         return self.games[item]
 
     def __repr__(self):
-        summary = "Contains {size} games".format(size=len(self))
+        summary = f"{len(self)} games"
         if len(self) > 0:
-            summary += "(from {start_date} to {end_date})".format(start_date=self[0].date.strftime('%d-%m-%Y'),
-                                                                  end_date=self[-1].date.strftime('%d-%m-%Y'))
+            summary += f" (from {self.first_game_date} to {self.last_game_date})"
+
+        return summary
+
+    @property
+    def hebrew_representation(self):
+        summary = f"{len(self)} משחקים"
+        if len(self) > 0:
+            summary += f" (החל מ {self.first_game_date} ועד {self.last_game_date})"
 
         return summary

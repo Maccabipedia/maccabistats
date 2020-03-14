@@ -1,4 +1,7 @@
 ------ Version 2.9.0 ------
+    Add hebrew "repr" to MaccabiGamesStats
+
+------ Version 2.9.0 ------
     Add "to_json" to the result class
 
 ------ Version 2.8.0 ------
