@@ -1,4 +1,7 @@
------- Version 2.9.0 ------
+------ Version 2.9.2 ------
+    Allow to send conditions to the MaccabiPediaCrawler
+
+------ Version 2.9.1 ------
     Add hebrew "repr" to MaccabiGamesStats
 
 ------ Version 2.9.0 ------

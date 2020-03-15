@@ -14,7 +14,7 @@ _MUST_HAVE_FIELDS = "_pageName"
 
 
 class MaccabiPediaCargoChunksCrawler(Iterator):
-    def __init__(self, tables_name, tables_fields, join_tables_on=""):
+    def __init__(self, tables_name, tables_fields, join_tables_on="", where_condition="1=1"):
         """
 
         :param tables_name: The table name to crawl
@@ -23,6 +23,8 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
         :type tables_fields: str
         :param join_tables_on: Which field to join the given tables by
         :type join_tables_on: str
+        :param where_condition: The condition of the query
+        :type where_condition: str
         """
 
         self.base_crawling_address = get_base_crawling_address_from_settings()
@@ -31,6 +33,7 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
         assert _MUST_HAVE_FIELDS in tables_fields, f"This class is depends on those fields to be queried: {_MUST_HAVE_FIELDS}"
         self.tables_fields = tables_fields
         self.join_tables_on = join_tables_on
+        self.where_condition = where_condition
 
         self._current_offset = 0
         self._finished_to_crawl = False
@@ -43,7 +46,8 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
                f"&fields={self.tables_fields}" \
                f"&join_on={self.join_tables_on}" \
                f"&limit={_MAX_LIMIT_PER_REQUEST}" \
-               f"&offset={self._current_offset}"
+               f"&offset={self._current_offset}" \
+               f"&where={self.where_condition}"
 
     def _request_more_data(self):
         """
