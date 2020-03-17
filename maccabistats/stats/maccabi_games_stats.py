@@ -97,6 +97,14 @@ class MaccabiGamesStats(object):
         return list(set([player.get_as_normal_player() for player in players]))
 
     @property
+    def available_players_names(self):
+        """
+        Returns the players names available in this current maccabi games stats
+        """
+        # We use set because some players object may return the same name (the same player name that playerd with different numbers)
+        return {player.name for player in self.available_players}
+
+    @property
     def available_referees(self):
         return list(set(game.referee for game in self.games))
 
