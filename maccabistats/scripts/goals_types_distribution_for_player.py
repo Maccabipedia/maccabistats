@@ -22,7 +22,7 @@ def show_goals_types_distribution_for_player(player_name):
     logger.info(f"Calculating goals types distribution for player: {player_name}")
 
     maccabipedia_games = load_from_maccabipedia_source()
-    player_league_games = maccabipedia_games.get_games_by_player_name(player_name).league_games
+    player_league_games = maccabipedia_games.get_games_by_played_player_name(player_name).league_games
 
     player_goals = []
     for game in player_league_games.games:

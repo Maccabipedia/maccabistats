@@ -185,9 +185,19 @@ class MaccabiGamesStats(object):
         """
         return MaccabiGamesStats([game for game in self.games if referee_name == game.referee])
 
-    def get_games_by_player_name(self, player_name):
+    def get_games_with_player_name(self, player_name):
         """
-        :param player_name: str.
+        Returns all the games that this player have any event in, played or at the bench.
+        :type player_name: str
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games
+                                  if player_name in [p.name.strip() for p in game.maccabi_team.players]])
+
+    def get_games_by_played_player_name(self, player_name):
+        """
+        Returns all the games that the given players played at.
+        :type player_name: str
         :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats([game for game in self.games

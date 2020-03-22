@@ -90,7 +90,7 @@ class MaccabiGamesPlayersStreaksStats(object):
 
     def _find_player_goal_scoring_best_streak(self, player_name):
         """
-         DO NOT use get_games_by_player_name, uses existing games
+         DO NOT use get_games_by_played_player_name, uses existing games
         """
 
         def player_scored_in_game(game):
@@ -105,7 +105,7 @@ class MaccabiGamesPlayersStreaksStats(object):
 
     def _find_player_goal_assisting_best_streak(self, player_name):
         """
-         DO NOT use get_games_by_player_name, uses existing games
+         DO NOT use get_games_by_played_player_name, uses existing games
         """
 
         def player_assist_in_game(game):
@@ -120,7 +120,7 @@ class MaccabiGamesPlayersStreaksStats(object):
 
     def _find_player_goal_involving_best_streak(self, player_name):
         """
-         DO NOT use get_games_by_player_name, uses existing games
+         DO NOT use get_games_by_played_player_name, uses existing games
         """
 
         def player_involved_in_goal_in_game(game):
@@ -182,7 +182,7 @@ class MaccabiGamesPlayersStreaksStats(object):
 
     def _find_player_goal_scoring_current_streak(self, player_name):
         """
-         DO NOT use get_games_by_player_name, uses existing games
+         DO NOT use get_games_by_played_player_name, uses existing games
         """
 
         def player_scored_in_game(game):
@@ -197,7 +197,7 @@ class MaccabiGamesPlayersStreaksStats(object):
 
     def _find_player_goal_assisting_current_streak(self, player_name):
         """
-         DO NOT use get_games_by_player_name, uses existing games
+         DO NOT use get_games_by_played_player_name, uses existing games
         """
 
         def player_assist_in_game(game):
@@ -212,7 +212,7 @@ class MaccabiGamesPlayersStreaksStats(object):
 
     def _find_player_goal_involving_current_streak(self, player_name):
         """
-         DO NOT use get_games_by_player_name, uses existing games
+         DO NOT use get_games_by_played_player_name, uses existing games
         """
 
         def player_involved_in_goal_in_game(game):
