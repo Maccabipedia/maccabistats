@@ -1,28 +1,29 @@
 # -*- coding: utf-8 -*-
 
-
-from maccabistats.stats.coaches import MaccabiGamesCoachesStats
-from maccabistats.stats.players import MaccabiGamesPlayersStats
-from maccabistats.stats.streaks import MaccabiGamesStreaksStats
-from maccabistats.stats.averages import MaccabiGamesAverageStats
-from maccabistats.stats.referees import MaccabiGamesRefereesStats
-from maccabistats.stats.comebacks import MaccabiGamesComebacksStats
-from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
-from maccabistats.stats.results import MaccabiGamesResultsStats
-from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
-from maccabistats.stats.graphs import MaccabiGamesGraphsStats
-from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
-from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
-from maccabistats.stats.teams import MaccabiGamesTeamsStats
-from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsSummaryStats
-
-from maccabistats.version import version as maccabistats_version
-
-from dateutil.parser import parse as datetime_parser
-from tempfile import NamedTemporaryFile
 import datetime
 import json
 import logging
+from tempfile import NamedTemporaryFile
+from collections import defaultdict
+
+from dateutil.parser import parse as datetime_parser
+
+from maccabistats.stats.averages import MaccabiGamesAverageStats
+from maccabistats.stats.coaches import MaccabiGamesCoachesStats
+from maccabistats.stats.comebacks import MaccabiGamesComebacksStats
+from maccabistats.stats.graphs import MaccabiGamesGraphsStats
+from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
+from maccabistats.stats.players import MaccabiGamesPlayersStats
+from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsSummaryStats
+from maccabistats.stats.players_special_games import MaccabiGamesPlayersSpecialGamesStats
+from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
+from maccabistats.stats.referees import MaccabiGamesRefereesStats
+from maccabistats.stats.results import MaccabiGamesResultsStats
+from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
+from maccabistats.stats.streaks import MaccabiGamesStreaksStats
+from maccabistats.stats.teams import MaccabiGamesTeamsStats
+from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
+from maccabistats.version import version as maccabistats_version
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,7 @@ class MaccabiGamesStats(object):
         self.teams_streaks = MaccabiGamesTeamsStreaksStats(self)
         self.teams = MaccabiGamesTeamsStats(self)
         self.players_events_summary = MaccabiGamesPlayersEventsSummaryStats(self)
+        self.players_special_games = MaccabiGamesPlayersSpecialGamesStats(self)
 
         self.version = maccabistats_version
 
@@ -229,6 +231,20 @@ class MaccabiGamesStats(object):
         """
 
         return [player for player in self.available_players if player_name in player.name]
+
+    def games_by_player_name(self):
+        """
+        Returns a MaccabiGamesStats object with all of the player games for each player (Just maccabi!).
+        The player may not played in this game (but just was part of the squad).
+        :rtype: dict[str, MaccabiGamesStats]
+        """
+        players_games = defaultdict(list)
+
+        for game in self.games:
+            for player in game.maccabi_team.players:
+                players_games[player.name].append(game)
+
+        return {player_name: MaccabiGamesStats(players_games[player_name]) for player_name in players_games.keys()}
 
     def get_summary(self):
         summary = {'games': len(self),
