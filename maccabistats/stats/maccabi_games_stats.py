@@ -51,7 +51,7 @@ class MaccabiGamesStats(object):
         self.teams_streaks = MaccabiGamesTeamsStreaksStats(self)
         self.teams = MaccabiGamesTeamsStats(self)
         self.players_events_summary = MaccabiGamesPlayersEventsSummaryStats(self)
-        self.players_first_time = MaccabiGamesPlayersSpecialGamesStats(self)
+        self.players_special_games = MaccabiGamesPlayersSpecialGamesStats(self)
 
         self.version = maccabistats_version
 
