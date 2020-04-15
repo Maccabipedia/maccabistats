@@ -1,3 +1,6 @@
+------ Version 2.10.0 ------
+    Adds the ability to get the most young\old players with some game activity (goal/assist/played)
+
 ------ Version 2.9.2 ------
     Allow to send conditions to the MaccabiPediaCrawler
 
