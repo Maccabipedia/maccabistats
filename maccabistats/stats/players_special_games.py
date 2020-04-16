@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from datetime import timedelta
 from enum import Enum
 
 from maccabistats.maccabipedia.players import MaccabiPediaPlayers
@@ -19,6 +20,8 @@ class PlayerGameMatcher(Enum):
 
 
 class PlayerAgeAtSpecialGame(object):
+    _days_in_year = 365.2425
+
     def __init__(self, player_name, player_birth_date, special_game):
         """
         :type player_name: str
@@ -30,7 +33,7 @@ class PlayerAgeAtSpecialGame(object):
         self.first_game = special_game
 
         self.time_in_days = special_game.date - player_birth_date
-        self.time_in_years = self.time_in_days.days / 365
+        self.time_in_years = self.time_in_days / timedelta(self._days_in_year)
 
     def __repr__(self):
         return f"{self.player_name} | {self.time_in_years:.2f} שנים --> המשחק: {self.first_game.date.date()} (נולד ב {self.birth_date.date()})"
