@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from collections import defaultdict
 
 from progressbar import ProgressBar
-from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +48,23 @@ class MaccabiGamesPlayersStreaksStats(object):
                                     self.maccabi_games_stats.available_players}
         return sorted(unsorted_players_streaks.items(), key=lambda kv: len(kv[1]), reverse=True)[:top_players_count]
 
+    def _get_players_streak_by_condition_from_all_games(self, streak_condition, top_players_count=10):
+        """
+        Same as "_get_players_streak_by_condition", but we dont filters the games for each player.
+        In this function the condition is check against all of the available games, even if the player doesnt play in a game
+        (useful for queries like "which player played the most games in a row?").
+        :type streak_condition: callable (maccabistats.stats.maccabi_games_stats.MaccabiGamesStats, str)
+        :type top_players_count: how many players to get (from the top)
+
+        :rtype: list of (str, maccabistats.stats.maccabi_games_stats.MaccabiGamesStats)
+        """
+        pbar = ProgressBar()
+        unsorted_players_streaks = dict()
+        for player in pbar(self.maccabi_games_stats.available_players):
+            unsorted_players_streaks[player.name] = streak_condition(self.maccabi_games_stats, player.name)
+
+        return sorted(unsorted_players_streaks.items(), key=lambda kv: len(kv[1]), reverse=True)[:top_players_count]
+
     def get_players_with_best_unbeaten_streak(self):
         return self._get_players_streak_by_condition(lambda games, player_name: games.streaks.get_longest_unbeaten_streak_games())
 
@@ -82,6 +99,10 @@ class MaccabiGamesPlayersStreaksStats(object):
 
     def get_players_with_best_clean_sheets_streak(self):
         return self._get_players_streak_by_condition(lambda games, player_name: games.streaks.get_longest_clean_sheet_games())
+
+    def get_players_with_best_played_in_game_streak(self):
+        return self._get_players_streak_by_condition_from_all_games(
+            lambda games, player_name: games.streaks.get_longest_player_played_in_game(player_name))
 
     #################################
     # Specific player streaks:
@@ -229,3 +250,7 @@ class MaccabiGamesPlayersStreaksStats(object):
     def get_players_with_current_scored_against_maccabi_not_more_than_streak(self, not_maccabi_score):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.streaks.get_current_scored_against_maccabi_not_more_than_streak(not_maccabi_score))
+
+    def get_players_with_current_played_in_game_streak(self):
+        return self._get_players_streak_by_condition_from_all_games(
+            lambda games, player_name: games.streaks.get_current_player_played_in_game_streak(player_name))
