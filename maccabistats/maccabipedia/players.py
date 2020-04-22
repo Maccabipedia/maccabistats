@@ -9,9 +9,13 @@ class MaccabiPediaPlayers(object):
     missing_birth_date_value = datetime_parser("1000")
     _instance = None
 
+    @classmethod
+    def default_birth_day_value(cls, *args, **kwargs):
+        return cls.missing_birth_date_value
+
     def __init__(self):
         # Uses defaultdict, each player that does not have a date of birth in maccabipedia, will set to year 1000 (to notice visually in stats)
-        self.players_dates = defaultdict(lambda: self.missing_birth_date_value, self.crawl_players_birth_dates())
+        self.players_dates = defaultdict(MaccabiPediaPlayers.default_birth_day_value, self.crawl_players_birth_dates())
 
     @staticmethod
     def crawl_players_birth_dates():
