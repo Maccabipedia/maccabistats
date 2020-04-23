@@ -191,7 +191,7 @@ class MaccabiGamesStreaksStats(object):
             lambda g: any(self.__scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench))
 
     def get_longest_player_played_in_game(self, player_name):
-        return self._get_longest_streak_by_condition(lambda g: player_name in g.maccabi_team.played_players_names)
+        return self._get_longest_streak_by_condition(lambda g: player_name in g.maccabi_team.played_players_with_amount)
 
     def get_similar_player_played_in_game_streak_by_length(self, player_name, minimum_streak_length=0):
         return self._get_similar_streaks(lambda g: player_name in g.maccabi_team.played_players_with_amount,
