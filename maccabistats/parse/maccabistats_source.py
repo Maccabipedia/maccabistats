@@ -83,10 +83,11 @@ class MaccabiStatsSource(object):
         if not serialized_source_games:
             raise RuntimeError(f"Cant find source serialized games at: {self._serialized_games_path_pattern}")
 
-        last_source_games = serialized_source_games[-1]
+        last_created_serialized_maccabi_games_file = max(serialized_source_games, key=os.path.getctime)
 
-        logger.info(f"Loading source {self.name} as MaccabiGamesStats from: {last_source_games}")
-        with open(last_source_games, 'rb') as f:
+        logger.info(f"Loading source {self.name} as MaccabiGamesStats from: {last_created_serialized_maccabi_games_file},"
+                    f" This is the last created serialized maccabi games file on this source folder")
+        with open(last_created_serialized_maccabi_games_file, 'rb') as f:
             self.maccabi_games_stats = pickle.load(f)
 
     def serialize_games(self):

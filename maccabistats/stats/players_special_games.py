@@ -2,21 +2,11 @@
 
 import logging
 from datetime import timedelta
-from enum import Enum
 
 from maccabistats.maccabipedia.players import MaccabiPediaPlayers
+from maccabistats.stats.players_games_condition import PlayerAging, PlayerGameMatcher, PlayerGamesCondition
 
 logger = logging.getLogger(__name__)
-
-
-class PlayerAging(Enum):
-    YOUNGEST_PLAYERS = "youngest"
-    OLDEST_PLAYERS = "oldest"
-
-
-class PlayerGameMatcher(Enum):
-    FIRST_GAME = "first_game"
-    LAST_GAME = "last_game"
 
 
 class PlayerAgeAtSpecialGame(object):
@@ -39,27 +29,6 @@ class PlayerAgeAtSpecialGame(object):
         return f"{self.player_name} | {self.time_in_years:.2f} שנים --> המשחק: {self.first_game.date.date()} (נולד ב {self.birth_date.date()})"
 
 
-class PlayerGamesCondition(object):
-
-    @staticmethod
-    def play_in_game(game, player_name):
-        return player_name in [p.name for p in game.maccabi_team.played_players]
-
-    @staticmethod
-    def create_score_x_goals_in_game__condition(goals_at_least):
-        def score_in_game_x_goals(game, player_name):
-            return game.maccabi_team.scored_players_with_amount.get(player_name, 0) >= goals_at_least
-
-        return score_in_game_x_goals
-
-    @staticmethod
-    def create_assist_x_goals_in_game__condition(assist_at_least):
-        def assist_in_game(game, player_name):
-            return game.maccabi_team.assist_players_with_amount.get(player_name, 0) >= assist_at_least
-
-        return assist_in_game
-
-
 class MaccabiGamesPlayersSpecialGamesStats(object):
     """
     This class will handle all players events and the first time they occur, like: first time that a player score - whos the youngest?
@@ -78,9 +47,9 @@ class MaccabiGamesPlayersSpecialGamesStats(object):
         :param player_game_condition: A function that will search for a game, gets (game, player_name) --> bool
         :type player_game_condition: callable
         :param player_game_to_search_for: Whether to search for the players first game or last game that satisfy the condition
-        :type player_game_to_search_for: PlayerGameMatcher
+        :type player_game_to_search_for: maccabistats.stats.players_games_condition.PlayerGameMatcher
         :param order_by_age_option: Do we want the youngest or oldest players?
-        :type order_by_age_option: PlayerAging
+        :type order_by_age_option: maccabistats.stats.players_games_condition.PlayerAging
         :param: The amount of players we want to return
         :type players_count: int
         :return: The players that satisfy the player game condition, from youngest and above

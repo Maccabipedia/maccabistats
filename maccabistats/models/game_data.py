@@ -2,7 +2,9 @@
 
 import datetime
 import json
+
 from dateutil.parser import parse as datetime_parser
+
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
 
@@ -196,6 +198,9 @@ class GameData(object):
         return json.dumps(self.json_dict())
 
     def __repr__(self):
+        return f"{self.date.date()} {self.competition}: {self.home_team.name}({self.home_team.score}) - ({self.away_team.score}){self.away_team.name}"
+
+    def full_description(self):
         return "Game between {self.home_team.name} (home) - {self.away_team.name} (away)\n" \
                "Results : {self.home_team.score} - {self.away_team.score}\n" \
                "Played on {self.stadium} at {self.date} with {self.crowd} viewers\n" \
