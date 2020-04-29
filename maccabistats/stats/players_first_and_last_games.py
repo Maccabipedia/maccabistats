@@ -35,7 +35,7 @@ class MaccabiGamesPlayersFirstAndLastGamesStats(object):
         :param player_game_to_search_for: Whether to search for the players first game or last game that satisfy the condition
         :type player_game_to_search_for: PlayerGameMatcher
         :return: The players that satisfy the condition at their first game + the first game, ordered by the game data ASC
-        :rtype: dict[str, maccabistats.models.game_data.GameData]
+        :rtype: list of (str, maccabistats.models.game_data.GameData)
         """
         games_by_player_name = self.maccabi_games_stats.games_by_player_name()
         players_that_satisfy_condition = dict()
@@ -51,7 +51,7 @@ class MaccabiGamesPlayersFirstAndLastGamesStats(object):
             if player_game_condition(game_to_check, player_name):
                 players_that_satisfy_condition[player_name] = game_to_check
 
-        return OrderedDict(sorted(players_that_satisfy_condition.items(), key=lambda item: item[1].date))
+        return sorted(players_that_satisfy_condition.items(), key=lambda item: item[1].date)
 
     def players_that_scored_at_their_first_game(self, score_at_least=1):
         return self._players_that_satisfy_condition_at_their_first_or_last_game(
