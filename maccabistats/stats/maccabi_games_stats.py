@@ -127,6 +127,13 @@ class MaccabiGamesStats(object):
         """
         return MaccabiGamesStats([game for game in self.games if game.is_maccabi_win])
 
+    @property
+    def technical_result_games(self):
+        """
+        :rtype: MaccabiGamesStats
+        """
+        return MaccabiGamesStats([game for game in self.games if game.technical_result])
+
     def played_before(self, date):
         return MaccabiGamesStats([game for game in self.games if game.played_before(date)])
 

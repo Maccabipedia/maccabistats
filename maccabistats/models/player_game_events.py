@@ -21,7 +21,8 @@ class GameEventTypes(Enum):
     SUBSTITUTION_OUT = 'Substitution-Out'
     GOAL_ASSIST = 'Assist-Goal'
     CAPTAIN = 'Captain'
-    PENALTY_MISSED = 'Penalty missed'
+    PENALTY_MISSED = 'Penalty-Missed'
+    PENALTY_STOPPED = 'Penalty-Stopped'
     BENCHED = "Benched"
     UNKNOWN = "Unknown"
 

@@ -1,7 +1,6 @@
 import logging
 from collections import defaultdict
 from datetime import timedelta
-
 from itertools import chain
 
 from maccabistats.models.player_game_events import GameEventTypes
@@ -24,11 +23,11 @@ class ErrorsFinder(object):
         """
         self.maccabi_games_stats = maccabi_games_stats
 
-    def get_games_without_11_players_on_lineup(self):
-        """ Each team should has 11 players with lineup event! """
+    def get_games_without_11_maccabi_players_on_lineup(self):
+        """ Each team should has 11 players with lineup event! but we care more about maccabi"""
 
         missing_lineup_games = [game for game in self.maccabi_games_stats
-                                if 11 > len(game.not_maccabi_team.lineup_players) or 11 > len(game.maccabi_team.lineup_players)]
+                                if 11 != len(game.maccabi_team.lineup_players)]
 
         return MaccabiGamesStats(missing_lineup_games)
 
@@ -42,9 +41,10 @@ class ErrorsFinder(object):
         return players_with_games
 
     def get_games_with_missing_goals_events(self):
-        """ Total score should be equals to the total goals event """
+        """ Total score should be equals to the total goals event, excluding games that were finished by technical result """
 
-        games = [game for game in self.maccabi_games_stats if game.maccabi_team.score + game.not_maccabi_team.score != len(game.goals())]
+        games = [game for game in self.maccabi_games_stats
+                 if (game.maccabi_team.score + game.not_maccabi_team.score != len(game.goals())) and not game.technical_result]
 
         return MaccabiGamesStats(games)
 

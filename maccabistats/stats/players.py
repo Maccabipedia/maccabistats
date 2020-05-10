@@ -131,6 +131,11 @@ class MaccabiGamesPlayersStats(object):
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.PENALTY_MISSED))
 
+    @property
+    def most_penalty_stopped(self):
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: p.event_count_by_type(GameEventTypes.PENALTY_STOPPED))
+
     def __get_players_with_most_of_this_game_condition(self, condition=None):
         """
         Return the players which played the most at games with the given condition,

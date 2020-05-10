@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
 
-from maccabistats.models.player_in_game import PlayerInGame
-from maccabistats.models.team_in_game import TeamInGame
+import logging
+from collections import defaultdict
+from datetime import timedelta
+
+from dateutil.parser import parse as datetime_parser
+
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent
+from maccabistats.models.player_in_game import PlayerInGame
+from maccabistats.models.team_in_game import TeamInGame
 from maccabistats.parse.maccabipedia.maccabipedia_cargo_chunks_crawler import MaccabiPediaCargoChunksCrawler
-
-from datetime import timedelta
-from collections import defaultdict
-from dateutil.parser import parse as datetime_parser
-import logging
-
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event, {1: defaultdict(_unknown_even
                                                                                     73: GameEventTypes.RED_CARD}),
                                                     8: defaultdict(_unknown_event, {81: _DUPLICATE_MACCABIPEDIA_EVENT,
                                                                                     82: GameEventTypes.PENALTY_MISSED,
-                                                                                    83: GameEventTypes.UNKNOWN,
+                                                                                    83: GameEventTypes.PENALTY_STOPPED,
                                                                                     84: _DUPLICATE_MACCABIPEDIA_EVENT}),
                                                     # No support atm for penalty save
                                                     9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
@@ -165,7 +164,8 @@ class MaccabiPediaParser(object):
         return GameData(competition=game_metadata["Competition"], fixture=game_metadata["Leg"], date_as_hebrew_string="",
                         stadium=game_metadata["Stadium"], crowd=game_metadata["Crowd"], referee=game_metadata["Refs"], home_team=home_team,
                         away_team=away_team, season_string=str(game_metadata["Season"]), half_parsed_events=[],
-                        date=datetime_parser(f"{game_metadata['Date']} {game_metadata['Hour']}"))
+                        date=datetime_parser(f"{game_metadata['Date']} {game_metadata['Hour']}"),
+                        technical_result=bool(game_metadata['Technical']))  # 'Technical' is 0/1/'', 1 means a technical result
 
     def parse(self):
         """

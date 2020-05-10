@@ -10,7 +10,7 @@ from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
 class GameData(object):
     def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
-                 season_string, half_parsed_events, date=None):
+                 season_string, half_parsed_events, date=None, technical_result=False):
         """
         :param competition: cup, league and so on.
         :type competition: str
@@ -27,8 +27,9 @@ class GameData(object):
         :type half_parsed_events: list of dict
         :param date: the date the game was played.
         :type date: datetime.datetime
+        :param technical_result: Whether this game was finished by a technical result (check the winner by the teams score).
+        :type: bool
         """
-
         self.competition = competition
         self.fixture = fixture
         # todo get this shit out of here
@@ -41,6 +42,7 @@ class GameData(object):
         self.away_team = away_team
         self.season = season_string
         self._half_parsed_events = half_parsed_events
+        self.technical_result = technical_result
 
     def played_before(self, date):
         """
