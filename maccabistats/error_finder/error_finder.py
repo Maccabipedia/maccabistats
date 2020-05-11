@@ -34,8 +34,7 @@ class ErrorsFinder(object):
     def get_lineup_players_with_substitution_in(self):
         """ Players that opened on lineup, should'nt has substitution in event. """
 
-        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
-                              game.maccabi_team.players + game.not_maccabi_team.players
+        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in game.maccabi_team.players
                               if player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
 
         return players_with_games
@@ -89,8 +88,8 @@ class ErrorsFinder(object):
         return games_with_incorrect_season
 
     def get_players_with_unknown_events(self):
-        players_with_unknown_events = [(player, game) for game in self.maccabi_games_stats for player in
-                                       game.maccabi_team.players + game.not_maccabi_team.players if player.has_event_type(GameEventTypes.UNKNOWN)]
+        players_with_unknown_events = [(player, game) for game in self.maccabi_games_stats for player in game.maccabi_team.players if
+                                       player.has_event_type(GameEventTypes.UNKNOWN)]
         return players_with_unknown_events
 
     def get_missing_league_games_fixtures(self):
