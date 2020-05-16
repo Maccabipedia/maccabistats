@@ -49,13 +49,15 @@ class ErrorsFinder(object):
 
     def get_games_with_different_score_and_goals(self):
         """ Game score should be equal to the last score at the last goal event.
-            Counting only games same goals count and score count (means they wont fail at "get_games_with_missing_goals_events"). """
+            Counting only games same goals count and score count (means they wont fail at "get_games_with_missing_goals_events").
+            and games that were not finished by technical result (the score will be different always). """
 
         games_with_wrong_goals_count = self.get_games_with_missing_goals_events()
 
         # If the goals count is the same, we can only check for maccabi goals (opponent goals will be equal if maccabi goals is).
         games = [game for game in self.maccabi_games_stats if
-                 game not in games_with_wrong_goals_count
+                 not game.technical_result
+                 and game not in games_with_wrong_goals_count
                  and (0 if not game.goals() else game.goals()[-1]["maccabi_score"]) != game.maccabi_score]
 
         return MaccabiGamesStats(games)
