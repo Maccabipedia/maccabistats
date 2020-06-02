@@ -82,6 +82,15 @@ class MaccabiGamesStats(object):
              game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגת הבורסה לניירות ערך", "ליגה א'", "ליגה א"]])
 
     @property
+    def official_games(self):
+        """ Return only the games which are not friendly games
+        :rtype: MaccabiGamesStats
+        """
+
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition != "ידידות"])
+
+    @property
     def available_competitions(self):
         return list(set(game.competition for game in self.games))
 

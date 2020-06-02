@@ -39,7 +39,7 @@ def get_maccabi_stats(file_name=None):
         if not maccabi_games_files_in_default_folder:
             raise RuntimeError(
                 f"No file name was given -> Failed to get the latest maccabi*.games from default folder: {_serialized_maccabi_games_folder_path}")
-        file_name = maccabi_games_files_in_default_folder[-1]
+        file_name = max(maccabi_games_files_in_default_folder, key=os.path.getctime)
 
     else:
         if not os.path.isfile(file_name):

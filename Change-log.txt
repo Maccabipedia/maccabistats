@@ -1,3 +1,6 @@
+------ Version 2.13.1 ------
+    Added maccabiGamesStats.official_games(), return all the competitions without "friendly games"
+
 ------ Version 2.13.0 ------
     Support technical games + penalty-stop event
 
