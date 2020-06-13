@@ -41,7 +41,7 @@ MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event, {1: defaultdict(_unknown_even
                                                     5: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_IN}),
                                                     6: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_OUT}),
                                                     7: defaultdict(_unknown_event, {71: GameEventTypes.YELLOW_CARD,
-                                                                                    72: GameEventTypes.YELLOW_CARD,
+                                                                                    72: GameEventTypes.SECOND_YELLOW_CARD,
                                                                                     73: GameEventTypes.RED_CARD}),
                                                     8: defaultdict(_unknown_event, {81: _DUPLICATE_MACCABIPEDIA_EVENT,
                                                                                     82: GameEventTypes.PENALTY_MISSED,

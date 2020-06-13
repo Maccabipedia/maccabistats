@@ -16,6 +16,7 @@ class GameEventTypes(Enum):
     GOAL_SCORE = 'Score-Goal'
     RED_CARD = 'Red-Card'
     YELLOW_CARD = 'Yellow-Card'
+    SECOND_YELLOW_CARD = 'Second-Yellow-Card'
     LINE_UP = 'Line-Up'
     SUBSTITUTION_IN = 'Substitution-In'
     SUBSTITUTION_OUT = 'Substitution-Out'
