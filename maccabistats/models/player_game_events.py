@@ -10,6 +10,7 @@ class GoalTypes(Enum):
     HEADER = 'Header'
     OWN_GOAL = 'Own goal'
     UNKNOWN = 'normal goal'
+    BICYCLE_KICK = 'Bicycle-kick'
 
 
 class GameEventTypes(Enum):

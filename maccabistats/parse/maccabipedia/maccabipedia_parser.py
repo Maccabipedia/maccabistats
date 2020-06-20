@@ -55,7 +55,8 @@ MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNKNOWN,
                            32: GoalTypes.HEADER,
                            33: GoalTypes.OWN_GOAL,
                            34: GoalTypes.FREE_KICK,
-                           35: GoalTypes.PENALTY}
+                           35: GoalTypes.PENALTY,
+                           36: GoalTypes.BICYCLE_KICK}
 
 
 class MaccabiPediaParser(object):
