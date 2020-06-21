@@ -1,3 +1,6 @@
+------ Version 2.14.0 ------
+    Added Bicycle-Kick support
+
 ------ Version 2.13.1 ------
     Added maccabiGamesStats.official_games(), return all the competitions without "friendly games"
 
