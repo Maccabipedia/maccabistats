@@ -1,3 +1,6 @@
+------ Version 2.15.0 ------
+    Added ability to checks player stats for "goals after sub-in"
+
 ------ Version 2.14.0 ------
     Added Bicycle-Kick support
 
