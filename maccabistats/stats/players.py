@@ -2,12 +2,13 @@
 
 
 from collections import Counter
-from functools import reduce
 from datetime import timedelta
-
+from functools import reduce
+import logging
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
 
+logger = logging.getLogger(__name__)
 # This class will handle all players statistics.
 
 
@@ -195,6 +196,42 @@ class MaccabiGamesPlayersStats(object):
         """
 
         return self.__get_players_with_most_of_this_game_condition(lambda g: True)
+
+    @staticmethod
+    def __goals_count_after_sub_in(player):
+        """
+        Count the goals after sub in for this player
+        :type player: maccabistats.models.player_in_game.PlayerInGame
+        :rtype: int
+        """
+        if not player.scored:
+            return 0
+        if not player.has_event_type(GameEventTypes.SUBSTITUTION_IN):
+            return 0
+
+        count_by_goals = player.event_count_by_type(GameEventTypes.GOAL_SCORE)
+
+        subs_in_time = player.get_events_by_type(GameEventTypes.SUBSTITUTION_IN)[0].time_occur
+        count_goals_after_sub = len([goal for goal in player.get_events_by_type(GameEventTypes.GOAL_SCORE) if goal.time_occur >= subs_in_time])
+
+        # Avoid bugs in maccabi site which registered players as subs in min 0.
+        if subs_in_time == timedelta(seconds=0):
+            return False
+
+        if count_by_goals != count_goals_after_sub:
+            # TODO: This is just for safety
+            logger.error(f"A player: {player.name} has different number of goals in 'goals_after_sub_in' calculation.")
+
+            return 0
+
+        return count_by_goals
+
+    @property
+    def most_goals_after_sub_in(self):
+        """
+        :rtype: Counter
+        """
+        return self.__get_players_from_all_games_with_most_of_this_condition(lambda p: self.__goals_count_after_sub_in(p))
 
     def __get_most_players_by_percentage_with_this_game_condition(self, players_ordered_by_game_condition,
                                                                   minimum_games_played=0):
