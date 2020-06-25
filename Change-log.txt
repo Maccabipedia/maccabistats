@@ -1,3 +1,7 @@
+------ Version 2.16.0 ------
+    Added statistics about home-players part in: goals/assists/goals involved.
+    Allow to sort the seasons by this stats
+
 ------ Version 2.15.0 ------
     Added ability to checks player stats for "goals after sub-in"
 

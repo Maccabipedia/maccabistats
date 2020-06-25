@@ -18,6 +18,7 @@ from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsS
 from maccabistats.stats.players_special_games import MaccabiGamesPlayersSpecialGamesStats
 from maccabistats.stats.players_first_and_last_games import MaccabiGamesPlayersFirstAndLastGamesStats
 from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
+from maccabistats.stats.players_categories import MaccabiGamesPlayersCategoriesStats
 from maccabistats.stats.referees import MaccabiGamesRefereesStats
 from maccabistats.stats.results import MaccabiGamesResultsStats
 from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
@@ -54,6 +55,7 @@ class MaccabiGamesStats(object):
         self.players_events_summary = MaccabiGamesPlayersEventsSummaryStats(self)
         self.players_special_games = MaccabiGamesPlayersSpecialGamesStats(self)
         self.players_first_and_last_games = MaccabiGamesPlayersFirstAndLastGamesStats(self)
+        self.players_categories = MaccabiGamesPlayersCategoriesStats(self)
 
         self.version = maccabistats_version
 
