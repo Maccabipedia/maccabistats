@@ -1,8 +1,18 @@
 from collections import defaultdict
+from datetime import datetime
+from typing import Dict
 
+from dataclasses import dataclass
 from dateutil.parser import parse as datetime_parser
 
 from maccabistats.parse.maccabipedia.maccabipedia_cargo_chunks_crawler import MaccabiPediaCargoChunksCrawler
+
+
+@dataclass
+class MaccabiPediaPlayerData(object):
+    name: str
+    birth_date: datetime
+    is_home_player: bool
 
 
 class MaccabiPediaPlayers(object):
@@ -15,23 +25,25 @@ class MaccabiPediaPlayers(object):
 
     def __init__(self):
         # Uses defaultdict, each player that does not have a date of birth in maccabipedia, will set to year 1000 (to notice visually in stats)
-        self.players_dates = defaultdict(MaccabiPediaPlayers.default_birth_day_value, self.crawl_players_birth_dates())
+        self._players_data = self._crawl_players_data()
+        self.players_dates = defaultdict(MaccabiPediaPlayers.default_birth_day_value,
+                                         {player_name: player_data.birth_date for player_name, player_data in self._players_data.items()})
+        self.home_players = {player_data.name for player_data in self._players_data.values() if player_data.is_home_player}
 
     @staticmethod
-    def crawl_players_birth_dates():
-        """
-        :rtype: dict[str, datetime.datetime]
-        """
-        players_date_of_birth_iterator = MaccabiPediaCargoChunksCrawler(tables_name="Profiles", tables_fields="Profiles._pageName, Profiles.DoB")
-        players_birth_dates = dict()
-        for player_data in players_date_of_birth_iterator:
-            if not player_data['DoB']:
-                continue  # We use defaultdict, These players will count as born at year 1000
+    def _crawl_players_data() -> Dict[str, MaccabiPediaPlayerData]:
+        players_data_iterator = MaccabiPediaCargoChunksCrawler(tables_name="Profiles",
+                                                               tables_fields="Profiles._pageName, Profiles.DoB, Profiles.HomePlayer")
+        players_data = dict()
+        for player_raw_data in players_data_iterator:
+            # Player Date of birth is missing for some players, we just take the default value for those
+            birth_date = datetime_parser(player_raw_data['DoB']) if player_raw_data['DoB'] else MaccabiPediaPlayers.missing_birth_date_value
+            player_name = player_raw_data['_pageName']
+            is_home_player = bool(player_raw_data['HomePlayer'])  # Should be 0 or 1
 
-            player_name = player_data['_pageName']
-            players_birth_dates[player_name] = datetime_parser(player_data['DoB'])
+            players_data[player_name] = MaccabiPediaPlayerData(name=player_name, birth_date=birth_date, is_home_player=is_home_player)
 
-        return players_birth_dates
+        return players_data
 
     @classmethod
     def get_players_data(cls):

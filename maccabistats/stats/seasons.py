@@ -120,7 +120,31 @@ class Seasons(object):
         Goals for maccabi / Goals against maccabi
         """
         self._refresh_sorting(sort_attribute_function=lambda s: s.results.goals_ratio,
-                              sort_attribute_description="sort by goals ratio (Goals for maccabi \ Goals against maccabi)")
+                              sort_attribute_description="sort by goals ratio (Goals for maccabi / Goals against maccabi)")
+
+    def sort_by_home_players_goals_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.players_categories.home_players_goals_count(),
+                              sort_attribute_description="sort by home players goals count")
+
+    def sort_by_home_players_goals_ratio(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.players_categories.home_players_goals_ratio(),
+                              sort_attribute_description="sort by home players goals ratio")
+
+    def sort_by_home_players_assists_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.players_categories.home_players_assists_count(),
+                              sort_attribute_description="sort by home players assists count")
+
+    def sort_by_home_players_assists_ratio(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.players_categories.home_players_assists_ratio(),
+                              sort_attribute_description="sort by home players assists ratio")
+
+    def sort_by_home_players_goals_involved_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.players_categories.home_players_goals_involved_count(),
+                              sort_attribute_description="sort by home players goals involved count")
+
+    def sort_by_home_players_goals_involved_ratio(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: s.players_categories.home_players_goals_involved_ratio(),
+                              sort_attribute_description="sort by home players goals involved ratio")
 
 
 # This class will handle all seasons statistics.
