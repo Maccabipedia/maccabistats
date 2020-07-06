@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from pprint import pformat
+
 from datetime import timedelta
 from itertools import groupby, takewhile
-from pprint import pformat
 
 from maccabistats.models.player_game_events import GameEventTypes
 
@@ -179,16 +180,13 @@ class MaccabiGamesStreaksStats(object):
         return self._get_current_streak_by_condition(lambda g: g.not_maccabi_team.score <= not_maccabi_score)
 
     def get_longest_goals_from_bench_games(self):
-        return self._get_longest_streak_by_condition(
-            lambda g: any(self.__scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench))
+        return self._get_longest_streak_by_condition(lambda g: any(g.maccabi_team.has_goal_from_bench))
 
     def get_similar_goals_from_bench_streak_by_length(self, minimum_streak_length=0):
-        return self._get_similar_streaks(lambda g: any(
-            self.__scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench), minimum_streak_length=minimum_streak_length)
+        return self._get_similar_streaks(lambda g: any(g.maccabi_team.has_goal_from_bench), minimum_streak_length=minimum_streak_length)
 
     def get_current_goals_from_bench_streak(self):
-        return self._get_current_streak_by_condition(
-            lambda g: any(self.__scored_after_subs_in(player) for player in g.maccabi_team.players_from_bench))
+        return self._get_current_streak_by_condition(lambda g: any(g.maccabi_team.has_goal_from_bench))
 
     def get_longest_player_played_in_game(self, player_name):
         return self._get_longest_streak_by_condition(lambda g: player_name in g.maccabi_team.played_players_with_amount)
@@ -199,25 +197,6 @@ class MaccabiGamesStreaksStats(object):
 
     def get_current_player_played_in_game_streak(self, player_name):
         return self._get_current_streak_by_condition(lambda g: player_name in g.maccabi_team.played_players_with_amount)
-
-    @staticmethod
-    def __scored_after_subs_in(player):
-        """
-        Helper func to calc the goals from bench streaks.
-        :type player: maccabistats.models.player_in_game.PlayerInGame
-
-        """
-        if not player.scored:
-            return False
-
-        min_goal_time = min(goal.time_occur for goal in player.get_events_by_type(GameEventTypes.GOAL_SCORE))
-        subs_in_time = player.get_events_by_type(GameEventTypes.SUBSTITUTION_IN)[0].time_occur
-
-        # Avoid bugs in maccabi site which registered players as subs in min 0.
-        if subs_in_time == timedelta(seconds=0):
-            return False
-
-        return min_goal_time >= subs_in_time
 
     def _show_streaks(self):
         # TODO: this should be change to better way to design the streaks and the str\repr

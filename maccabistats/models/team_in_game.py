@@ -130,6 +130,10 @@ class TeamInGame(Team):
             lambda p: p.event_count_by_type(GameEventTypes.PENALTY_MISSED))
 
     @property
+    def has_goal_from_bench(self):
+        return any(player.scored_after_sub_in for player in self.players_from_bench)
+
+    @property
     def played_players_with_amount(self):
         """
         :rtype: Counter
