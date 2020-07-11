@@ -1,3 +1,6 @@
+------ Version 2.17.0 ------
+    Add coach statistics
+
 ------ Version 2.16.0 ------
     Added statistics about home-players part in: goals/assists/goals involved.
     Allow to sort the seasons by this stats
