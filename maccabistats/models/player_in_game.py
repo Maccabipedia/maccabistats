@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import timedelta
 
 from maccabistats.models.player_game_events import GameEvent, GameEventTypes
 from maccabistats.models.player import Player
@@ -72,6 +73,23 @@ class PlayerInGame(Player):
         :rtype: bool
         """
         return self.has_event_type(GameEventTypes.GOAL_SCORE)
+
+    @property
+    def scored_after_sub_in(self):
+        """
+        Whether this players scored after a sub in
+        """
+        if not self.scored:
+            return False
+
+        min_goal_time = min(goal.time_occur for goal in self.get_events_by_type(GameEventTypes.GOAL_SCORE))
+        subs_in_time = self.get_events_by_type(GameEventTypes.SUBSTITUTION_IN)[0].time_occur
+
+        # Avoid bugs in maccabi site which registered players as subs in min 0.
+        if subs_in_time == timedelta(seconds=0):
+            return False
+
+        return min_goal_time >= subs_in_time
 
     def get_event_by_similar_event(self, event_to_find):
         """  Return events that equals to the given event.

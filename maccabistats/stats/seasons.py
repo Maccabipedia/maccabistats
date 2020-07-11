@@ -146,6 +146,22 @@ class Seasons(object):
         self._refresh_sorting(sort_attribute_function=lambda s: s.players_categories.home_players_goals_involved_ratio(),
                               sort_attribute_description="sort by home players goals involved ratio")
 
+    def sort_by_played_players_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.most_played),
+                              sort_attribute_description="sort by the number of different players that played")
+
+    def sort_by_scored_players_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.best_scorers),
+                              sort_attribute_description="sort by the number of different players that scored")
+
+    def sort_by_assisted_players_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.best_assisters),
+                              sort_attribute_description="sort by the number of different players that assisted")
+
+    def sort_by_goal_involved_players_count(self):
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.most_goals_involved),
+                              sort_attribute_description="sort by the number of different players that were involved in a goal")
+
 
 # This class will handle all seasons statistics.
 
