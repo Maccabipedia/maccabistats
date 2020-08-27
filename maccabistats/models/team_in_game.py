@@ -4,7 +4,7 @@ import json
 import logging
 from collections import Counter
 
-from maccabistats.models.player_game_events import GameEventTypes
+from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 from maccabistats.models.player_in_game import PlayerInGame
 from maccabistats.models.team import Team
 
@@ -88,6 +88,11 @@ class TeamInGame(Team):
     def scored_players_with_amount(self):
         return self.get_players_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE))
+
+    @property
+    def scored_for_maccabi_players_with_amount(self):
+        return self.get_players_with_most_of_this_condition(
+            lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE) and p.goals_count_by_goal_type(GoalTypes.OWN_GOAL) == 0)
 
     @property
     def lineup_players_with_amount(self):
