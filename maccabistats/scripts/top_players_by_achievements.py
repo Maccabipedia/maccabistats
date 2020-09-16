@@ -1,16 +1,20 @@
-import json
 from collections import Counter, defaultdict
+
+import json
 from pathlib import Path
 from pprint import pformat
-from typing import Dict, Set
-
 from progressbar import ProgressBar
+from typing import Dict, Set
 
 from maccabistats import load_from_maccabipedia_source
 from stats.maccabi_games_stats import MaccabiGamesStats
 
 _DESCRIPTION_WHICH_MEANS_MACCABI_WON_TITLE = ['מקום 1', 'זכיה']
 
+# To check titles with coaches - uncomment line 42
+# To check specific competition titles, uncomment line 28
+# This query can generate the achievements.json:
+# https://www.maccabipedia.co.il/api.php?action=cargoquery&tables=Achievements&format=json&fields=ConnectedCompID,Season,Achievement&limit=1000
 
 def extract_seasons_with_titles() -> Dict[str, int]:
     achievements_file_path = Path(__file__).absolute().parent / 'achievements.json'
@@ -19,7 +23,10 @@ def extract_seasons_with_titles() -> Dict[str, int]:
 
     # Season may occur more than one (means maccabi won more than onc title)
     titles = [title_row['title']['Season'] for title_row in titles_from_cargo if
-              title_row['title']['Achievement'] in _DESCRIPTION_WHICH_MEANS_MACCABI_WON_TITLE]
+              title_row['title']['Achievement'] in _DESCRIPTION_WHICH_MEANS_MACCABI_WON_TITLE
+              # Uncomment to check only specific titles
+              #and int(title_row['title']['ConnectedCompID']) == 1
+              ]
 
     titles_count_by_year = defaultdict(int, Counter(titles))
     return titles_count_by_year
@@ -33,7 +40,7 @@ def generate_season_to_played_players(maccabi_games: MaccabiGamesStats) -> Dict[
 
     for game in pbar(maccabi_games):
         seasons_to_players[game.season].update(game.maccabi_team.played_players_with_amount.keys())
-        #seasons_to_players[game.season].add(game.maccabi_team.coach)
+        # seasons_to_players[game.season].add(game.maccabi_team.coach)
 
     return seasons_to_players
 
