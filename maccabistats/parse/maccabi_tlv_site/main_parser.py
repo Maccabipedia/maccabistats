@@ -53,9 +53,10 @@ def __get_parsed_maccabi_games_from_web():
     """ Parse maccabi games from maccabi site.
     :rtype: list of maccabistats.models.game_data.GameData
     """
-
     maccabi_games = []
-    for season_number in range(get_max_seasons_from_settings()):
+    start_to_parse_from_season_number = int(os.environ.get('START_SEASON_TO_CRAWL', 0))
+
+    for season_number in range(start_to_parse_from_season_number, get_max_seasons_from_settings()):
         logger.info("Parsing season number {s_n}".format(s_n=season_number))
         maccabi_games.extend(__parse_games_from_season_number(season_number))
 
@@ -80,7 +81,8 @@ def __get_parsed_maccabi_games_from_web_multi_process():
     crawling_processes = get_crawling_processes_number_from_settings()
     logger.info("Crawling with {num} processes".format(num=crawling_processes))
 
-    maccabi_seasons_numbers = range(get_max_seasons_from_settings())
+    start_to_parse_from_season_number = int(os.environ.get('START_SEASON_TO_CRAWL', 0))
+    maccabi_seasons_numbers = range(start_to_parse_from_season_number, get_max_seasons_from_settings())
     with Pool(crawling_processes) as pool:
         maccabi_games = list(itertools.chain.from_iterable(pool.map(__parse_games_from_season_number, maccabi_seasons_numbers)))
 

@@ -269,13 +269,17 @@ def fix_specific_games(games):
     # TODO separate to two diff function (or any another logic).
 
     # Fix goals:
-    __fix_basel_three_three(games)
-    __fix_haifa_three_one(games)
-    __fix_hibernians_five_one(games)
-    __fix_akko_two_zero(games)
-    __fix_beitar_three_two(games)
-    __fix_kfar_saba_two_one(games)
-    __fix_kfar_saba_toto_games_at_2000_2001(games)
+    try:
+        __fix_basel_three_three(games)
+        __fix_haifa_three_one(games)
+        __fix_hibernians_five_one(games)
+        __fix_akko_two_zero(games)
+        __fix_beitar_three_two(games)
+        __fix_kfar_saba_two_one(games)
+        __fix_kfar_saba_toto_games_at_2000_2001(games)
+
+    except IndexError:
+        logger.warning('Probably found no specific games to fix (it might cause because you run with MaccabiGamesStats without these games, Continue')
 
     # Fix dates & name:
     __fix_hapoel_haifa_four_two_date_99_00(games)

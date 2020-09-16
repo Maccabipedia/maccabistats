@@ -74,6 +74,18 @@ class MaccabiGamesStats(object):
         return MaccabiGamesStats([game for game in self.games if not game.is_maccabi_home_team])
 
     @property
+    def trophy_games(self):
+        return MaccabiGamesStats(
+            [game for game in self.games if
+             game.competition in ["גביע המלחמה", "הגביע הארץ ישראלי", "גביע המדינה"]])
+
+    @property
+    def europe_games(self):
+        return MaccabiGamesStats(
+            [game for game in self.games if
+             game.competition in ["ליגת האלופות", "גביע אירופה לאלופות", "הליגה האירופית", "גביע אופא", "גביע אירופה למחזיקות גביע", "גביע האינטרטוטו", "ליגה אירופית", "מוקדמות ליגת האלופות", "פלייאוף הליגה האירופית", "מוקדמות הליגה האירופית", "גביע אסיה לאלופות"]])
+
+    @property
     def league_games(self):
         """ Return only the first league games - from all years
         :rtype: MaccabiGamesStats
@@ -81,7 +93,7 @@ class MaccabiGamesStats(object):
 
         return MaccabiGamesStats(
             [game for game in self.games if
-             game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגת הבורסה לניירות ערך", "ליגה א'", "ליגה א"]])
+             game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגת הבורסה לניירות ערך", "ליגה א'", "ליגה א", "הליגה הארצית"]])
 
     @property
     def official_games(self):
