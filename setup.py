@@ -1,9 +1,16 @@
 from setuptools import setup, find_packages
-from maccabistats.version import version
+import os
+
+
+def extract_version_number() -> str:
+    version_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'maccabistats', 'version.py')
+    with open(version_file_path, 'rb') as version_file:
+        return str(version_file.read().split()[-1].strip(b'"'))
+
 
 setup(
     name='maccabistats',
-    version=version,
+    version=extract_version_number(),
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
