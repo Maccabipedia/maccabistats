@@ -1,24 +1,29 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import datetime
 import json
 import logging
-from tempfile import NamedTemporaryFile
 from collections import defaultdict
+from tempfile import NamedTemporaryFile
+from typing import List, Union, Dict, Any
 
 from dateutil.parser import parse as datetime_parser
 
+from maccabistats.models.game_data import GameData
+from maccabistats.models.player import Player
 from maccabistats.stats.averages import MaccabiGamesAverageStats
 from maccabistats.stats.coaches import MaccabiGamesCoachesStats
 from maccabistats.stats.comebacks import MaccabiGamesComebacksStats
+from maccabistats.stats.consts import TROPHY_COMPETITIONS, EUROPE_COMPETITIONS, LEAGUE_COMPETITIONS, \
+    NON_OFFICIAL_COMPETITIONS
 from maccabistats.stats.graphs import MaccabiGamesGraphsStats
 from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
 from maccabistats.stats.players import MaccabiGamesPlayersStats
-from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsSummaryStats
-from maccabistats.stats.players_special_games import MaccabiGamesPlayersSpecialGamesStats
-from maccabistats.stats.players_first_and_last_games import MaccabiGamesPlayersFirstAndLastGamesStats
-from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
 from maccabistats.stats.players_categories import MaccabiGamesPlayersCategoriesStats
+from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsSummaryStats
+from maccabistats.stats.players_first_and_last_games import MaccabiGamesPlayersFirstAndLastGamesStats
+from maccabistats.stats.players_special_games import MaccabiGamesPlayersSpecialGamesStats
+from maccabistats.stats.players_streaks import MaccabiGamesPlayersStreaksStats
 from maccabistats.stats.referees import MaccabiGamesRefereesStats
 from maccabistats.stats.results import MaccabiGamesResultsStats
 from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
@@ -32,12 +37,8 @@ logger = logging.getLogger(__name__)
 
 class MaccabiGamesStats(object):
 
-    def __init__(self, maccabi_site_games):
-        """
-        :type maccabi_site_games: list of maccabistats.models.game_data.GameData
-        """
-
-        self.games = sorted(maccabi_site_games, key=lambda g: g.date)  # Sort the games by date
+    def __init__(self, maccabi_games: List[GameData]) -> None:
+        self.games = sorted(maccabi_games, key=lambda g: g.date)  # Sort the games by date
 
         self.coaches = MaccabiGamesCoachesStats(self)
         self.players = MaccabiGamesPlayersStats(self)
@@ -59,216 +60,173 @@ class MaccabiGamesStats(object):
 
         self.version = maccabistats_version
 
+    # region home_away
+
     @property
-    def home_games(self):
-        """
-        :rtype: MaccabiGamesStats
-        """
+    def home_games(self) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if game.is_maccabi_home_team])
 
     @property
-    def away_games(self):
-        """
-        :rtype: MaccabiGamesStats
-        """
+    def away_games(self) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if not game.is_maccabi_home_team])
 
-    @property
-    def trophy_games(self):
-        return MaccabiGamesStats(
-            [game for game in self.games if
-             game.competition in ["גביע המלחמה", "הגביע הארץ ישראלי", "גביע המדינה"]])
+    # endregion
+
+    # region competitions filters
 
     @property
-    def europe_games(self):
-        return MaccabiGamesStats(
-            [game for game in self.games if
-             game.competition in ["ליגת האלופות", "גביע אירופה לאלופות", "הליגה האירופית", "גביע אופא", "גביע אירופה למחזיקות גביע", "גביע האינטרטוטו", "ליגה אירופית", "מוקדמות ליגת האלופות", "פלייאוף הליגה האירופית", "מוקדמות הליגה האירופית", "גביע אסיה לאלופות"]])
+    def trophy_games(self) -> MaccabiGamesStats:
+        return MaccabiGamesStats([game for game in self.games if game.competition in TROPHY_COMPETITIONS])
 
     @property
-    def league_games(self):
-        """ Return only the first league games - from all years
-        :rtype: MaccabiGamesStats
-        """
-
-        return MaccabiGamesStats(
-            [game for game in self.games if
-             game.competition in ["ליגת העל", "ליגה לאומית", "ליגת Winner", "ליגת הבורסה לניירות ערך", "ליגה א'", "ליגה א", "הליגה הארצית"]])
+    def europe_games(self) -> MaccabiGamesStats:
+        return MaccabiGamesStats([game for game in self.games if game.competition in EUROPE_COMPETITIONS])
 
     @property
-    def official_games(self):
-        """ Return only the games which are not friendly games
-        :rtype: MaccabiGamesStats
-        """
-
-        return MaccabiGamesStats(
-            [game for game in self.games if game.competition != "ידידות"])
+    def league_games(self) -> MaccabiGamesStats:
+        return MaccabiGamesStats([game for game in self.games if game.competition in LEAGUE_COMPETITIONS])
 
     @property
-    def available_competitions(self):
+    def official_games(self) -> MaccabiGamesStats:
+        return MaccabiGamesStats([game for game in self.games if game.competition not in NON_OFFICIAL_COMPETITIONS])
+
+    @property
+    def non_official_games(self) -> MaccabiGamesStats:
+        return MaccabiGamesStats([game for game in self.games if game.competition in NON_OFFICIAL_COMPETITIONS])
+
+    # endregion
+
+    # region available properties
+
+    @property
+    def available_competitions(self) -> List[str]:
         return list(set(game.competition for game in self.games))
 
     @property
-    def available_opponents(self):
+    def available_opponents(self) -> List[str]:
         return list(set(game.not_maccabi_team.name for game in self.games))
 
     @property
-    def available_stadiums(self):
+    def available_stadiums(self) -> List[str]:
         return list(set(game.stadium for game in self.games))
 
     @property
-    def available_players(self):
-        players = []
-        [players.extend(game.maccabi_team.players) for game in self.games]
-
+    def available_players(self) -> List[Player]:
+        """
+        Returns players objects (name + number), Which means a player name can appear more than once.
+        """
+        players = set(player for game in self.games for player in game.maccabi_team.players)
         return list(set([player.get_as_normal_player() for player in players]))
 
     @property
-    def available_players_names(self):
-        """
-        Returns the players names available in this current maccabi games stats
-        """
-        # We use set because some players object may return the same name (the same player name that playerd with different numbers)
-        return {player.name for player in self.available_players}
+    def available_players_names(self) -> List[str]:
+        return list(set(player.name for player in self.available_players))
 
     @property
-    def available_referees(self):
+    def available_referees(self) -> List[str]:
         return list(set(game.referee for game in self.games))
 
     @property
-    def available_coaches(self):
+    def available_coaches(self) -> List[str]:
         return list(set(game.maccabi_team.coach for game in self.games))
 
     @property
-    def available_seasons(self):
+    def available_seasons(self) -> List[str]:
         return sorted(list(set(game.season for game in self.games)))
 
+    # endregion
+
+    # region result based
+
     @property
-    def maccabi_wins(self):
-        """
-        :rtype: MaccabiGamesStats
-        """
+    def maccabi_wins(self) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if game.is_maccabi_win])
 
     @property
-    def technical_result_games(self):
-        """
-        :rtype: MaccabiGamesStats
-        """
+    def maccabi_ties(self) -> MaccabiGamesStats:
+        return MaccabiGamesStats([game for game in self.games if game.maccabi_score_diff == 0])
+
+    @property
+    def maccabi_losses(self) -> MaccabiGamesStats:
+        return MaccabiGamesStats([game for game in self.games if game.maccabi_score_diff < 0])
+
+    @property
+    def technical_result_games(self) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if game.technical_result])
 
-    def played_before(self, date):
+    # endregion
+
+    # region date based
+
+    def played_before(self, date: Union[datetime.datetime, str]) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if game.played_before(date)])
 
-    def played_after(self, date):
-        """
-        :rtype: MaccabiGamesStats
-        """
+    def played_after(self, date: Union[datetime.datetime, str]) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if game.played_after(date)])
 
-    def played_at(self, date):
-        """
-        Currently checking just the: year & month & day.
-        :param date: datetime.datetime or str
-        :rtype: list of maccabistats.models.game_data.GameData
-        """
-
+    def played_at(self, date: Union[datetime.datetime, str]) -> MaccabiGamesStats:
         if type(date) is str:
             date = datetime_parser(date).date()
         elif type(date) is datetime.datetime:
             date = date.date()  # Leave only year & month & day
 
-        return [game for game in self.games if game.date.date() == date]
+        return MaccabiGamesStats([game for game in self.games if game.date.date() == date])
 
-    def get_games_by_competition(self, competition_types):
-        """
-        :type competition_types: str or list of str
-        :rtype: MaccabiGamesStats
-        """
+    @property
+    def first_game_date(self) -> str:
+        return self[0].date.strftime('%d-%m-%Y')
 
+    @property
+    def last_game_date(self) -> str:
+        return self[-1].date.strftime('%d-%m-%Y')
+
+    # endregion
+
+    # region free-style filters
+
+    def get_games_by_competition(self, competition_types: Union[List[str], str]) -> MaccabiGamesStats:
         if type(competition_types) is str:
             competition_types = [competition_types]
 
         return MaccabiGamesStats([game for game in self.games if game.competition in competition_types])
 
-    def get_games_by_stadium(self, stadium_name):
-        """
-        :param stadium_name: str.
-        :rtype: MaccabiGamesStats
-        """
+    def get_games_by_stadium(self, stadium_name: str) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if stadium_name == game.stadium])
 
-    def get_games_against_team(self, team_name):
-        """
-        :param team_name: str.
-        :rtype: MaccabiGamesStats
-        """
+    def get_games_against_team(self, team_name: str) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if team_name == game.not_maccabi_team.name])
 
-    def get_games_by_coach(self, coach_name):
-        """
-        :param coach_name: str.
-        :rtype: MaccabiGamesStats
-        """
+    def get_games_by_coach(self, coach_name: str) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if coach_name == game.maccabi_team.coach])
 
-    def get_games_by_referee(self, referee_name):
-        """
-        :param referee_name: str.
-        :rtype: MaccabiGamesStats
-        """
+    def get_games_by_referee(self, referee_name: str) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if referee_name == game.referee])
 
-    def get_games_with_player_name(self, player_name):
+    def get_games_with_player_name(self, player_name: str) -> MaccabiGamesStats:
         """
         Returns all the games that this player have any event in, played or at the bench.
-        :type player_name: str
-        :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats([game for game in self.games
                                   if player_name in [p.name.strip() for p in game.maccabi_team.players]])
 
-    def get_games_by_played_player_name(self, player_name):
+    def get_games_by_played_player_name(self, player_name: str) -> MaccabiGamesStats:
         """
         Returns all the games that the given players played at.
-        :type player_name: str
-        :rtype: MaccabiGamesStats
         """
         return MaccabiGamesStats([game for game in self.games
                                   if player_name in [p.name.strip() for p in game.maccabi_team.played_players]])
 
-    def get_games_by_season(self, season):
+    def get_games_by_season(self, season: str) -> MaccabiGamesStats:
         """
         Return Maccabi games stats object with season games, season may be entered as "1900/01".
-        :param season: season to get game for.
-        :rtype: MaccabiGamesStats
         """
-
         return MaccabiGamesStats([game for game in self.games if game.season == season])
 
-    @staticmethod
-    def create_maccabi_stats_from_games(games):
-        """ Creates MaccabiGamesStats from list of maccabistats.models.game_data.GameData
-        :param games: list of maccabistats.models.game_data.GameData
-        :return: MaccabiGamesStats
-        """
+    # endregion
 
-        return MaccabiGamesStats(games)
-
-    def get_players_by_name(self, player_name):
+    def games_by_player_name(self) -> Dict[str, MaccabiGamesStats]:
         """
-        Return list of players which *CONTAINS* the player_name param.
-        :param player_name: name to search in all players name list.
-        :return: list of maccabistats.models.player_in_game.PlayerInGame
-        """
-
-        return [player for player in self.available_players if player_name in player.name]
-
-    def games_by_player_name(self):
-        """
-        Returns a MaccabiGamesStats object with all of the player games for each player (Just maccabi!).
-        The player may not played in this game (but just was part of the squad).
-        :rtype: dict[str, MaccabiGamesStats]
+        Returns a mapping between a player name to all of his games
         """
         players_games = defaultdict(list)
 
@@ -278,7 +236,11 @@ class MaccabiGamesStats(object):
 
         return {player_name: MaccabiGamesStats(players_games[player_name]) for player_name in players_games.keys()}
 
-    def get_summary(self):
+    @classmethod
+    def create_maccabi_stats_from_games(cls, games: List[GameData]) -> MaccabiGamesStats:
+        return cls(games)
+
+    def get_summary(self) -> Dict[str, Any]:
         summary = {'games': len(self),
                    "wins": self.results.wins_count,
                    "wins_by_percentage": self.results.wins_percentage,
@@ -295,7 +257,7 @@ class MaccabiGamesStats(object):
 
         return summary
 
-    def show_sumamry(self):
+    def show_summary(self) -> None:
         summary = ("Maccabi games stats object:"
                    "\n\nGames count: {games}"
                    "\nWins : {wins} ({wins_by_percentage}%)"
@@ -303,37 +265,27 @@ class MaccabiGamesStats(object):
                    "\nTies : {ties} ({ties_by_percentage}%)"
                    "\n\nGoals for maccabi : {goals_for_maccabi}, {goals_for_maccabi_avg} per game"
                    "\nGoals against maccabi : {goals_against_maccabi}, {goals_against_maccabi_avg} per game"
-                   "\nGoals diff for maccabi: {goals_diff_for_maccabi}, {goals_diff_for_maccabi} per game").format(**self.get_summary())
+                   "\nGoals diff for maccabi: {goals_diff_for_maccabi}, {goals_diff_for_maccabi} per game").format(
+            **self.get_summary())
 
         print(summary)
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps([game.to_json() for game in self.games], indent=4)
 
-    def json_to_temp_file(self):
+    def serialize_to_json(self) -> None:
         # TODO, there is too much escaped stuff in this function output
         with NamedTemporaryFile(delete=False, mode='w') as temp_json:
             logger.info(f"Serializing current maccabi games stats to temporary json file at: {temp_json.name}")
             temp_json.file.write(self.to_json())
 
-    @property
-    def first_game_date(self):
-        return self[0].date.strftime('%d-%m-%Y')
-
-    @property
-    def last_game_date(self):
-        return self[-1].date.strftime('%d-%m-%Y')
-
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.games)
 
-    def __getitem__(self, item):
-        """
-        :rtype: maccabistats.models.game_data.GameData
-        """
+    def __getitem__(self, item) -> GameData:
         return self.games[item]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         summary = f"{len(self)} games"
         if len(self) > 0:
             summary += f" (from {self.first_game_date} to {self.last_game_date})"
@@ -341,7 +293,7 @@ class MaccabiGamesStats(object):
         return summary
 
     @property
-    def hebrew_representation(self):
+    def hebrew_representation(self) -> str:
         summary = f"{len(self)} משחקים"
         if len(self) > 0:
             summary += f" (החל מ {self.first_game_date} ועד {self.last_game_date})"

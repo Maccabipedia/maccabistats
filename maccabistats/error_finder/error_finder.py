@@ -1,7 +1,7 @@
 import logging
 from collections import defaultdict
 from datetime import timedelta
-from itertools import chain
+from itertools import chain, repeat
 
 from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -34,8 +34,10 @@ class ErrorsFinder(object):
     def get_lineup_players_with_substitution_in(self):
         """ Players that opened on lineup, should'nt has substitution in event. """
 
-        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in game.maccabi_team.players
-                              if player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
+        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
+                              game.maccabi_team.players
+                              if player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(
+                GameEventTypes.SUBSTITUTION_IN)]
 
         return players_with_games
 
@@ -43,7 +45,8 @@ class ErrorsFinder(object):
         """ Total score should be equals to the total goals event, excluding games that were finished by technical result """
 
         games = [game for game in self.maccabi_games_stats
-                 if (game.maccabi_team.score + game.not_maccabi_team.score != len(game.goals())) and not game.technical_result]
+                 if (game.maccabi_team.score + game.not_maccabi_team.score != len(
+                game.goals())) and not game.technical_result]
 
         return MaccabiGamesStats(games)
 
@@ -65,16 +68,19 @@ class ErrorsFinder(object):
     def get_players_with_event_but_without_lineup_or_substitution(self):
         """ Every player that has any event should has atleast lineup or substitution or bench in event """
 
-        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in game.maccabi_team.players
+        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
+                              game.maccabi_team.players
                               if len(player.events) > 0 and  # Got any event but no lineup or subs in
-                              not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
+                              not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(
+                GameEventTypes.SUBSTITUTION_IN)
                               and not player.has_event_type(GameEventTypes.BENCHED)]
         return players_with_games
 
     def get_goals_scored_at_minute_zero(self):
         zero_time = str(timedelta(0))
-        all_goals = list(chain.from_iterable([game.goals() for game in self.maccabi_games_stats]))
-        return list(filter(lambda g: g['time_occur'] == zero_time, all_goals))
+        all_goals_and_games = list(
+            chain.from_iterable([zip(game.goals(), repeat(game)) for game in self.maccabi_games_stats]))
+        return list(filter(lambda item: item[0]['time_occur'] == zero_time, all_goals_and_games))
 
     def get_games_with_incorrect_season(self):
         """ Finds games which their date does not match the seasons (date between seasons). """
@@ -85,12 +91,14 @@ class ErrorsFinder(object):
             else:
                 return int(game.season[:4]) <= game.date.year <= int(game.season[:2] + game.season[-2:])
 
-        games_with_incorrect_season = [(game.season, str(game.date), game) for game in self.maccabi_games_stats if not validate_season(game)]
+        games_with_incorrect_season = [(game.season, str(game.date), game) for game in self.maccabi_games_stats if
+                                       not validate_season(game)]
 
         return games_with_incorrect_season
 
     def get_players_with_unknown_events(self):
-        players_with_unknown_events = [(player, game) for game in self.maccabi_games_stats for player in game.maccabi_team.players if
+        players_with_unknown_events = [(player, game) for game in self.maccabi_games_stats for player in
+                                       game.maccabi_team.players if
                                        player.has_event_type(GameEventTypes.UNKNOWN)]
         return players_with_unknown_events
 
@@ -111,7 +119,8 @@ class ErrorsFinder(object):
             missing_fixtures = should_be_fixtures.difference(current_season_fixtures)
 
             if missing_fixtures:
-                [missing_fixtures_from_all_seasons.append((season[0].season, missing_fixture)) for missing_fixture in missing_fixtures]
+                [missing_fixtures_from_all_seasons.append((season[0].season, missing_fixture)) for missing_fixture in
+                 missing_fixtures]
 
         return missing_fixtures_from_all_seasons
 
@@ -128,7 +137,8 @@ class ErrorsFinder(object):
                 for game in season:
                     fixtures_from_all_seasons[f"season {season[0].season} fixture {game.league_fixture}"].append(game)
 
-        double_fixtures = [(season_and_fixture, MaccabiGamesStats(games)) for season_and_fixture, games in fixtures_from_all_seasons.items() if
+        double_fixtures = [(season_and_fixture, MaccabiGamesStats(games)) for season_and_fixture, games in
+                           fixtures_from_all_seasons.items() if
                            len(games) > 1]
         return double_fixtures
 
@@ -166,7 +176,8 @@ class ErrorsFinder(object):
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
         errors_finders = [func for func in dir(self) if
-                          callable(getattr(self, func)) and func != "get_all_errors_numbers" and not func.startswith("_")]
+                          callable(getattr(self, func)) and func != "get_all_errors_numbers" and not func.startswith(
+                              "_")]
 
         for func_name in errors_finders:
             error_finder_func = getattr(self, func_name)
