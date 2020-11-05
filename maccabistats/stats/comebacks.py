@@ -1,35 +1,36 @@
-# -*- coding: utf-8 -*-
-from maccabistats.models.player_game_events import GoalTypes
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING
+
+from maccabistats.models.game_data import GameData
+from maccabistats.models.player_game_events import GoalTypes
+
+if TYPE_CHECKING:
+    from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
 
 
-# This class will handle all comebacks statistics.
-
-
 class MaccabiGamesComebacksStats(object):
+    """
+    This class will handle all comebacks statistics.
+    """
 
-    def __init__(self, maccabi_games_stats):
-        """
-        :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
-        """
-
+    def __init__(self, maccabi_games_stats: MaccabiGamesStats) -> None:
         self.maccabi_games_stats = maccabi_games_stats
         self.games = maccabi_games_stats.games
 
-    def won_from_exactly_one_goal_diff(self):
+    def won_from_exactly_one_goal_diff(self) -> MaccabiGamesStats:
         return self.won_from_exactly_x_goal_diff(1)
 
-    def won_from_exactly_two_goal_diff(self):
+    def won_from_exactly_two_goal_diff(self) -> MaccabiGamesStats:
         return self.won_from_exactly_x_goal_diff(2)
 
-    def won_from_exactly_x_goal_diff(self, winning_comeback_from_x_goals_disadvantage):
+    def won_from_exactly_x_goal_diff(self, winning_comeback_from_x_goals_disadvantage: int) -> MaccabiGamesStats:
         """
-        Return Maccabi game stats object(list of games) which maccabi won them after was ahead by x goals (x=goals param).
+        Find the games which maccabi won them after was ahead by x goals (x=goals param).
         :param winning_comeback_from_x_goals_disadvantage: The number of goals advantage of the opponent.
-
-        :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         """
 
         # Opponent advantage should be negative, positive advantage means maccabi won.
@@ -37,21 +38,23 @@ class MaccabiGamesComebacksStats(object):
 
         crazy_maccabi_comebacks = []
         for game in self.games:
-            if game.is_maccabi_win and self._conditions_for_winning_comeback_occur(game, winning_comeback_from_x_goals_disadvantage):
+            if not game.is_maccabi_win:
+                continue
+
+            if self._conditions_for_winning_comeback_occur(game, winning_comeback_from_x_goals_disadvantage):
                 crazy_maccabi_comebacks.append(game)
 
         return self.maccabi_games_stats.create_maccabi_stats_from_games(crazy_maccabi_comebacks)
 
-    def _conditions_for_winning_comeback_occur(self, game, winning_comeback_from_x_goals_disadvantage):
+    def _conditions_for_winning_comeback_occur(self, game: GameData,
+                                               winning_comeback_from_x_goals_disadvantage: int) -> bool:
         """
-        Check whether the conditions for winning comeback exists in this game
-            the total score should be at least as twice as the diff, +1 (for winning).
-            the opponent score should be at least the goals diff to check for.
+        Check whether the conditions for winning comeback exists in this game:
+            * The total score should be at least as twice as the diff, +1 (for winning).
+            * The opponent score should be at least the goals diff to check for.
 
         :param game: the game to check errors in.
         :param winning_comeback_from_x_goals_disadvantage: the goal diff to come from.
-
-        :rtype: bool
         """
 
         if not self._max_opponent_goals_advantage(game) == winning_comeback_from_x_goals_disadvantage:
@@ -66,18 +69,16 @@ class MaccabiGamesComebacksStats(object):
 
         return True
 
-    def tie_from_exactly_one_goal_diff(self):
+    def tie_from_exactly_one_goal_diff(self) -> MaccabiGamesStats:
         return self.tie_from_exactly_x_goal_diff(1)
 
-    def tie_from_exactly_two_goal_diff(self):
+    def tie_from_exactly_two_goal_diff(self) -> MaccabiGamesStats:
         return self.tie_from_exactly_x_goal_diff(2)
 
-    def tie_from_exactly_x_goal_diff(self, tie_comeback_from_x_goals_disadvantage):
+    def tie_from_exactly_x_goal_diff(self, tie_comeback_from_x_goals_disadvantage: int) -> MaccabiGamesStats:
         """
-        Return Maccabi game stats object(list of games) which maccabi ends with same score as opponent after was ahead by x goals (x=goals param).
+        Finds the games which maccabi ends with same score as opponent after was ahead by x goals (x=goals param).
         :param tie_comeback_from_x_goals_disadvantage: The number of goals advantage of the opponent.
-        
-        :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         """
 
         # Opponent advantage should be negative, positive advantage means maccabi won.
@@ -85,21 +86,22 @@ class MaccabiGamesComebacksStats(object):
 
         crazy_maccabi_comebacks = []
         for game in self.games:
-            if game.maccabi_score_diff == 0 and self._conditions_for_tie_comeback_occur(game, tie_comeback_from_x_goals_disadvantage):
+            if not game.maccabi_score_diff == 0:
+                continue
+
+            if self._conditions_for_tie_comeback_occur(game, tie_comeback_from_x_goals_disadvantage):
                 crazy_maccabi_comebacks.append(game)
 
         return self.maccabi_games_stats.create_maccabi_stats_from_games(crazy_maccabi_comebacks)
 
-    def _conditions_for_tie_comeback_occur(self, game, tie_comeback_from_x_goals_disadvantage):
+    def _conditions_for_tie_comeback_occur(self, game: GameData, tie_comeback_from_x_goals_disadvantage: int) -> bool:
         """
-        Check whether the conditions for tie comeback exists in this game
-            the total score should be at least as twice as the diff.
-            the opponent score should be at least the goals diff to check for.
+        Check whether the conditions for tie comeback exists in this game:
+            * The total score should be at least as twice as the diff.
+            * The opponent score should be at least the goals diff to check for.
 
         :param game: the game to check errors in.
         :param tie_comeback_from_x_goals_disadvantage: the goal diff to come from.
-
-        :rtype: bool
         """
 
         if not self._max_opponent_goals_advantage(game) == tie_comeback_from_x_goals_disadvantage:
@@ -115,15 +117,13 @@ class MaccabiGamesComebacksStats(object):
         return True
 
     @staticmethod
-    def _max_opponent_goals_advantage(game):
+    def _max_opponent_goals_advantage(game: GameData) -> int:
         """
         Calc and return the max goals advantage for maccabi opponent for the given game.
 
         Examples:
             Maccabi (3) - (1) Opponent -> advantage=  2
             Maccabi (1) - (2) Opponent -> advantage= -1
-
-        :rtype: int
         """
 
         game_goals = game.goals()
