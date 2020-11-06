@@ -7,7 +7,7 @@ from typing import Tuple, List, Callable
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
-CoachStats = Tuple[str, int]  # Coach name to the current stats (an int ranking)
+CoachStats = Tuple[str, int]  # Coach name to the current stat (an int ranking)
 
 
 class MaccabiGamesCoachesStats(object):
