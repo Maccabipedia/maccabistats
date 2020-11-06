@@ -16,8 +16,7 @@ from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 
 logger = logging.getLogger(__name__)
 
-OnePlayerStat = Tuple[str, int]  # Player name to the current stat (an int ranking)
-PlayersStats = List[OnePlayerStat]
+PlayerStats = Tuple[str, int]  # Player name to the current stat (an int ranking)
 
 PlayerNameToStat = Dict[str, int]
 
@@ -38,14 +37,14 @@ class MaccabiGamesPlayersStats(object):
 
     # region Top players by last minute goals related sorting
 
-    def get_top_scorers_on_last_minutes(self, from_minute: int = 75) -> PlayersStats:
+    def get_top_scorers_on_last_minutes(self, from_minute: int = 75) -> List[PlayerStats]:
         from_this_minute_str = str(timedelta(minutes=from_minute))
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: len([event for event in p.events
                            if event.event_type == GameEventTypes.GOAL_SCORE and str(
                     event.time_occur) > from_this_minute_str]))
 
-    def get_top_players_for_goals_per_game(self, minimum_games_played: int = 10) -> PlayersStats:
+    def get_top_players_for_goals_per_game(self, minimum_games_played: int = 10) -> List[PlayerStats]:
         players_total_played = Counter(dict(self.most_played))
         players_total_goals = Counter(dict(self.best_scorers))
 
@@ -63,37 +62,37 @@ class MaccabiGamesPlayersStats(object):
     # region Top players by goals related sorting
 
     @property
-    def best_scorers(self) -> PlayersStats:
+    def best_scorers(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE) - p.goals_count_by_goal_type(GoalTypes.OWN_GOAL))
 
     @property
-    def best_scorers_by_freekick(self) -> PlayersStats:
+    def best_scorers_by_freekick(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.FREE_KICK))
 
     @property
-    def best_scorers_by_penalty(self) -> PlayersStats:
+    def best_scorers_by_penalty(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.PENALTY))
 
     @property
-    def best_scorers_by_head(self) -> PlayersStats:
+    def best_scorers_by_head(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.HEADER))
 
     @property
-    def best_scorers_by_own_goal(self) -> PlayersStats:
+    def best_scorers_by_own_goal(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.OWN_GOAL))
 
     @property
-    def best_assisters(self) -> PlayersStats:
+    def best_assisters(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST))
 
     @property
-    def most_goals_involved(self) -> PlayersStats:
+    def most_goals_involved(self) -> List[PlayerStats]:
         """
         Top players which involved in goals (score or assist)
         """
@@ -106,42 +105,42 @@ class MaccabiGamesPlayersStats(object):
     # region Top players by other game events sorting
 
     @property
-    def most_yellow_carded(self) -> PlayersStats:
+    def most_yellow_carded(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.YELLOW_CARD))
 
     @property
-    def most_red_carded(self) -> PlayersStats:
+    def most_red_carded(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.RED_CARD))
 
     @property
-    def most_substitute_off(self) -> PlayersStats:
+    def most_substitute_off(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_OUT))
 
     @property
-    def most_substitute_in(self) -> PlayersStats:
+    def most_substitute_in(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_IN))
 
     @property
-    def most_lineup_players(self) -> PlayersStats:
+    def most_lineup_players(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.LINE_UP))
 
     @property
-    def most_captains(self) -> PlayersStats:
+    def most_captains(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.CAPTAIN))
 
     @property
-    def most_penalty_missed(self) -> PlayersStats:
+    def most_penalty_missed(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.PENALTY_MISSED))
 
     @property
-    def most_penalty_stopped(self) -> PlayersStats:
+    def most_penalty_stopped(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.PENALTY_STOPPED))
 
@@ -150,23 +149,23 @@ class MaccabiGamesPlayersStats(object):
     # region Top players by condition at the game level
 
     @property
-    def most_winners(self) -> PlayersStats:
+    def most_winners(self) -> List[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.is_maccabi_win)
 
     @property
-    def most_losers(self) -> PlayersStats:
+    def most_losers(self) -> List[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.maccabi_score_diff < 0)
 
     @property
-    def most_unbeaten(self) -> PlayersStats:
+    def most_unbeaten(self) -> List[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.maccabi_score_diff >= 0)
 
     @property
-    def most_clean_sheet(self) -> PlayersStats:
+    def most_clean_sheet(self) -> List[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.not_maccabi_team.score == 0)
 
     @property
-    def most_played(self) -> PlayersStats:
+    def most_played(self) -> List[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: True)
 
     @staticmethod
@@ -198,7 +197,7 @@ class MaccabiGamesPlayersStats(object):
         return count_by_goals
 
     @property
-    def most_goals_after_sub_in(self) -> PlayersStats:
+    def most_goals_after_sub_in(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: self.__goals_count_after_sub_in(p))
 
@@ -237,7 +236,7 @@ class MaccabiGamesPlayersStats(object):
     # endregion
 
     def __get_players_from_all_games_with_most_of_this_condition(self, condition: Callable[[PlayerInGame], int]) \
-            -> PlayersStats:
+            -> List[PlayerStats]:
         """
         :param condition: this function should get PlayerInGame as param, and return int.
                           0 wont count this player in the final summary.
@@ -254,7 +253,7 @@ class MaccabiGamesPlayersStats(object):
         return players_with_most_event_type.most_common()
 
     def __get_players_with_most_of_this_game_condition(self, condition: Callable[[GameData], bool] = None) \
-            -> PlayersStats:
+            -> List[PlayerStats]:
         """
         Return the players which played the most at games with the given condition,
         example: __get_players_with_most_of_this_game_condition(lambda g: g.is_maccabi_win)
