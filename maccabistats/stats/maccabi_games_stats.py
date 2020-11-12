@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 class MaccabiGamesStats(object):
 
     def __init__(self, maccabi_games: List[GameData]) -> None:
-        self.games = sorted(maccabi_games, key=lambda g: g.date)  # Sort the games by date
+        self.games: List[GameData] = sorted(maccabi_games, key=lambda g: g.date)  # Sort the games by date
 
         self.coaches = MaccabiGamesCoachesStats(self)
         self.players = MaccabiGamesPlayersStats(self)

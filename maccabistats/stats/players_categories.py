@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
-
 import logging
 from collections import Counter
 from sys import maxsize
-from typing import Tuple
+from typing import Tuple, TYPE_CHECKING
 
 from maccabistats.maccabipedia.players import MaccabiPediaPlayers
+
+if TYPE_CHECKING:
+    from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +15,11 @@ class MaccabiGamesPlayersCategoriesStats(object):
     """
     This class will handle the players categories stats.
     Players category are a group of players grouped by a condition, like: all home players.
-    On this group we will ask some questions, like: how many goals did they score? how much % of the goals did they score? and so on
+    On this group we will ask some questions, like:
+     * How many goals did they score? how much % of the goals did they score? and so on
     """
 
-    def __init__(self, maccabi_games_stats):
-        """
-        :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
-        """
+    def __init__(self, maccabi_games_stats: MaccabiGamesStats):
         self.maccabi_games_stats = maccabi_games_stats
         self.games = maccabi_games_stats.games
         self.maccabi_home_players_names = MaccabiPediaPlayers.get_players_data().home_players
