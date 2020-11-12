@@ -105,6 +105,10 @@ class TeamInGame(Team):
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST))
 
     @property
+    def goal_involved_players_with_amount(self):
+        return self.assist_players_with_amount + self.scored_players_with_amount
+
+    @property
     def substitute_off_players_with_amount(self):
         return self.get_players_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_OUT))

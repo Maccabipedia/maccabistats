@@ -3,6 +3,7 @@
 import logging
 from collections import Counter
 from sys import maxsize
+from typing import Tuple
 
 from maccabistats.maccabipedia.players import MaccabiPediaPlayers
 
@@ -24,12 +25,13 @@ class MaccabiGamesPlayersCategoriesStats(object):
         self.games = maccabi_games_stats.games
         self.maccabi_home_players_names = MaccabiPediaPlayers.get_players_data().home_players
 
-    def _home_players_events(self, game_events_callable) -> (int, int):
+    def _home_players_events(self, game_events_callable) -> Tuple[int, int]:
         """
         Calculate the events made by home player and by non home players.
         Use the given callable to choose which events to calculate
 
-        :param game_events_callable: A callable that should return a counter, One of those: "scored_players_with_amount" and so on
+        :param game_events_callable: A callable that should return a counter,
+               One of those as example: "scored_players_with_amount" and so on
         :return: The total goals from home players and total goals form non home players
         """
         total_home_players_events = 0
@@ -47,26 +49,30 @@ class MaccabiGamesPlayersCategoriesStats(object):
 
         return total_home_players_events, total_non_home_players_events
 
-    def _home_players_goals_division(self):
+    # home players scored
+
+    def _home_players_goals_division(self) -> Tuple[int, int]:
         return self._home_players_events(game_events_callable=lambda game: game.maccabi_team.scored_players_with_amount)
 
-    def home_players_goals_count(self):
+    def home_players_goals_count(self) -> int:
         return self._home_players_goals_division()[0]
 
-    def home_players_goals_ratio(self):
+    def home_players_goals_ratio(self) -> float:
         home_players_goals, non_home_players_goals = self._home_players_goals_division()
         if home_players_goals + non_home_players_goals == 0:
             return maxsize
 
         return round(home_players_goals / (home_players_goals + non_home_players_goals), 3)
 
-    def _home_players_assists_division(self):
+    # home players assists
+
+    def _home_players_assists_division(self) -> Tuple[int, int]:
         return self._home_players_events(game_events_callable=lambda game: game.maccabi_team.assist_players_with_amount)
 
-    def home_players_assists_count(self):
+    def home_players_assists_count(self) -> int:
         return self._home_players_assists_division()[0]
 
-    def home_players_assists_ratio(self):
+    def home_players_assists_ratio(self) -> float:
         home_players_assists, non_home_players_assists = self._home_players_assists_division()
 
         if home_players_assists + non_home_players_assists == 0:
@@ -74,14 +80,16 @@ class MaccabiGamesPlayersCategoriesStats(object):
 
         return round(home_players_assists / (home_players_assists + non_home_players_assists), 3)
 
-    def _home_players_goals_involved_division(self):
-        return self._home_players_events(
-            game_events_callable=lambda game: game.maccabi_team.assist_players_with_amount + game.maccabi_team.scored_players_with_amount)
+    # home players goals involved
 
-    def home_players_goals_involved_count(self):
+    def _home_players_goals_involved_division(self) -> Tuple[int, int]:
+        return self._home_players_events(
+            game_events_callable=lambda game: game.maccabi_team.goal_involved_players_with_amount)
+
+    def home_players_goals_involved_count(self) -> int:
         return self._home_players_goals_involved_division()[0]
 
-    def home_players_goals_involved_ratio(self):
+    def home_players_goals_involved_ratio(self) -> float:
         home_players_goals_involved, non_home_players_goals_involved = self._home_players_goals_involved_division()
         if home_players_goals_involved + non_home_players_goals_involved == 0:
             return maxsize
