@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from collections import defaultdict
 from typing import TYPE_CHECKING, Callable, Tuple, List, Dict
@@ -9,9 +11,11 @@ from maccabistats.models.game_data import GameData
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
+    PlayerAndGames = Tuple[str, MaccabiGamesStats]
+
 logger = logging.getLogger(__name__)
 
-PlayerAndGames = Tuple[str, MaccabiGamesStats]
+
 
 
 class MaccabiGamesPlayersStreaksStats(object):

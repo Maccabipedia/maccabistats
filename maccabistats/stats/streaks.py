@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import Callable
 from itertools import groupby, takewhile
 from pprint import pformat

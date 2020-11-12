@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import logging
 import pprint
 from collections import OrderedDict
-
 from typing import TYPE_CHECKING, Union, Any, Callable
 
 if TYPE_CHECKING:

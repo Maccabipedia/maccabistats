@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from collections import Counter, defaultdict
 from typing import TYPE_CHECKING, Callable, Tuple, List, Optional

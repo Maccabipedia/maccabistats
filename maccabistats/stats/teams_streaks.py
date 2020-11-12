@@ -1,13 +1,15 @@
-import logging
+from __future__ import annotations
 
+import logging
 from collections import defaultdict
 from typing import TYPE_CHECKING, Callable, Tuple, List, Dict
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
-logger = logging.getLogger(__name__)
 
-TeamAndGames = Tuple[str, MaccabiGamesStats]
+    TeamAndGames = Tuple[str, MaccabiGamesStats]
+
+logger = logging.getLogger(__name__)
 
 
 class MaccabiGamesTeamsStreaksStats(object):
