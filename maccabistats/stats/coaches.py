@@ -1,93 +1,108 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 from collections import Counter, defaultdict
-
-# This class will handle all coaches statistics.
+from typing import TYPE_CHECKING
 from typing import Tuple, List, Callable
+
+if TYPE_CHECKING:
+    from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
+
+CoachStats = Tuple[str, float]  # Coach name to the current stat (an int ranking)
 
 
 class MaccabiGamesCoachesStats(object):
+    """
+    This class will handle all coaches statistics.
+    """
 
-    def __init__(self, maccabi_games_stats):
-        """
-        :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
-        """
-
+    def __init__(self, maccabi_games_stats: MaccabiGamesStats) -> None:
         self.games = maccabi_games_stats.games
 
-    # General scoring for coaches functions
+    # region General scoring for coaches functions
     @property
-    def most_clean_sheet_games_coach(self) -> List[Tuple[str, int]]:
+    def most_clean_sheet_games_coach(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.not_maccabi_team.score == 0)
 
     @property
-    def most_games_with_goals_from_bench_coach(self) -> List[Tuple[str, int]]:
+    def most_games_with_goals_from_bench_coach(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.maccabi_team.has_goal_from_bench == 0)
 
     @property
-    def most_goals_for_maccabi_coach(self) -> List[Tuple[str, int]]:
+    def most_goals_for_maccabi_coach(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.maccabi_team.score == 0)
 
     @property
-    def most_goals_against_maccabi_coach(self) -> List[Tuple[str, int]]:
+    def most_goals_against_maccabi_coach(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.not_maccabi_team.score == 0)
 
     @property
-    def most_trained_coach(self) -> List[Tuple[str, int]]:
+    def most_trained_coach(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: 1)
 
     @property
-    def most_winner_coach(self) -> List[Tuple[str, int]]:
+    def most_winner_coach(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.is_maccabi_win)
 
     @property
-    def most_loser_coach(self) -> List[Tuple[str, int]]:
+    def most_loser_coach(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.maccabi_score_diff < 0)
 
     @property
-    def most_red_cards_to_players(self) -> List[Tuple[str, int]]:
+    def most_red_cards_to_players(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: sum(g.maccabi_team.red_carded_players_with_amount.values()))
 
     @property
-    def most_yellow_cards_to_players(self) -> List[Tuple[str, int]]:
+    def most_yellow_cards_to_players(self) -> List[CoachStats]:
         return self._calculate_coaches_stats(lambda g: sum(g.maccabi_team.yellow_carded_players_with_amount.values()))
 
-    # Percentage functions
+    # endregion
+
+    # region Percentage functions
     @property
-    def most_winner_coach_by_percentage(self) -> List[Tuple[str, int]]:
+    def most_winner_coach_by_percentage(self) -> List[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(self.most_winner_coach, calculate_as_percentage=True)
 
     @property
-    def most_loser_coach_by_percentage(self) -> List[Tuple[str, int]]:
+    def most_loser_coach_by_percentage(self) -> List[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(self.most_loser_coach, calculate_as_percentage=True)
 
     @property
-    def most_clean_sheet_games_coach_by_percentage(self) -> List[Tuple[str, int]]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_clean_sheet_games_coach, calculate_as_percentage=True)
+    def most_clean_sheet_games_coach_by_percentage(self) -> List[CoachStats]:
+        return self._calculate_coaches_stat_relate_to_game(self.most_clean_sheet_games_coach,
+                                                           calculate_as_percentage=True)
 
     @property
-    def most_games_with_goals_from_bench_coach_by_percentage(self) -> List[Tuple[str, int]]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_games_with_goals_from_bench_coach, calculate_as_percentage=True)
+    def most_games_with_goals_from_bench_coach_by_percentage(self) -> List[CoachStats]:
+        return self._calculate_coaches_stat_relate_to_game(self.most_games_with_goals_from_bench_coach,
+                                                           calculate_as_percentage=True)
 
-    # Per game functions
-    @property
-    def most_goals_for_maccabi_per_game_coach(self) -> List[Tuple[str, int]]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_goals_for_maccabi_coach, calculate_as_percentage=False)
+    # endregion
 
+    # region Per game functions
     @property
-    def most_goals_against_maccabi_per_game_coach(self) -> List[Tuple[str, int]]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_goals_against_maccabi_coach, calculate_as_percentage=False)
-
-    @property
-    def most_red_cards_to_players_per_game_coach(self) -> List[Tuple[str, int]]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_red_cards_to_players, calculate_as_percentage=False)
+    def most_goals_for_maccabi_per_game_coach(self) -> List[CoachStats]:
+        return self._calculate_coaches_stat_relate_to_game(self.most_goals_for_maccabi_coach,
+                                                           calculate_as_percentage=False)
 
     @property
-    def most_yellow_cards_to_players_per_game_coach(self) -> List[Tuple[str, int]]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_yellow_cards_to_players, calculate_as_percentage=False)
+    def most_goals_against_maccabi_per_game_coach(self) -> List[CoachStats]:
+        return self._calculate_coaches_stat_relate_to_game(self.most_goals_against_maccabi_coach,
+                                                           calculate_as_percentage=False)
 
-    def _calculate_coaches_stat_relate_to_game(self, coaches_stats_dict: List[Tuple[str, int]],
-                                               calculate_as_percentage: bool) -> List[Tuple[str, int]]:
+    @property
+    def most_red_cards_to_players_per_game_coach(self) -> List[CoachStats]:
+        return self._calculate_coaches_stat_relate_to_game(self.most_red_cards_to_players,
+                                                           calculate_as_percentage=False)
+
+    @property
+    def most_yellow_cards_to_players_per_game_coach(self) -> List[CoachStats]:
+        return self._calculate_coaches_stat_relate_to_game(self.most_yellow_cards_to_players,
+                                                           calculate_as_percentage=False)
+
+    # endregion
+
+    def _calculate_coaches_stat_relate_to_game(self, coaches_stats_dict: List[CoachStats],
+                                               calculate_as_percentage: bool) -> List[CoachStats]:
         """
         Calculate a property of coach stat with a ratio to the coach trained games,
         Like:
@@ -109,7 +124,7 @@ class MaccabiGamesCoachesStats(object):
 
         return coaches.most_common()
 
-    def _calculate_coaches_stats(self, game_score_callback: Callable) -> List[Tuple[str, int]]:
+    def _calculate_coaches_stats(self, game_score_callback: Callable) -> List[CoachStats]:
         """
         Calculate a stat for every coach, A stat is a property which gives a score to the coach for every game.
         Like:
@@ -121,4 +136,3 @@ class MaccabiGamesCoachesStats(object):
             coach_to_stat_score[game.maccabi_team.coach] += game_score_callback(game)
 
         return Counter(coach_to_stat_score).most_common()
-
