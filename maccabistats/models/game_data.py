@@ -1,34 +1,24 @@
-# -*- coding: utf-8 -*-
-
 import datetime
 import json
+from typing import List, Optional, Union, Dict
 
 from dateutil.parser import parse as datetime_parser
 
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
+from maccabistats.models.team_in_game import TeamInGame
 
 
 class GameData(object):
-    def __init__(self, competition, fixture, date_as_hebrew_string, stadium, crowd, referee, home_team, away_team,
-                 season_string, half_parsed_events, date=None, technical_result=False):
+    def __init__(self, competition: str, fixture: str, date_as_hebrew_string: str, stadium: str, crowd: str,
+                 referee: str, home_team: TeamInGame, away_team: TeamInGame,
+                 season_string: str, half_parsed_events: List[Dict], date: Optional[datetime.datetime] = None,
+                 technical_result: bool = False):
         """
-        :param competition: cup, league and so on.
-        :type competition: str
-        :type fixture: str
-        :type date_as_hebrew_string: str
-        :type stadium: str
-        :type crowd: str
-        :type referee: str
-        :type home_team: maccabistats.models.team_in_game.TeamInGame
-        :type away_team: maccabistats.models.team_in_game.TeamInGame
         :param season_string: season description, such as : 2000-2001 or 2000-01
-        :type season_string: str
-        :param half_parsed_events: events which had problem while parsing or validating, should be use for manipulating the game data later.
-        :type half_parsed_events: list of dict
+        :param half_parsed_events: Events we could not parse and we save them for manual manipulation
         :param date: the date the game was played.
-        :type date: datetime.datetime
-        :param technical_result: Whether this game was finished by a technical result (check the winner by the teams score).
-        :type: bool
+        :param technical_result: Whether this game was finished by a technical result,
+                                 If so check the winner by the teams score directly
         """
         self.competition = competition
         self.fixture = fixture
@@ -44,98 +34,75 @@ class GameData(object):
         self._half_parsed_events = half_parsed_events
         self.technical_result = technical_result
 
-    def played_before(self, date):
+    def played_before(self, date: Union[datetime.datetime, str]) -> bool:
         """
-        :type date: datetime.datetime or str
-        :rtype: bool
+        If we get a str date we try to parse it.
         """
-
         if type(date) is str:
             date = datetime_parser(date)
         return date >= self.date
 
-    def played_after(self, date):
+    def played_after(self, date: Union[datetime.datetime, str]) -> bool:
         """
-        :type date: datetime.datetime or str
-        :rtype: bool
+        If we get a str date we try to parse it.
         """
-
         if type(date) is str:
             date = datetime_parser(date)
         return date <= self.date
 
-    def __get_date_as_datetime(self):
-        """
-        :rtype: datetime.datetime
-        """
+    def __get_date_as_datetime(self) -> datetime.datetime:
         date_args = self.date_as_hebrew_string.strip().split(" ")
-        return datetime.datetime(year=int(date_args[2]), month=GameData.__get_month_num_from_hebrew(date_args[1]),
+
+        return datetime.datetime(year=int(date_args[2]),
+                                 month=GameData.__get_month_num_from_hebrew(date_args[1]),
                                  day=int(date_args[0]))
 
     @staticmethod
-    def __get_month_num_from_hebrew(month_name):
-        """
-        :type month_name: str
-        :rtype: int
-        """
-        months_in_hebrew_to_num = {"ינו": 1, "פבר": 2, "מרץ": 3, "אפר": 4, "מאי": 5, "יונ": 6, "יול": 7, "אוג": 8,
-                                   "ספט": 9, "אוק": 10,
-                                   "נוב": 11, "דצמ": 12}
+    def __get_month_num_from_hebrew(month_name: str) -> int:
+        months_in_hebrew_to_num = {"ינו": 1, "פבר": 2, "מרץ": 3, "אפר": 4, "מאי": 5, "יונ": 6,
+                                   "יול": 7, "אוג": 8, "ספט": 9, "אוק": 10, "נוב": 11, "דצמ": 12}
 
         return months_in_hebrew_to_num[month_name]
 
     @property
-    def league_fixture(self):
+    def league_fixture(self) -> Optional[int]:
         try:
             return int(self.fixture.replace("מחזור", ""))
         except ValueError:
             return None
 
     @property
-    def maccabi_score(self):
+    def maccabi_score(self) -> int:
         return self.maccabi_team.score
 
     @property
-    def maccabi_score_diff(self):
+    def maccabi_score_diff(self) -> int:
         return self.maccabi_team.score - self.not_maccabi_team.score
 
     @property
-    def is_maccabi_home_team(self):
-        """ :rtype: bool """
-
+    def is_maccabi_home_team(self) -> bool:
+        # TODO: handle games which are not played on "home\away", radius and so on
         return self.home_team.name in ["מכבי תל אביב", "מכבי תא", 'מכבי ת"א']
 
     @property
-    def maccabi_team(self):
-        """ :rtype: maccabistats.models.team_in_game.TeamInGame """
-
-        if self.is_maccabi_home_team:
-            return self.home_team
-        else:
-            return self.away_team
+    def maccabi_team(self) -> TeamInGame:
+        return self.home_team if self.is_maccabi_home_team else self.away_team
 
     @property
-    def not_maccabi_team(self):
-        """ :rtype: maccabistats.models.team_in_game.TeamInGame """
-
-        if self.is_maccabi_home_team:
-            return self.away_team
-        else:
-            return self.home_team
+    def not_maccabi_team(self) -> TeamInGame:
+        return self.away_team if self.is_maccabi_home_team else self.home_team
 
     @property
-    def is_maccabi_win(self):
-        """ :rtype: bool """
+    def is_maccabi_win(self) -> bool:
         return self.maccabi_score_diff > 0
 
     @property
-    def events(self):
+    def events(self) -> List[Dict]:
         """
         Return all players events from maccabi_team in this game.
         :return: Each list entry contains:
                     normal_players dict, event.to_json, team_name.
                 List is ordered by event_time asc.
-        :rtype: list of dict
         """
 
         # Maccabi team players events
@@ -156,11 +123,10 @@ class GameData(object):
 
         return sorted_players_events
 
-    def goals(self):
+    def goals(self) -> List[Dict]:
         """
         Return list of game events which their type is goal (ordered by time).
         Each event contains the results of the game as it was AFTER the goal was scored.
-        :return: list of maccabistats.models.player_game_events.GameEvent
         """
 
         goals_events = [event for event in self.events if event['event_type'] == GameEventTypes.GOAL_SCORE.value]
@@ -183,10 +149,7 @@ class GameData(object):
 
         return goals_events
 
-    def json_dict(self):
-        """
-        :rtype: dict
-        """
+    def json_dict(self) -> Dict:
         return dict(stadium=self.stadium,
                     date=self.date.isoformat(),
                     crowd=self.crowd,
@@ -196,13 +159,13 @@ class GameData(object):
                     home_team=self.home_team.json_dict(),
                     away_team=self.away_team.json_dict())
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self.json_dict())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.date.date()} {self.competition}: {self.home_team.name}({self.home_team.score}) - ({self.away_team.score}){self.away_team.name}"
 
-    def full_description(self):
+    def full_description(self) -> str:
         return "Game between {self.home_team.name} (home) - {self.away_team.name} (away)\n" \
                "Results : {self.home_team.score} - {self.away_team.score}\n" \
                "Played on {self.stadium} at {self.date} with {self.crowd} viewers\n" \
