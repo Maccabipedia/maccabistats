@@ -1,86 +1,86 @@
------- Version 2.20.0 ------
+## Version 2.20.0 ##
     Type annotations for most of the code
 
------- Version 2.17.0 ------
+## Version 2.17.0 ##
     Add coach statistics
 
------- Version 2.16.0 ------
+## Version 2.16.0 ##
     Added statistics about home-players part in: goals/assists/goals involved.
     Allow to sort the seasons by this stats
 
------- Version 2.15.0 ------
+## Version 2.15.0 ##
     Added ability to checks player stats for "goals after sub-in"
 
------- Version 2.14.0 ------
+## Version 2.14.0 ##
     Added Bicycle-Kick support
 
------- Version 2.13.1 ------
+## Version 2.13.1 ##
     Added maccabiGamesStats.official_games(), return all the competitions without "friendly games"
 
------- Version 2.13.0 ------
+## Version 2.13.0 ##
     Support technical games + penalty-stop event
 
------- Version 2.12.0 ------
+## Version 2.12.0 ##
     Adds the ability to check which players satisfy a condition on their first/last game, like: "Which players scored on their first game?"
 
------- Version 2.11.0 ------
+## Version 2.11.0 ##
     Adds the ability to query: "Top players by most games in a row"
 
------- Version 2.10.0 ------
+## Version 2.10.0 ##
     Adds the ability to get the most young\old players with some game activity (goal/assist/played)
 
------- Version 2.9.2 ------
+## Version 2.9.2 ##
     Allow to send conditions to the MaccabiPediaCrawler
 
------- Version 2.9.1 ------
+## Version 2.9.1 ##
     Add hebrew "repr" to MaccabiGamesStats
 
------- Version 2.9.0 ------
+## Version 2.9.0 ##
     Add "to_json" to the result class
 
------- Version 2.8.0 ------
+## Version 2.8.0 ##
     Add scripts folder, used to save&run some more complicated manipulations.
 
------- Version 2.7.0 ------
+## Version 2.7.0 ##
     Add Teams statistics.
 
------- Version 2.6.0 ------
+## Version 2.6.0 ##
     Add Teams streak.
     Add "current" streak (running streaks) for general, players and teams streaks.
     Add players events summary (for maccabipedia tracking).
 
------- Version 2.4.0 ------
+## Version 2.4.0 ##
     Add players_streaks, check the best players by any streak that possible on MaccabiGamesStats.
 
------- Version 2.2.2 ------
+## Version 2.2.2 ##
     Stadiums names fixes.
 
------- Version 2.2.0 ------
+## Version 2.2.0 ##
     Internal changes (move half parsed goals parsing from general fixes to maccabi tlv site parsing).
 
------- Version 2.1.5 ------
+## Version 2.1.5 ##
     Add option to json maccabi games stats objects.
 
------- Version 2.1.4 ------
+## Version 2.1.4 ##
     Changed game.is_maccabi_home_team to be property (found by: games with opponent named "Maccabi tel aviv").
 
------- Version 2.1.3 ------
+## Version 2.1.3 ##
     Moved manual_fixes to maccabistats.parse (and named general_fixes).
     Add many teams name changes (with and without years range).
 
------- Version 2.1.2 ------
+## Version 2.1.2 ##
     Fix some games dates.
 
------- Version 2.1.0 ------
+## Version 2.1.0 ##
     Fix some games dates.
 
------- Version 2.0.0 ------
+## Version 2.0.0 ##
     Supports table maccabi games source, combines all sources outputs to one maccabiGamesStats object (maccabitlv-site & table).
 
------- Version 1.10.1 ------
+## Version 1.10.1 ##
     Replaced mega.nz link
 
------- Version 1.10.0 ------
+## Version 1.10.0 ##
     "Solved" many goals without owner, carry them from the parsing time and trying to relate them after all the game is parsed.
     Allow more date formats as inputs.
     Fix competitions names for maccabipedia.
@@ -88,15 +88,15 @@
     Add Important goals statistics! (maccabi_games_stats.important_goals).
     Add Graphs! (maccabi_games_stats.graphs).
 
------- Version 1.9.1 ------
+## Version 1.9.1 ##
     Read readme.md file as utf-8
 
------- Version 1.9.0 ------
+## Version 1.9.0 ##
     Change lot of players names with manual-fixes for maccabipedia.
     Adapt season to be with "/" instead of "-" for maccabipedia.
     Add get similar streaks for showing streaks with at least of len X by given condition.
 
------- Version 1.8.0 ------
+## Version 1.8.0 ##
 	Add to manual_fixes player names fix to adapt players names to maccabipedia.
 	Add MaccabiGamesStats.get_players_by_name to search for similar player names.
 	Add lxml to requirement for faster parsing.
@@ -108,39 +108,39 @@
 
 	Add support for seasons statistics! (MaccabiGamesStats.seasons).
 
------- Version 1.7.1 ------
+## Version 1.7.1 ##
 	Added all ref (to manual_fixes) saw with NamingErrorFinder.
 
------- Version 1.7.0 ------
+## Version 1.7.0 ##
 	Support multi-process crawling - faster, but logging is not process-safe, so dont use them with this mode.
 
------- Version 1.6.5 ------
+## Version 1.6.5 ##
 	Add season identifier for each game.
 	Change "ליגת לאומית" to "ליגה לאומית" in manual fixes.
 
------- Version 1.6.4 ------
+## Version 1.6.4 ##
 	Allow using lxml parser for beautiful soup (in settings).
 
------- Version 1.6.3 ------
+## Version 1.6.3 ##
 	Normalize coaches and opponents names.
 
------- Version 1.6.2 ------
+## Version 1.6.2 ##
 	Print msg to user when get_maccabi_stats() cant find any file.
 
------- Version 1.6.1 ------
+## Version 1.6.1 ##
 	Fix lot of referees naming using manual fixes
 
------- Version 1.6.0 ------
+## Version 1.6.0 ##
 
 	Add manual fixes (each one will be added using the data improvement classes (atm namingErrorFinder).
 	using the NamingErrorFinder - fix almost every player naming error,
 	by adding name normalization to the squad page parser.
 
------- Version 1.5.1 ------
+## Version 1.5.1 ##
 
 	Bug-fix: removed maccabi.games from manifest.in
 
------- Version 1.5.0 ------
+## Version 1.5.0 ##
 	
 	Add logging handlers.
 	Add faster logging.
@@ -148,11 +148,11 @@
 	Fixed bug when crawling new games (saved events page as squad on disk).
 	Removed maccabi.games from repo.
 
------- Version 1.4.0 ------
+## Version 1.4.0 ##
 
 	Allow to crawl maccabi-tlv site from disk if available. updated game to 14/03/18
 
------- Version 1.3.0 ------
+## Version 1.3.0 ##
 
 	Add useful imports to maccabistats.__init__.
 	average -> averages.
@@ -165,13 +165,13 @@
 		to players stats, all is calculated by games scores.
 	Add game.events to get all events (both teams) ordered by time_occur.
 
------- Version 1.2.0 ------
+## Version 1.2.0 ##
 
 	This version created just to reupload to pypi
 
 
 
------- Version 1.1.0 ------
+## Version 1.1.0 ##
 
 	## Summary ##
 	
@@ -182,7 +182,7 @@
 
 
 
------- Version 1.0.0 ------
+## Version 1.0.0 ##
 
 
 	## Summary ##

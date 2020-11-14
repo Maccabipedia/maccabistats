@@ -1,6 +1,9 @@
 # Maccabi games pickled
 *.games
 
+# Maccabistats wheels
+.wheels/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
