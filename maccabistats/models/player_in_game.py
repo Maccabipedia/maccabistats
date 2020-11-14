@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from datetime import timedelta
 from pprint import pformat
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from maccabistats.models.player import Player
-from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes
+from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent
 
 
 class PlayerInGame(Player):
@@ -29,7 +29,8 @@ class PlayerInGame(Player):
         return [event.event_type for event in self.events].count(event_type)
 
     def goals_count_by_goal_type(self, goal_type: GoalTypes) -> int:
-        return [event.goal_type for event in self.get_events_by_type(GameEventTypes.GOAL_SCORE)].count(goal_type)
+        return [cast(GoalGameEvent, event).goal_type for event in
+                self.get_events_by_type(GameEventTypes.GOAL_SCORE)].count(goal_type)
 
     def get_as_normal_player(self) -> Player:
         return Player(self.name, self.number)
@@ -71,7 +72,10 @@ class PlayerInGame(Player):
         else:
             return similar_events[0]
 
-    def __eq__(self, other: PlayerInGame) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, PlayerInGame):
+            return NotImplemented
+
         return self.name == other.name and self.number == other.number
 
     # In order to save this object in collections.Counter as key

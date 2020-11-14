@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from typing import TYPE_CHECKING, Tuple, List
 
 if TYPE_CHECKING:
@@ -37,7 +38,7 @@ class MaccabiGamesRefereesStats(object):
         judged_games = Counter(dict(self.most_judged_referee))
         games_won_with_referees = Counter(dict(self.best_referee))
 
-        best_referee = Counter()
+        best_referee: typing.Counter[str] = Counter()
         for referee_name, judged_times in judged_games.items():
             key_name = "{referee} - {judged}".format(referee=referee_name, judged=judged_times)
             best_referee[key_name] = round(games_won_with_referees[referee_name] / judged_times * 100, 2)
@@ -50,7 +51,7 @@ class MaccabiGamesRefereesStats(object):
         judged_games = Counter(dict(self.most_judged_referee))
         games_lost_with_referees = Counter(dict(self.worst_referee))
 
-        best_referee = Counter()
+        best_referee: typing.Counter[str] = Counter()
         for referee_name, judged_times in judged_games.items():
             key_name = "{referee} - {judged}".format(referee=referee_name, judged=judged_times)
             best_referee[key_name] = round(games_lost_with_referees[referee_name] / judged_times * 100, 2)

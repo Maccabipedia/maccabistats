@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 PlayerStats = Tuple[str, int]  # Player name to the current stat (an int ranking)
 
-PlayerNameToStat = Dict[str, int]
+PlayerNameToStat = Dict[str, float]
 
 
 class _PlayerGamesPercentages(NamedTuple):

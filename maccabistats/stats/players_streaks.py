@@ -16,8 +16,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-
-
 class MaccabiGamesPlayersStreaksStats(object):
     """
     This class will handle all players streaks statistics.
@@ -28,7 +26,7 @@ class MaccabiGamesPlayersStreaksStats(object):
         self.games = maccabi_games_stats.games
 
     def _get_players_streak_by_condition(self,
-                                         streak_condition: Callable[[MaccabiGamesStats, str], int],
+                                         streak_condition: Callable[[MaccabiGamesStats, str], MaccabiGamesStats],
                                          top_players_count: int = 10) -> List[PlayerAndGames]:
         """
         For each player, given his MaccabiGamesStats - calculate the relevant streak.
@@ -55,9 +53,9 @@ class MaccabiGamesPlayersStreaksStats(object):
 
         return sorted(unsorted_players_streaks.items(), key=lambda kv: len(kv[1]), reverse=True)[:top_players_count]
 
-    def _get_players_streak_by_condition_from_all_games(self,
-                                                        streak_condition: Callable[[MaccabiGamesStats, str], int],
-                                                        top_players_count: int = 10) -> List[PlayerAndGames]:
+    def _get_players_streak_by_condition_from_all_games(
+            self, streak_condition: Callable[[MaccabiGamesStats, str], MaccabiGamesStats],
+            top_players_count: int = 10) -> List[PlayerAndGames]:
         """
         Same as "_get_players_streak_by_condition", but we don't filters the games for each player.
         In this function the condition is check against all of the available games,
@@ -119,7 +117,7 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition_from_all_games(
             lambda games, player_name: games.streaks.get_longest_player_played_in_game(player_name))
 
-    def _find_player_goal_scoring_best_streak(self, player_name: str) -> List[PlayerAndGames]:
+    def _find_player_goal_scoring_best_streak(self, player_name: str) -> MaccabiGamesStats:
         """
          DO NOT use get_games_by_played_player_name, uses existing games
         """
@@ -134,7 +132,7 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.players_streaks._find_player_goal_scoring_best_streak(player_name))
 
-    def _find_player_goal_assisting_best_streak(self, player_name: str) -> List[PlayerAndGames]:
+    def _find_player_goal_assisting_best_streak(self, player_name: str) -> MaccabiGamesStats:
         """
          DO NOT use get_games_by_played_player_name, uses existing games
         """
@@ -149,7 +147,7 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.players_streaks._find_player_goal_assisting_best_streak(player_name))
 
-    def _find_player_goal_involving_best_streak(self, player_name: str):
+    def _find_player_goal_involving_best_streak(self, player_name: str) -> MaccabiGamesStats:
         """
          DO NOT use get_games_by_played_player_name, uses existing games
         """
@@ -217,7 +215,7 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.streaks.get_current_clean_sheet_streak())
 
-    def _find_player_goal_scoring_current_streak(self, player_name: str) -> List[PlayerAndGames]:
+    def _find_player_goal_scoring_current_streak(self, player_name: str) -> MaccabiGamesStats:
         """
         DO NOT use get_games_by_played_player_name, uses existing games
         """
@@ -232,7 +230,7 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.players_streaks._find_player_goal_scoring_current_streak(player_name))
 
-    def _find_player_goal_assisting_current_streak(self, player_name: str) -> List[PlayerAndGames]:
+    def _find_player_goal_assisting_current_streak(self, player_name: str) -> MaccabiGamesStats:
         """
         DO NOT use get_games_by_played_player_name, uses existing games
         """
@@ -247,7 +245,7 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.players_streaks._find_player_goal_assisting_current_streak(player_name))
 
-    def _find_player_goal_involving_current_streak(self, player_name: str) -> List[PlayerAndGames]:
+    def _find_player_goal_involving_current_streak(self, player_name: str) -> MaccabiGamesStats:
         """
         DO NOT use get_games_by_played_player_name, uses existing games
         """

@@ -26,7 +26,7 @@ class MaccabiGamesImportantGoalsStats(object):
         return self.get_top_scorers(1, 1)
 
     def get_top_scorers(self, minimum_diff_for_maccabi: int = -2, maximum_diff_for_maccabi: int = 1,
-                        goal_condition=None) -> Counter:
+                        goal_condition=None) -> List[Tuple[str, float]]:
         if goal_condition is None:
             goal_condition = lambda x: True
 

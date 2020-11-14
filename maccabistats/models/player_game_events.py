@@ -41,7 +41,10 @@ class GameEvent(object):
     def __repr__(self) -> str:
         return "{self.event_type.value} occur at {self.time_occur}".format(self=self)
 
-    def __eq__(self, other: GameEvent) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, GameEvent):
+            return NotImplemented
+
         return self.event_type == other.event_type and self.time_occur == other.time_occur
 
     def json_dict(self) -> Dict:

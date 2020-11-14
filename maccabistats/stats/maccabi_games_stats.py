@@ -158,16 +158,16 @@ class MaccabiGamesStats(object):
 
     # region date based
 
-    def played_before(self, date: Union[datetime.datetime, str]) -> MaccabiGamesStats:
+    def played_before(self, date: Union[datetime.datetime, datetime.date, str]) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if game.played_before(date)])
 
-    def played_after(self, date: Union[datetime.datetime, str]) -> MaccabiGamesStats:
+    def played_after(self, date: Union[datetime.datetime, datetime.date, str]) -> MaccabiGamesStats:
         return MaccabiGamesStats([game for game in self.games if game.played_after(date)])
 
-    def played_at(self, date: Union[datetime.datetime, str]) -> MaccabiGamesStats:
-        if type(date) is str:
+    def played_at(self, date: Union[datetime.datetime, datetime.date, str]) -> MaccabiGamesStats:
+        if isinstance(date, str):
             date = datetime_parser(date).date()
-        elif type(date) is datetime.datetime:
+        elif isinstance(date, datetime.datetime):
             date = date.date()  # Leave only year & month & day
 
         return MaccabiGamesStats([game for game in self.games if game.date.date() == date])
@@ -185,7 +185,7 @@ class MaccabiGamesStats(object):
     # region free-style filters
 
     def get_games_by_competition(self, competition_types: Union[List[str], str]) -> MaccabiGamesStats:
-        if type(competition_types) is str:
+        if isinstance(competition_types, str):
             competition_types = [competition_types]
 
         return MaccabiGamesStats([game for game in self.games if game.competition in competition_types])
@@ -284,6 +284,10 @@ class MaccabiGamesStats(object):
 
     def __getitem__(self, item) -> GameData:
         return self.games[item]
+
+    def __iter__(self):
+        for game in self.games:
+            yield game
 
     def __repr__(self) -> str:
         summary = f"{len(self)} games"

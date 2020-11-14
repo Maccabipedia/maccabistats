@@ -7,7 +7,7 @@ from progressbar import ProgressBar
 from typing import Dict, Set
 
 from maccabistats import load_from_maccabipedia_source
-from stats.maccabi_games_stats import MaccabiGamesStats
+from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 _DESCRIPTION_WHICH_MEANS_MACCABI_WON_TITLE = ['מקום 1', 'זכיה']
 

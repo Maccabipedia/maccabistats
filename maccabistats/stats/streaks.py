@@ -189,14 +189,14 @@ class MaccabiGamesStreaksStats(object):
         return self._get_current_streak_by_condition(lambda g: g.not_maccabi_team.score <= not_maccabi_score)
 
     def get_longest_goals_from_bench_games(self) -> MaccabiGamesStats:
-        return self._get_longest_streak_by_condition(lambda g: any(g.maccabi_team.has_goal_from_bench))
+        return self._get_longest_streak_by_condition(lambda g: g.maccabi_team.has_goal_from_bench)
 
     def get_similar_goals_from_bench_streak_by_length(self, minimum_streak_length: int = 0) -> List[MaccabiGamesStats]:
-        return self._get_similar_streaks(lambda g: any(g.maccabi_team.has_goal_from_bench),
+        return self._get_similar_streaks(lambda g:g.maccabi_team.has_goal_from_bench,
                                          minimum_streak_length=minimum_streak_length)
 
     def get_current_goals_from_bench_streak(self) -> MaccabiGamesStats:
-        return self._get_current_streak_by_condition(lambda g: any(g.maccabi_team.has_goal_from_bench))
+        return self._get_current_streak_by_condition(lambda g: g.maccabi_team.has_goal_from_bench)
 
     def get_longest_player_played_in_game(self, player_name: str) -> MaccabiGamesStats:
         return self._get_longest_streak_by_condition(lambda g: player_name in g.maccabi_team.played_players_with_amount)

@@ -34,20 +34,16 @@ class GameData(object):
         self._half_parsed_events = half_parsed_events
         self.technical_result = technical_result
 
-    def played_before(self, date: Union[datetime.datetime, str]) -> bool:
-        """
-        If we get a str date we try to parse it.
-        """
-        if type(date) is str:
+    def played_before(self, date: Union[datetime.datetime, datetime.date, str]) -> bool:
+        if isinstance(date, str):
             date = datetime_parser(date)
+
         return date >= self.date
 
-    def played_after(self, date: Union[datetime.datetime, str]) -> bool:
-        """
-        If we get a str date we try to parse it.
-        """
-        if type(date) is str:
+    def played_after(self, date: Union[datetime.datetime, datetime.date, str]) -> bool:
+        if isinstance(date, str):
             date = datetime_parser(date)
+
         return date <= self.date
 
     def __get_date_as_datetime(self) -> datetime.datetime:

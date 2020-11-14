@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-TeamStats = Tuple[str, int]
+TeamStats = Tuple[str, float]
 
 
 class MaccabiGamesTeamsStats(object):
@@ -22,9 +22,9 @@ class MaccabiGamesTeamsStats(object):
         self.maccabi_games_stats = maccabi_games_stats
 
     def __get_teams_sorted_by_most_of_this_condition(self,
-                                                     condition: Callable[[MaccabiGamesStats], int],
-                                                     top_teams_count: int = 20,
-                                                     minimum_games_against_team: int = 0) -> List[TeamStats]:
+                                                     condition: Callable[[MaccabiGamesStats], float],
+                                                     top_teams_count: Optional[int] = None,
+                                                     minimum_games_against_team: Optional[int] = 0) -> List[TeamStats]:
         """
         Return Counter.most_common() of all the teams sorted by the results of this condition (Should be number) Desc.
         the condition receive MaccabiGamesStats which include only games against one team.
@@ -32,6 +32,8 @@ class MaccabiGamesTeamsStats(object):
         :param condition: Functions that gets a MaccabiGameStats with a specific team games and returns a rank (int)
         """
         teams_games = defaultdict(list)
+        top_teams_count = top_teams_count or 20
+        minimum_games_against_team = minimum_games_against_team or 0
 
         for game in self.games:
             teams_games[game.not_maccabi_team.name].append(game)
