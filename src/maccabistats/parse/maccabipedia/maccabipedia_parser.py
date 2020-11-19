@@ -6,7 +6,6 @@ from collections import defaultdict
 from datetime import timedelta
 
 from dateutil.parser import parse as datetime_parser
-
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent
 from maccabistats.models.player_in_game import PlayerInGame
@@ -28,30 +27,33 @@ def _unknown_event():
 _EMPTY_SUB_EVENT = ""
 _DUPLICATE_MACCABIPEDIA_EVENT = "DUPLICATE"
 # If we cant find an event, unknown will be set
-MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event, {1: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.LINE_UP,
-                                                                                    111: GameEventTypes.LINE_UP}),  # Special for GK
-                                                    2: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.BENCHED,
-                                                                                    211: GameEventTypes.BENCHED}),
-                                                    3: GameEventTypes.GOAL_SCORE,  # Special case, parse also the sub-goal-type
-                                                    4: defaultdict(_unknown_event, {40: GameEventTypes.GOAL_ASSIST,
-                                                                                    41: GameEventTypes.GOAL_ASSIST,
-                                                                                    42: GameEventTypes.GOAL_ASSIST,
-                                                                                    43: GameEventTypes.GOAL_ASSIST,
-                                                                                    44: GameEventTypes.GOAL_ASSIST}),
-                                                    5: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_IN}),
-                                                    6: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_OUT}),
-                                                    7: defaultdict(_unknown_event, {71: GameEventTypes.YELLOW_CARD,
-                                                                                    72: GameEventTypes.YELLOW_CARD,
-                                                                                    73: GameEventTypes.RED_CARD}),
-                                                    8: defaultdict(_unknown_event, {81: _DUPLICATE_MACCABIPEDIA_EVENT,
-                                                                                    82: GameEventTypes.PENALTY_MISSED,
-                                                                                    83: GameEventTypes.PENALTY_STOPPED,
-                                                                                    84: _DUPLICATE_MACCABIPEDIA_EVENT}),
-                                                    # No support atm for penalty save
-                                                    9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
+MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event,
+                                   {1: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.LINE_UP,
+                                                                    111: GameEventTypes.LINE_UP}),  # Special for GK
+                                    2: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.BENCHED,
+                                                                    211: GameEventTypes.BENCHED}),
+                                    3: GameEventTypes.GOAL_SCORE,  # Special case, parse also the sub-goal-type
+                                    4: defaultdict(_unknown_event, {40: GameEventTypes.GOAL_ASSIST,
+                                                                    41: GameEventTypes.GOAL_ASSIST,
+                                                                    42: GameEventTypes.GOAL_ASSIST,
+                                                                    43: GameEventTypes.GOAL_ASSIST,
+                                                                    44: GameEventTypes.GOAL_ASSIST,
+                                                                    45: GameEventTypes.GOAL_ASSIST}),
+                                    5: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_IN}),
+                                    6: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_OUT}),
+                                    7: defaultdict(_unknown_event, {71: GameEventTypes.YELLOW_CARD,
+                                                                    72: GameEventTypes.YELLOW_CARD,
+                                                                    73: GameEventTypes.RED_CARD}),
+                                    8: defaultdict(_unknown_event, {81: _DUPLICATE_MACCABIPEDIA_EVENT,
+                                                                    82: GameEventTypes.PENALTY_MISSED,
+                                                                    83: GameEventTypes.PENALTY_STOPPED,
+                                                                    84: _DUPLICATE_MACCABIPEDIA_EVENT}),
+                                    # No support atm for penalty save
+                                    9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
 
 MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNKNOWN,
-                           31: GoalTypes.UNKNOWN,  # TODO: SHOULD be by foot (no such sub-goal-type today in maccabistats
+                           31: GoalTypes.UNKNOWN,
+                           # TODO: SHOULD be by foot (no such sub-goal-type today in maccabistats
                            32: GoalTypes.HEADER,
                            33: GoalTypes.OWN_GOAL,
                            34: GoalTypes.FREE_KICK,
@@ -75,15 +77,18 @@ class MaccabiPediaParser(object):
         self._game_metadata_by_game = defaultdict(list)
         [self._game_metadata_by_game[game[_PAGE_NAME_FIELD_NAME]].append(game) for game in self._games_metadata_as_json]
         self._games_events_by_game = defaultdict(list)
-        [self._games_events_by_game[game_event[_PAGE_NAME_FIELD_NAME]].append(game_event) for game_event in self._games_events_as_json]
+        [self._games_events_by_game[game_event[_PAGE_NAME_FIELD_NAME]].append(game_event) for game_event in
+         self._games_events_as_json]
 
     @staticmethod
     def _get_games_metadata():
-        return [game_metadata_as_json for game_metadata_as_json in MaccabiPediaCargoChunksCrawler.create_games_crawler()]
+        return [game_metadata_as_json for game_metadata_as_json in
+                MaccabiPediaCargoChunksCrawler.create_games_crawler()]
 
     @staticmethod
     def _get_games_events():
-        return [game_events_as_json for game_events_as_json in MaccabiPediaCargoChunksCrawler.create_games_events_crawler()]
+        return [game_events_as_json for game_events_as_json in
+                MaccabiPediaCargoChunksCrawler.create_games_events_crawler()]
 
     def _parse_player_event(self, player_event):
         """
@@ -124,7 +129,8 @@ class MaccabiPediaParser(object):
         players = []
         # Order all the events by player name:   "PlayerName" to list of his events
         players_events_by_name = defaultdict(list)
-        [players_events_by_name[player_event["PlayerName"]].append(player_event) for player_event in game_events_as_json]
+        [players_events_by_name[player_event["PlayerName"]].append(player_event) for player_event in
+         game_events_as_json]
 
         for player_name, player_json_events in players_events_by_name.items():
             player_number = set(event["PlayerNumber"] for event in player_json_events)
@@ -133,7 +139,8 @@ class MaccabiPediaParser(object):
 
             player_number = player_number.pop()  # Take the first/only number
             # Adds all events, remove the None ones (means they are duplicates
-            player_parsed_events = list(filter(None.__ne__, [self._parse_player_event(event) for event in player_json_events]))
+            player_parsed_events = list(
+                filter(None.__ne__, [self._parse_player_event(event) for event in player_json_events]))
 
             # TODO: handle the case that the number is 0 (no number probably and 0 is because of the db default)
             players.append(PlayerInGame(player_name, player_number, player_parsed_events))
@@ -153,20 +160,28 @@ class MaccabiPediaParser(object):
         """
 
         # TODO: atm opponent is number, should add join to the query with opponents table, SAME for competition
-        maccabi_players = self._extract_players_events_for_team([event for event in game_events if event['Team'] == _MACCABI_TEAM])
-        maccabi_team = TeamInGame("מכבי תל אביב", game_metadata["CoachMaccabi"], game_metadata["ResultMaccabi"], maccabi_players)
+        maccabi_players = self._extract_players_events_for_team(
+            [event for event in game_events if event['Team'] == _MACCABI_TEAM])
+        maccabi_team = TeamInGame("מכבי תל אביב", game_metadata["CoachMaccabi"], game_metadata["ResultMaccabi"],
+                                  maccabi_players)
 
-        not_maccabi_players = self._extract_players_events_for_team([event for event in game_events if event['Team'] == _NOT_MACCABI_TEAM])
+        not_maccabi_players = self._extract_players_events_for_team(
+            [event for event in game_events if event['Team'] == _NOT_MACCABI_TEAM])
 
-        not_maccabi_team = TeamInGame(game_metadata["Opponent"], game_metadata["CoachOpponent"], game_metadata["ResultOpponent"], not_maccabi_players)
+        not_maccabi_team = TeamInGame(game_metadata["Opponent"], game_metadata["CoachOpponent"],
+                                      game_metadata["ResultOpponent"], not_maccabi_players)
 
-        home_team, away_team = (maccabi_team, not_maccabi_team) if game_metadata["HomeAway"] == "בית" else (not_maccabi_team, maccabi_team)
+        home_team, away_team = (maccabi_team, not_maccabi_team) if game_metadata["HomeAway"] == "בית" else (
+        not_maccabi_team, maccabi_team)
 
-        return GameData(competition=game_metadata["Competition"], fixture=game_metadata["Leg"], date_as_hebrew_string="",
-                        stadium=game_metadata["Stadium"], crowd=game_metadata["Crowd"], referee=game_metadata["Refs"], home_team=home_team,
+        return GameData(competition=game_metadata["Competition"], fixture=game_metadata["Leg"],
+                        date_as_hebrew_string="",
+                        stadium=game_metadata["Stadium"], crowd=game_metadata["Crowd"], referee=game_metadata["Refs"],
+                        home_team=home_team,
                         away_team=away_team, season_string=str(game_metadata["Season"]), half_parsed_events=[],
                         date=datetime_parser(f"{game_metadata['Date']} {game_metadata['Hour']}"),
-                        technical_result=bool(game_metadata['Technical']))  # 'Technical' is 0/1/'', 1 means a technical result
+                        technical_result=bool(
+                            game_metadata['Technical']))  # 'Technical' is 0/1/'', 1 means a technical result
 
     def parse(self):
         """
@@ -180,6 +195,7 @@ class MaccabiPediaParser(object):
         for game_name in self._game_metadata_by_game.keys():
             logger.info(f"Parsing game at {game_name}")
             # Take the first game from each date, we should assume its ok or we will have a lot of problems
-            parsed_games.append(self._build_maccabistats_game(self._game_metadata_by_game[game_name][0], self._games_events_by_game[game_name]))
+            parsed_games.append(self._build_maccabistats_game(self._game_metadata_by_game[game_name][0],
+                                                              self._games_events_by_game[game_name]))
 
         return parsed_games
