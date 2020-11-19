@@ -57,6 +57,10 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
     def total_captains_counted_for_maccabi_players(self) -> int:
         return sum(player[1] for player in self.maccabi_games_stats.players.most_captains)
 
+    @property
+    def total_lineups_counted_for_maccabi_players(self) -> int:
+        return sum(player[1] for player in self.maccabi_games_stats.players.most_lineup_players)
+
     def compare_to_other_maccabi_games_stats(self, other) -> None:
         """
         Prints the comparison of the current (self) maccabi games stats to the given object.
@@ -73,7 +77,7 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
                      f"   Games Count: {len(self.maccabi_games_stats) - len(other)}\n" \
                      f"   Goals: {compared_field('total_goals_scoring_counted_for_maccabi_players')}\n" \
                      f"        By head: {compared_field('total_head_goals_scoring_counted_for_maccabi_players')}\n" \
-                     f"        By freekick: {compared_field('tot    al_freekicks_goals_scoring_counted_for_maccabi_players')}\n" \
+                     f"        By freekick: {compared_field('total_freekicks_goals_scoring_counted_for_maccabi_players')}\n" \
                      f"        By penalty: {compared_field('total_penalties_goals_scoring_counted_for_maccabi_players')}\n" \
                      f"        Own: {compared_field('total_own_goals_scoring_counted_for_maccabi_players')}\n" \
                      f"   Assists: {compared_field('total_goals_assists_counted_for_maccabi_players')}\n" \
@@ -81,7 +85,9 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
                      f"   Cards:\n" \
                      f"        Yellow cards: {compared_field('total_yellow_card_counted_for_maccabi_players')}\n" \
                      f"        Red cards: {compared_field('total_red_card_counted_for_maccabi_players')}\n" \
-                     f"   Captains: {compared_field('total_captains_counted_for_maccabi_players')}\n"
+                     f"   Captains: {compared_field('total_captains_counted_for_maccabi_players')}\n" \
+                     f"   Lineups: {compared_field('total_lineups_counted_for_maccabi_players')}\n"
+
         print(comparison)
 
     def __str__(self) -> str:
