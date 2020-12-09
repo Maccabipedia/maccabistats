@@ -222,6 +222,13 @@ class MaccabiGamesStats(object):
         """
         return MaccabiGamesStats([game for game in self.games if game.season == season])
 
+    def get_games_by_day_at_month(self, day: int, month: int) -> MaccabiGamesStats:
+        """
+        Filter the maccabi games that played at the given day and month
+        """
+        return MaccabiGamesStats([game for game in self.games if
+                                  game.date.day == day and game.date.month == month])
+
     # endregion
 
     def games_by_player_name(self) -> Dict[str, MaccabiGamesStats]:

@@ -171,6 +171,7 @@ class ErrorsFinder(object):
             if player_games[-1].date - player_games[0].date > timedelta(days=365 * number_of_years):
                 players_who_played_too_much.append((player_name, player_games))
 
+        players_who_played_too_much.sort(key=lambda item: item[1][-1].date - item[1][0].date)
         return players_who_played_too_much
 
     def get_all_errors_numbers(self):
