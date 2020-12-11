@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -61,6 +61,31 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
     def total_lineups_counted_for_maccabi_players(self) -> int:
         return sum(player[1] for player in self.maccabi_games_stats.players.most_lineup_players)
 
+    @property
+    def _players_with_numbers_for_maccabi(self) -> Tuple[int, int]:
+        """
+        Checks how many players (PlayerInGame) are registered with a player number.
+        In old games we may could not find any evidence for the number of the player shirt.
+
+        "A player" - means a player in a game, because we based on PlayerInGame class.
+
+        :return: Count of players with shirt number, Count of players without shirt number
+        """
+        players_with_shirt_number = 0
+        players_without_shirt_number = 0
+
+        for game in self.maccabi_games_stats:
+            current_game_players_with_number = sum(1 for p in game.maccabi_team.players if not p.number)
+
+            players_without_shirt_number += current_game_players_with_number
+            players_with_shirt_number += len(game.maccabi_team.players) - current_game_players_with_number
+
+        return players_with_shirt_number, players_without_shirt_number
+
+    @property
+    def total_players_with_shirt_number_for_maccabi(self) -> int:
+        return self._players_with_numbers_for_maccabi[0]
+
     def compare_to_other_maccabi_games_stats(self, other) -> None:
         """
         Prints the comparison of the current (self) maccabi games stats to the given object.
@@ -86,7 +111,8 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
                      f"        Yellow cards: {compared_field('total_yellow_card_counted_for_maccabi_players')}\n" \
                      f"        Red cards: {compared_field('total_red_card_counted_for_maccabi_players')}\n" \
                      f"   Captains: {compared_field('total_captains_counted_for_maccabi_players')}\n" \
-                     f"   Lineups: {compared_field('total_lineups_counted_for_maccabi_players')}\n"
+                     f"   Lineups: {compared_field('total_lineups_counted_for_maccabi_players')}\n" \
+                     f"   Players shirt number: {compared_field('total_players_with_shirt_number_for_maccabi')}\n"
 
         print(comparison)
 
@@ -103,7 +129,6 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
                f"   Cards:\n" \
                f"        Yellow cards: {self.total_yellow_card_counted_for_maccabi_players}\n" \
                f"        Red cards: {self.total_red_card_counted_for_maccabi_players}\n" \
-               f"   Captains: {self.total_captains_counted_for_maccabi_players}\n"
-
-    def __repr__(self) -> str:
-        return str(self)
+               f"   Captains: {self.total_captains_counted_for_maccabi_players}\n" \
+               f"   Lineups: {self.total_lineups_counted_for_maccabi_players}\n" \
+               f"   Players shirt number: {self.total_players_with_shirt_number_for_maccabi}\n"
