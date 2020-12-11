@@ -3,7 +3,6 @@ import json
 from typing import List, Optional, Union, Dict
 
 from dateutil.parser import parse as datetime_parser
-
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 from maccabistats.models.team_in_game import TeamInGame
 
@@ -22,9 +21,15 @@ class GameData(object):
         """
         self.competition = competition
         self.fixture = fixture
+
         # todo get this shit out of here
         self.date_as_hebrew_string = date_as_hebrew_string
-        self.date = self.__get_date_as_datetime() if date is None else date  # Leave only the year & month & day
+        self._full_date = self.__get_date_as_datetime() if date is None else date
+        # Remove any resolution lower than a day,
+        # So we can check a if game is played before another game without checking the hour
+        # (it might be added and we want to compare two Games object from different times in the maccabipedia time)
+        self.date = self._full_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
         self.stadium = stadium
         self.crowd = crowd
         self.referee = referee
