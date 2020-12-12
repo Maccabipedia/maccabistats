@@ -28,6 +28,15 @@ class GameEventTypes(Enum):
     BENCHED = "Benched"
     UNKNOWN = "Unknown"
 
+    @classmethod
+    def _missing_(cls, value):
+        # We use this function in order to allow old MaccabiGamesStats (pickled) to be loaded,
+        # We replaced some of the values and we want to be able to load this.
+        if value == 'Penalty missed':
+            return GameEventTypes.PENALTY_MISSED
+
+        super()._missing_(cls, value)
+
 
 class GameEvent(object):
     def __init__(self, game_event_type: GameEventTypes, time_occur: timedelta):
