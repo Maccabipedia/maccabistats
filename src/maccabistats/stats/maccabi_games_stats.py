@@ -8,7 +8,6 @@ from tempfile import NamedTemporaryFile
 from typing import List, Union, Dict, Any
 
 from dateutil.parser import parse as datetime_parser
-
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player import Player
 from maccabistats.stats.averages import MaccabiGamesAverageStats
@@ -28,6 +27,7 @@ from maccabistats.stats.referees import MaccabiGamesRefereesStats
 from maccabistats.stats.results import MaccabiGamesResultsStats
 from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
 from maccabistats.stats.streaks import MaccabiGamesStreaksStats
+from maccabistats.stats.summary import MaccabiGamesSummary
 from maccabistats.stats.teams import MaccabiGamesTeamsStats
 from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
 from maccabistats.version import version as maccabistats_version
@@ -57,6 +57,7 @@ class MaccabiGamesStats(object):
         self.players_special_games = MaccabiGamesPlayersSpecialGamesStats(self)
         self.players_first_and_last_games = MaccabiGamesPlayersFirstAndLastGamesStats(self)
         self.players_categories = MaccabiGamesPlayersCategoriesStats(self)
+        self.summary = MaccabiGamesSummary(self)
 
         self.version = maccabistats_version
 
@@ -276,6 +277,10 @@ class MaccabiGamesStats(object):
             **self.get_summary())
 
         print(summary)
+
+    def create_team_summary(self, team_name: str) -> MaccabiGamesStats:
+        team_games_stats = self.get_games_against_team(team_name)
+        return team_games_stats.summary
 
     def to_json(self) -> str:
         return json.dumps([game.to_json() for game in self.games], indent=4)
