@@ -1,3 +1,6 @@
+## Version 2.22.0 ##
+    Created a summary object to show all the streaks, players stats and players_streaks in the current MaccabiGamesStats
+
 ## Version 2.20.0 ##
     Type annotations for most of the code
 

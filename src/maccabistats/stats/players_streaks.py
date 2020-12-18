@@ -109,6 +109,8 @@ class MaccabiGamesPlayersStreaksStats(object):
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.streaks.get_longest_score_exactly_games(goals_amount))
 
+
+    # TODO: Looks like this or the current function is not using the player_name
     def get_players_with_best_clean_sheets_streak(self) -> List[PlayerAndGames]:
         return self._get_players_streak_by_condition(
             lambda games, player_name: games.streaks.get_longest_clean_sheet_games())
