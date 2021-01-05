@@ -30,6 +30,7 @@ from maccabistats.stats.streaks import MaccabiGamesStreaksStats
 from maccabistats.stats.summary import MaccabiGamesSummary
 from maccabistats.stats.teams import MaccabiGamesTeamsStats
 from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
+from maccabistats.stats.goals_timing import MaccabiGamesGoalsTiming
 from maccabistats.version import version as maccabistats_version
 
 logger = logging.getLogger(__name__)
@@ -58,6 +59,7 @@ class MaccabiGamesStats(object):
         self.players_first_and_last_games = MaccabiGamesPlayersFirstAndLastGamesStats(self)
         self.players_categories = MaccabiGamesPlayersCategoriesStats(self)
         self.summary = MaccabiGamesSummary(self)
+        self.goals_timing = MaccabiGamesGoalsTiming(self)
 
         self.version = maccabistats_version
 

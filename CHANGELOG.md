@@ -1,3 +1,7 @@
+## Version 2.23.0 ##
+    Added goals timing (which games are with the fatest 2-3-4 goals for maccabi?)
+    Changed the .games mega link
+
 ## Version 2.22.0 ##
     Created a summary object to show all the streaks, players stats and players_streaks in the current MaccabiGamesStats
 
