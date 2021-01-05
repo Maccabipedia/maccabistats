@@ -150,6 +150,14 @@ class GameData(object):
 
         return goals_events
 
+    def maccabi_goals(self) -> List[Dict]:
+        """
+        Wrapper for self.goals, returns just maccabi goals (including own goals scored by the opponent)
+        """
+        return [goal for goal in self.goals() if
+                (goal['team'] != 'מכבי תל אביב' and goal['goal_type'] == 'Own goal') or
+                goal['team'] == 'מכבי תל אביב']
+
     def json_dict(self) -> Dict:
         return dict(stadium=self.stadium,
                     date=self.date.isoformat(),
