@@ -128,7 +128,8 @@ def __fix_teams_names(game):
         game.not_maccabi_team.name = teams_names_changer[old_team_name].change_name(game)
         # Some teams names wont be changed (because the mapping is between team original name and the team name along the years)
         if old_team_name != game.not_maccabi_team.name:
-            logger.info(f"Changing {'Home' if game.is_maccabi_home_team else 'Away'} team name from :{old_team_name}-->{game.not_maccabi_team.name}")
+            logger.info(
+                f"Changing {'Home' if game.is_maccabi_home_team else 'Away'} team name from :{old_team_name}-->{game.not_maccabi_team.name}")
 
 
 def __fix_referees_names(game):
@@ -141,16 +142,23 @@ def __fix_referees_names(game):
 def __fix_competitions_names(game):
     for competition_best_name, competition_similar_name in _competitions_name_fixes:
         if game.competition in competition_similar_name:
-            logger.info("Changing competition name from :{old}-->{new}".format(old=game.competition, new=competition_best_name))
+            logger.info(
+                "Changing competition name from :{old}-->{new}".format(old=game.competition, new=competition_best_name))
             game.competition = competition_best_name
 
 
 def __fix_maccabi_players_names(game):
     for player in game.maccabi_team.players:
         for player_best_name, player_similar_names in _players_name_fixes:
-            if player.name in player_similar_names:
+            # TODO: this is a huge patch, Maccabi tlv site doing balagan with Tal ben haim names, we can assume that the defender won't come back to maccabi anymore as a player:
+            if player.name == 'טל בן חיים' and game.season == '2020/21':
+                logger.info("Changing Tel ben haim (Striker) player name (Special case)")
+                player.name = 'טל בן חיים (החלוץ)'
+                break
+            elif player.name in player_similar_names:
                 logger.info("Changing player name from :{old}->{new}".format(old=player.name, new=player_best_name))
                 player.name = player_best_name
+                break
 
 
 def __fix_stadiums_names(game):
@@ -187,7 +195,8 @@ def __remove_empty_players(game):
     game.maccabi_team.players = [player for player in game.maccabi_team.players if player.name]
 
     if before_removing_empty_players != len(game.maccabi_team.players):
-        logger.info(f"Removed {before_removing_empty_players - len(game.maccabi_team.players)} empty players from game played at :{game.date}")
+        logger.info(
+            f"Removed {before_removing_empty_players - len(game.maccabi_team.players)} empty players from game played at :{game.date}")
 
 
 def __remove_youth_games(maccabi_games_stats):
