@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-
-from maccabistats.parse.maccabipedia.config import get_base_crawling_address_from_settings, get_games_table_name_from_settings, \
-    get_games_table_fields_from_settings, get_games_events_table_fields_from_settings, get_games_events_table_name_from_settings, \
-    get_games_query_join_on_from_settings
-from collections import Iterator, deque
-import requests
 import logging
+from collections import Iterator, deque
+
+import requests
+from maccabistats.config import MaccabiStatsConfigSingleton
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +25,7 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
         :type where_condition: str
         """
 
-        self.base_crawling_address = get_base_crawling_address_from_settings()
+        self.base_crawling_address = MaccabiStatsConfigSingleton.maccabipedia.base_crawling_address
 
         self.tables_name = tables_name
         assert _MUST_HAVE_FIELDS in tables_fields, f"This class is depends on those fields to be queried: {_MUST_HAVE_FIELDS}"
@@ -63,7 +61,8 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
 
         current_request_as_json = request_result.json()
         self._current_offset += _MAX_LIMIT_PER_REQUEST
-        if len(current_request_as_json) < _MAX_LIMIT_PER_REQUEST:  # We have received smaller amount than the limit, that is the last query
+        if len(
+                current_request_as_json) < _MAX_LIMIT_PER_REQUEST:  # We have received smaller amount than the limit, that is the last query
             self._finished_to_crawl = True
 
         # Add to queue for iteration
@@ -84,9 +83,11 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
 
     @classmethod
     def create_games_crawler(cls):
-        return cls(tables_name=get_games_table_name_from_settings(), tables_fields=get_games_table_fields_from_settings(),
-                   join_tables_on=get_games_query_join_on_from_settings())
+        return cls(tables_name=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.tables_names,
+                   tables_fields=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.fields_names,
+                   join_tables_on=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.join_on)
 
     @classmethod
     def create_games_events_crawler(cls):
-        return cls(tables_name=get_games_events_table_name_from_settings(), tables_fields=get_games_events_table_fields_from_settings())
+        return cls(tables_name=MaccabiStatsConfigSingleton.maccabipedia.games_events_query.tables_names,
+                   tables_fields=MaccabiStatsConfigSingleton.maccabipedia.games_events_query.fields_names)

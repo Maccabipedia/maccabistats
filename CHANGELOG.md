@@ -1,3 +1,8 @@
+## Version 2.24.0 ##
+    Make sure that maccabistats can be installed on fresh virtualenv.
+    - Change the minimum required python version to be 3.7 (we use dataclass)
+    - Remove the need for the settings.ini, use pure python config
+
 ## Version 2.23.0 ##
     Added goals timing (which games are with the fatest 2-3-4 goals for maccabi?)
     Changed the .games mega link

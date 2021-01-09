@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
-
-from maccabistats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings, \
-    get_should_use_disk_to_crawl_when_available_from_settings, get_use_lxml_parser_from_settings
-
+import logging
 import os
+
 import requests
 from bs4 import BeautifulSoup
-import logging
+from maccabistats.config import MaccabiStatsConfigSingleton
 
 logger = logging.getLogger(__name__)
 
-folder_to_save_games_events_html_files_pattern = os.path.join(get_folder_to_save_games_html_files_from_settings(),
-                                                              "game+{game_date}+events")
-folder_to_save_games_squads_html_files_pattern = os.path.join(get_folder_to_save_games_html_files_from_settings(),
-                                                              "game+{game_date}+squads")
+folder_to_save_games_events_html_files_pattern = os.path.join(
+    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_games_html_files, "game+{game_date}+events")
+
+folder_to_save_games_squads_html_files_pattern = os.path.join(
+    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_games_html_files, "game+{game_date}+squads")
 
 
 def __get_beautifulsoup_parser_name():
-    if get_use_lxml_parser_from_settings():
+    if MaccabiStatsConfigSingleton.maccabi_site.use_lxml_parser:
         logger.info("Using lxml parser for beautifulsoup")
         return "lxml"
     else:
@@ -82,7 +81,7 @@ def __save_game_events_bs_to_disk(link, content):
 
 
 def get_game_events_bs_by_link(link):
-    if get_should_use_disk_to_crawl_when_available_from_settings():
+    if MaccabiStatsConfigSingleton.maccabi_site.use_disk_as_cache_when_crawling:
         if __does_game_events_bs_exists_on_disk(link):
             return __get_game_events_bs_from_disk(link)
         else:
@@ -125,7 +124,7 @@ def __save_game_squads_bs_to_disk(link, content):
 
 
 def get_game_squads_bs_by_link(link):
-    if get_should_use_disk_to_crawl_when_available_from_settings():
+    if MaccabiStatsConfigSingleton.maccabi_site.use_disk_as_cache_when_crawling:
         if __does_game_squads_bs_exists_on_disk(link):
             return __get_game_squads_bs_from_disk(link)
         else:
