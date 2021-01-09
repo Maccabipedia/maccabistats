@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-
-from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
-from maccabistats.parse.maccabi_tlv_site.maccabi_tlv_site_source import MaccabiTlvSiteSource
-from maccabistats.parse.table.table_source import TableSource
-from maccabistats.parse.maccabipedia.maccabipedia_source import MaccabiPediaSource
-from maccabistats.parse.maccabi_tlv_site.config import get_folder_to_save_games_html_files_from_settings, \
-    get_folder_to_save_seasons_html_files_from_settings
-from maccabistats.parse.merge_sources import merge_maccabitlv_and_table
-from maccabistats.parse.general_fixes import run_general_fixes
-
 import logging
 import os
+
+from maccabistats.config import MaccabiStatsConfigSingleton
+from maccabistats.parse.general_fixes import run_general_fixes
+from maccabistats.parse.maccabi_tlv_site.maccabi_tlv_site_source import MaccabiTlvSiteSource
+from maccabistats.parse.maccabipedia.maccabipedia_source import MaccabiPediaSource
+from maccabistats.parse.merge_sources import merge_maccabitlv_and_table
+from maccabistats.parse.table.table_source import TableSource
+from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
 
@@ -20,15 +18,17 @@ def __validate_folders_to_save_maccabi_games_exists():
     Makes sure that the folders (from settings) that given to save the game & season exists
     """
 
-    folder_to_save_seasons = get_folder_to_save_seasons_html_files_from_settings()
-    folder_to_save_games = get_folder_to_save_games_html_files_from_settings()
+    folder_to_save_seasons = MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_seasons_html_files
+    folder_to_save_games = MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_games_html_files
 
     if not os.path.exists(folder_to_save_seasons):
-        logger.info("The folder from settings to save the seasons in does not exists, creating : {path}".format(path=folder_to_save_seasons))
+        logger.info("The folder from settings to save the seasons in does not exists, creating : {path}".format(
+            path=folder_to_save_seasons))
         os.makedirs(folder_to_save_seasons)
 
-    if not os.path.exists(get_folder_to_save_games_html_files_from_settings()):
-        logger.info("The folder from settings to save the games in does not exists, creating : {path}".format(path=folder_to_save_games))
+    if not os.path.exists(folder_to_save_games):
+        logger.info("The folder from settings to save the games in does not exists, creating : {path}".format(
+            path=folder_to_save_games))
         os.makedirs(folder_to_save_games)
 
 
@@ -110,7 +110,8 @@ def merge_maccabi_games_from_all_input_serialized_sources():
     # todo: write merge logic
 
     logger.info("Merging all the sources to one maccabi games stats")
-    merged_maccabistats_games = merge_maccabitlv_and_table(maccabi_games_stats_from_all_sources[0], maccabi_games_stats_from_all_sources[1])
+    merged_maccabistats_games = merge_maccabitlv_and_table(maccabi_games_stats_from_all_sources[0],
+                                                           maccabi_games_stats_from_all_sources[1])
     logger.info("Running general fixes on merged maccabi games stats object")
 
     maccabistats_games = run_general_fixes(MaccabiGamesStats(merged_maccabistats_games))

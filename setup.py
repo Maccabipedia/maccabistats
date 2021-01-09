@@ -22,7 +22,7 @@ setup(
     description='Maccabi tel-aviv football team statistics manipulation.',
     long_description=(here.parent / 'README.md').read_text(encoding="utf-8"),
     long_description_content_type='text/markdown',
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     url='https://github.com/Maccabipedia/maccabistats',
     project_urls={'MaccabiPedia': 'https://www.maccabipedia.co.il'},
     install_requires=["setuptools>=28.*",
