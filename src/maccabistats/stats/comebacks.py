@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from itertools import chain
 from typing import TYPE_CHECKING
 
 from maccabistats.models.game_data import GameData
@@ -45,6 +46,21 @@ class MaccabiGamesComebacksStats(object):
                 crazy_maccabi_comebacks.append(game)
 
         return self.maccabi_games_stats.create_maccabi_stats_from_games(crazy_maccabi_comebacks)
+
+    @property
+    def total_comebacks_count(self) -> int:
+        # TODO - count in one loop over games,
+        # Fix this class - Comeback from 2 goals should count comeback from 1 goal as well
+        return len(self.won_from_any_goal_diff())
+
+    def won_from_any_goal_diff(self) -> MaccabiGamesStats:
+        all_comebacks = [self.won_from_exactly_x_goal_diff(1),
+                         self.won_from_exactly_x_goal_diff(2),
+                         self.won_from_exactly_x_goal_diff(3),
+                         self.won_from_exactly_x_goal_diff(4),
+                         self.won_from_exactly_x_goal_diff(5)]
+
+        return self.maccabi_games_stats.create_maccabi_stats_from_games(list(chain.from_iterable(all_comebacks)))
 
     def _conditions_for_winning_comeback_occur(self, game: GameData,
                                                winning_comeback_from_x_goals_disadvantage: int) -> bool:

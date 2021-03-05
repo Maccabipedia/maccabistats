@@ -182,6 +182,13 @@ class Seasons(object):
         self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.most_goals_involved),
                               sort_attribute_description=
                               "sort by the number of different players that were involved in a goal")
+
+    # endregion
+
+    # region Other Sorting
+    def sort_by_comebacks_count(self) -> None:
+        self._refresh_sorting(sort_attribute_function=lambda s: s.comebacks.total_comebacks_count,
+                              sort_attribute_description="sort by the total comebacks count")
     # endregion
 
 
