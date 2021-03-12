@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import Callable
+from collections.abc import Callable
 from itertools import groupby, takewhile
 from typing import List, TYPE_CHECKING
 
