@@ -182,6 +182,11 @@ class Seasons(object):
         self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.most_goals_involved),
                               sort_attribute_description=
                               "sort by the number of different players that were involved in a goal")
+
+    def sort_by_penalties_scorers_amount(self) -> None:
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.best_scorers_by_penalty),
+                              sort_attribute_description=
+                              "sort by the number of different penalties scorers")
     # endregion
 
 

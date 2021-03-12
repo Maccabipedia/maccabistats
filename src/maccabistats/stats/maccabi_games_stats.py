@@ -241,7 +241,7 @@ class MaccabiGamesStats(object):
         players_games = defaultdict(list)
 
         for game in self.games:
-            for player in game.maccabi_team.players:
+            for player in game.maccabi_team.played_players:
                 players_games[player.name].append(game)
 
         return {player_name: MaccabiGamesStats(players_games[player_name]) for player_name in players_games.keys()}
