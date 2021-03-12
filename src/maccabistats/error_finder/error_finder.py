@@ -167,7 +167,7 @@ class ErrorsFinder(object):
 
         players_who_played_too_much = []
         for player_name in self.maccabi_games_stats.available_players_names:
-            player_games = self.maccabi_games_stats.get_games_with_player_name(player_name)
+            player_games = self.maccabi_games_stats.get_games_by_player_name(player_name)
             if player_games[-1].date - player_games[0].date > timedelta(days=365 * number_of_years):
                 players_who_played_too_much.append((player_name, player_games))
 

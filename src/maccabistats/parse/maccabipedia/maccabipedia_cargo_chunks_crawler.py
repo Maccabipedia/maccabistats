@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
-from collections import Iterator, deque
+from collections.abc import Iterator
+from collections import deque
 
 import requests
 from maccabistats.config import MaccabiStatsConfigSingleton

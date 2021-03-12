@@ -124,7 +124,7 @@ def _load_from_source(source):
     source.run_general_fixes()
     source.run_specific_fixes()
 
-    return MaccabiGamesStats(source.maccabi_games_stats)
+    return MaccabiGamesStats(source.maccabi_games_stats, description=f'Source: {source.name}')
 
 
 def load_from_maccabipedia_source():

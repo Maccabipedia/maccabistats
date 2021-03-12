@@ -46,7 +46,7 @@ class MaccabiStatsSource(object):
 
         logger.info(f"Starting to parse maccabi games from: {self.name}")
         parsed_games = self._rerun_source()
-        self.maccabi_games_stats = MaccabiGamesStats(parsed_games)
+        self.maccabi_games_stats = MaccabiGamesStats(parsed_games, f'Source: {self.name}')
 
     def _rerun_source(self):
         """
