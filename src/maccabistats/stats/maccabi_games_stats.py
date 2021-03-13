@@ -32,6 +32,8 @@ from maccabistats.stats.streaks import MaccabiGamesStreaksStats
 from maccabistats.stats.summary import MaccabiGamesSummary
 from maccabistats.stats.teams import MaccabiGamesTeamsStats
 from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
+from maccabistats.stats_utilities.points_calculator import calculate_points_for_games, \
+    calculate_possible_points_for_games
 from maccabistats.version import version as maccabistats_version
 
 logger = logging.getLogger(__name__)
@@ -277,6 +279,32 @@ class MaccabiGamesStats:
     @classmethod
     def create_maccabi_stats_from_games(cls, games: List[GameData]) -> MaccabiGamesStats:
         return cls(games)
+
+    @property
+    def points(self):
+        """
+        Calculate points is supported only for league games
+        """
+        current_competitions = self.available_competitions
+
+        if not set(current_competitions) <= set(LEAGUE_COMPETITIONS):
+            raise TypeError(f'Calculating points is supported only for league games, '
+                            f'current competitions: {current_competitions}')
+
+        return calculate_points_for_games(self)
+
+    @property
+    def success_rate(self):
+        """
+        Calculate the success rate of the current games (points/possible points)
+        """
+        current_competitions = self.available_competitions
+
+        if not set(current_competitions) <= set(LEAGUE_COMPETITIONS):
+            raise TypeError(f'Calculating success rate supported only for league games, '
+                            f'current competitions: {current_competitions}')
+
+        return round(calculate_points_for_games(self) / calculate_possible_points_for_games(self), 3)
 
     def get_summary(self) -> Dict[str, Any]:
         summary = {'games': len(self),

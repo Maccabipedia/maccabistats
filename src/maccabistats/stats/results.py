@@ -14,7 +14,6 @@ class MaccabiGamesResultsStats(object):
     """
 
     def __init__(self, maccabi_games_stats: MaccabiGamesStats):
-
         self.games = maccabi_games_stats.games
 
     @property
