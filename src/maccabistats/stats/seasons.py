@@ -33,13 +33,11 @@ class Seasons(object):
         self._current_sort_attribute_description = "order by season number"
 
     def __repr__(self) -> str:
-        ordered_seasons = pprint.pformat(["{season} ({value})".
-                                         format(season=season,
-                                                value=self._current_sort_attribute_function(self[season]))
-                                          for season in list(self.seasons.keys())])
+        # Pad the season representation to 7 chars, like '2015/16', to have one year seasons aligned (like '1955')
+        ordered_seasons = pprint.pformat([f'{season: <7} ({self._current_sort_attribute_function(self[season])})'
+                                          for season in self.seasons.keys()])
 
-        return "{description}: \n\n{ordered_seasons}".format(description=self._current_sort_attribute_description,
-                                                             ordered_seasons=ordered_seasons)
+        return f'{self._current_sort_attribute_description}: \n\n{ordered_seasons}'
 
     def __len__(self) -> int:
         return len(self.seasons)
