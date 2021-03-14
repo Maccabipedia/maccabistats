@@ -2,6 +2,8 @@
 import logging
 from collections.abc import Iterator
 from collections import deque
+from typing import Dict
+import html
 
 import requests
 from maccabistats.config import MaccabiStatsConfigSingleton
@@ -62,12 +64,23 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
 
         current_request_as_json = request_result.json()
         self._current_offset += _MAX_LIMIT_PER_REQUEST
-        if len(
-                current_request_as_json) < _MAX_LIMIT_PER_REQUEST:  # We have received smaller amount than the limit, that is the last query
+
+        # We have received smaller amount than the limit, that is the last query
+        if len(current_request_as_json) < _MAX_LIMIT_PER_REQUEST:
             self._finished_to_crawl = True
 
         # Add to queue for iteration
-        [self._already_fetched_data_queue.append(data) for data in current_request_as_json]
+        [self._already_fetched_data_queue.append(self._decode_maccabipedia_data(data)) for data in
+         current_request_as_json]
+
+    @staticmethod
+    def _decode_maccabipedia_data(maccabipedia_data) -> Dict:
+        if 'Opponent' in maccabipedia_data:
+            maccabipedia_data['Opponent'] = html.unescape(maccabipedia_data['Opponent'])
+        if 'Stadium' in maccabipedia_data:
+            maccabipedia_data['Stadium'] = html.unescape(maccabipedia_data['Stadium'])
+
+        return maccabipedia_data
 
     def __next__(self):
         if not self._already_fetched_data_queue:
