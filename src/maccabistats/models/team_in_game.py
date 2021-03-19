@@ -86,10 +86,7 @@ class TeamInGame(Team):
     @property
     def scored_for_maccabi_players_with_amount(self) -> typing.Counter[str]:
         def scored_maccabi_goals(p) -> int:
-            if p.goals_count_by_goal_type(GoalTypes.OWN_GOAL) > 0:
-                return 0
-
-            return p.event_count_by_type(GameEventTypes.GOAL_SCORE)
+            return p.event_count_by_type(GameEventTypes.GOAL_SCORE) - p.goals_count_by_goal_type(GoalTypes.OWN_GOAL)
 
         return self.get_players_with_most_of_this_condition(scored_maccabi_goals)
 
