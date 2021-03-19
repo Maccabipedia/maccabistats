@@ -54,7 +54,7 @@ class MaccabiGamesPlayersSpecialGamesStats(object):
         :param: The amount of players we want to return
         :return: The players that satisfy the player game condition, from youngest and above
         """
-        games_by_player_name = self.maccabi_games_stats.games_by_player_name()
+        games_by_player_name = self.maccabi_games_stats.played_games_by_player_name()
 
         first_game_by_player_name = dict()
         for player_name, player_games in games_by_player_name.items():

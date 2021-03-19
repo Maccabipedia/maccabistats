@@ -5,7 +5,7 @@ import json
 import logging
 from collections import defaultdict
 from tempfile import NamedTemporaryFile
-from typing import List, Union, Dict, Any
+from typing import List, Union, Dict, Any, DefaultDict
 
 from dateutil.parser import parse as datetime_parser
 
@@ -262,9 +262,9 @@ class MaccabiGamesStats:
 
     # endregion
 
-    def games_by_player_name(self) -> Dict[str, MaccabiGamesStats]:
+    def played_games_by_player_name(self) -> DefaultDict[str, MaccabiGamesStats]:
         """
-        Returns a mapping between a player name to all of his games
+        Returns a mapping between a player name to the games he played at
         """
         players_games = defaultdict(list)
 
@@ -272,9 +272,12 @@ class MaccabiGamesStats:
             for player in game.maccabi_team.played_players:
                 players_games[player.name].append(game)
 
-        return {player_name: MaccabiGamesStats(players_games[player_name],
-                                               self._new_description(f'Player games: {player_name}'))
-                for player_name in players_games.keys()}
+        games_by_player = {player_name: MaccabiGamesStats(players_games[player_name],
+                                                          self._new_description(f'Player games: {player_name}'))
+                           for player_name in players_games.keys()}
+
+        # Allow to return an empty list for unknown players
+        return defaultdict(lambda: MaccabiGamesStats([]), games_by_player)
 
     @classmethod
     def create_maccabi_stats_from_games(cls, games: List[GameData]) -> MaccabiGamesStats:
