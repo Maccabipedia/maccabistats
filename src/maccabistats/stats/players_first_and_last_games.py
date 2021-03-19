@@ -43,7 +43,7 @@ class MaccabiGamesPlayersFirstAndLastGamesStats(object):
         :param player_game_to_search_for: Search for first/last game of this player (to satisfy the condition)
         :return: The players that satisfy the condition at their game + the first game, ordered by the game data ASC
         """
-        games_by_player_name = self.maccabi_games_stats.games_by_player_name()
+        games_by_player_name = self.maccabi_games_stats.played_games_by_player_name()
         players_that_satisfy_condition: Dict[str, GameData] = dict()
 
         for player_name, player_games in games_by_player_name.items():

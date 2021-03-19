@@ -16,7 +16,7 @@ class PlayerGameMatcher(Enum):
     LAST_GAME = "last_game"
 
 
-class PlayerGamesCondition(object):
+class PlayerGamesCondition:
 
     @staticmethod
     def play_in_game(game: GameData, player_name: str) -> bool:
@@ -24,14 +24,24 @@ class PlayerGamesCondition(object):
 
     @staticmethod
     def create_score_x_goals_in_game__condition(goals_at_least) -> Callable[[GameData, str], bool]:
-        def score_in_game_x_goals(game: GameData, player_name: str) -> bool:
+        def scored_in_game_x_goals(game: GameData, player_name: str) -> bool:
             return game.maccabi_team.scored_players_with_amount.get(player_name, 0) >= goals_at_least
 
-        return score_in_game_x_goals
+        return scored_in_game_x_goals
 
     @staticmethod
     def create_assist_x_goals_in_game__condition(assist_at_least) -> Callable[[GameData, str], bool]:
-        def assist_in_game(game: GameData, player_name: str) -> bool:
+        def assists_in_game_x_goals(game: GameData, player_name: str) -> bool:
             return game.maccabi_team.assist_players_with_amount.get(player_name, 0) >= assist_at_least
 
-        return assist_in_game
+        return assists_in_game_x_goals
+
+    @staticmethod
+    def create_involved_in_x_goals_in_game__condition(involved_at_least) -> Callable[[GameData, str], bool]:
+        def involved_in_game_x_goals(game: GameData, player_name: str) -> bool:
+            assists = game.maccabi_team.goal_involved_players_with_amount.get(player_name, 0)
+            scored = game.maccabi_team.scored_players_with_amount.get(player_name, 0)
+
+            return assists + scored >= involved_at_least
+
+        return involved_in_game_x_goals
