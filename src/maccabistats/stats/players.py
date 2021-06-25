@@ -235,6 +235,14 @@ class MaccabiGamesPlayersStats(object):
 
     # endregion
 
+    def never_lost(self, minimum_games_to_player: int = 5) -> List[PlayerStats]:
+        played_more_than_minimum_games = [player for player in self.most_played if
+                                          player[1] >= minimum_games_to_player]
+
+        players_that_lost = set(player[0] for player in self.most_losers)
+
+        return [player for player in played_more_than_minimum_games if player[0] not in players_that_lost]
+
     def __get_players_from_all_games_with_most_of_this_condition(self, condition: Callable[[PlayerInGame], int]) \
             -> List[PlayerStats]:
         """

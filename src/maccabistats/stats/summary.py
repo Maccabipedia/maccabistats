@@ -45,6 +45,7 @@ class MaccabiGamesSummary(object):
               f'Best assisters: {pformat(self._players.best_assisters[:_TOP_PLAYERS_COUNT])}\n'
               f'Most goals involved: {pformat(self._players.most_goals_involved[:_TOP_PLAYERS_COUNT])}\n'
               f'Top winners: {pformat(self._players.most_winners[:_TOP_PLAYERS_COUNT])}\n'
+              f'Never lost: {pformat(self._players.never_lost()[:_TOP_PLAYERS_COUNT])}\n'
               f'\n\n'
               f''
               f'Top players streaks:\n'

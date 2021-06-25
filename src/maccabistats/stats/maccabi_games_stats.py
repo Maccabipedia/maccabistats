@@ -339,7 +339,7 @@ class MaccabiGamesStats:
 
         print(summary)
 
-    def create_team_summary(self, team_name: str) -> MaccabiGamesStats:
+    def create_team_summary(self, team_name: str) -> MaccabiGamesSummary:
         team_games_stats = self.get_games_against_team(team_name)
         return team_games_stats.summary
 

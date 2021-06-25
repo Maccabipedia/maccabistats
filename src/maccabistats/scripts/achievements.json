@@ -2,6 +2,97 @@
   "cargoquery": [
     {
       "title": {
+        "ConnectedCompID": "0",
+        "Season": "1996/97",
+        "Achievement": "סיבוב 1"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "1999/00",
+        "Achievement": "סיבוב 1"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2001/02",
+        "Achievement": "סיבוב 2"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2002/03",
+        "Achievement": "סיבוב 1"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2005/06",
+        "Achievement": "מוקדמות - סיבוב 2"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2007/08",
+        "Achievement": "מוקדמות - סיבוב 2"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2011/12",
+        "Achievement": "בתים - מקום 4"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2013/14",
+        "Achievement": "32 האחרונות"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2014/15",
+        "Achievement": "מוקדמות - פלייאוף"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2016/17",
+        "Achievement": "בתים - מקום 3"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2017/18",
+        "Achievement": "בתים - מקום 4"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2018/19",
+        "Achievement": "מוקדמות - פלייאוף"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "0",
+        "Season": "2019/20",
+        "Achievement": "מוקדמות - סיבוב 3"
+      }
+    },
+    {
+      "title": {
         "ConnectedCompID": "1",
         "Season": "1931/32",
         "Achievement": "מקום 5"
@@ -108,7 +199,7 @@
     {
       "title": {
         "ConnectedCompID": "1",
-        "Season": "1954/55",
+        "Season": "1955",
         "Achievement": "מקום 2"
       }
     },
@@ -193,7 +284,7 @@
       "title": {
         "ConnectedCompID": "1",
         "Season": "1966/68",
-        "Achievement": "מקום 1"
+        "Achievement": "זכיה"
       }
     },
     {
@@ -557,7 +648,14 @@
       "title": {
         "ConnectedCompID": "1",
         "Season": "2019/20",
-        "Achievement": "מקום 1"
+        "Achievement": "זכיה"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "1",
+        "Season": "2020/21",
+        "Achievement": "מקום 2"
       }
     },
     {
@@ -703,7 +801,7 @@
     {
       "title": {
         "ConnectedCompID": "5",
-        "Season": "1954/55",
+        "Season": "1955",
         "Achievement": "זכיה"
       }
     },
@@ -780,7 +878,7 @@
     {
       "title": {
         "ConnectedCompID": "5",
-        "Season": "1966/68",
+        "Season": "1967/68",
         "Achievement": "שמינית גמר"
       }
     },
@@ -1136,6 +1234,27 @@
     },
     {
       "title": {
+        "ConnectedCompID": "5",
+        "Season": "2018/19",
+        "Achievement": "חצי גמר"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "5",
+        "Season": "2019/20",
+        "Achievement": "סיבוב ח'"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "5",
+        "Season": "2020/21",
+        "Achievement": "זכיה"
+      }
+    },
+    {
+      "title": {
         "ConnectedCompID": "7",
         "Season": "1984/85",
         "Achievement": "שלב הבתים"
@@ -1222,14 +1341,14 @@
       "title": {
         "ConnectedCompID": "7",
         "Season": "1999/00",
-        "Achievement": "סיבוב ב'"
+        "Achievement": "שמינית גמר"
       }
     },
     {
       "title": {
         "ConnectedCompID": "7",
-        "Season": "2000/2001",
-        "Achievement": "סיבוב ב'"
+        "Season": "2000/01",
+        "Achievement": "שמינית גמר"
       }
     },
     {
@@ -1444,14 +1563,14 @@
     },
     {
       "title": {
-        "ConnectedCompID": "10",
+        "ConnectedCompID": "11",
         "Season": "1968/69",
         "Achievement": "זכיה"
       }
     },
     {
       "title": {
-        "ConnectedCompID": "10",
+        "ConnectedCompID": "11",
         "Season": "1970/71",
         "Achievement": "זכיה"
       }
@@ -1459,36 +1578,36 @@
     {
       "title": {
         "ConnectedCompID": "11",
-        "Season": "1977",
-        "Achievement": "מקום שלישי"
+        "Season": "1977/78",
+        "Achievement": "שלב הבתים - מקום 3"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
-        "Season": "1978",
-        "Achievement": "מקום שלישי"
+        "Season": "1978/79",
+        "Achievement": "שלב הבתים - מקום 3"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
-        "Season": "1980",
-        "Achievement": "מקום רביעי"
+        "Season": "1980/81",
+        "Achievement": "שלב הבתים - מקום 4"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
         "Season": "1992/93",
-        "Achievement": "מוקדמות - סיבוב שני"
+        "Achievement": "מוקדמות - סיבוב 1"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
-        "Season": "1993",
-        "Achievement": "מקום רביעי"
+        "Season": "1993/94",
+        "Achievement": "שלב הבתים - מקום 4"
       }
     },
     {
@@ -1502,70 +1621,28 @@
       "title": {
         "ConnectedCompID": "11",
         "Season": "1995/96",
-        "Achievement": "מוקדמות - סיבוב ראשון"
+        "Achievement": "מוקדמות - סיבוב 1"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
         "Season": "1996/97",
-        "Achievement": "מוקדמות - סיבוב ראשון"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "1996/97",
-        "Achievement": "סיבוב ראשון"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "1999/00",
-        "Achievement": "סיבוב ראשון"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "2001/02",
-        "Achievement": "סיבוב שני"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "2002/03",
-        "Achievement": "סיבוב ראשון"
+        "Achievement": "מוקדמות - סיבוב 1"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
         "Season": "2003/04",
-        "Achievement": "מוקדמות - סיבוב שני"
+        "Achievement": "מוקדמות - סיבוב 2"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
         "Season": "2004/05",
-        "Achievement": "בתים"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "2005/06",
-        "Achievement": "מוקדמות - סיבוב שני"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "2007/08",
-        "Achievement": "מוקדמות - סיבוב שני"
+        "Achievement": "בתים - מקום 4"
       }
     },
     {
@@ -1578,57 +1655,43 @@
     {
       "title": {
         "ConnectedCompID": "11",
-        "Season": "2011/12",
-        "Achievement": "בתים"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
         "Season": "2013/14",
-        "Achievement": "32 האחרונות"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "2013/14",
-        "Achievement": "מוקדמות - סיבוב שלישי"
+        "Achievement": "מוקדמות - סיבוב 3"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
         "Season": "2014/15",
-        "Achievement": "מוקדמות - סיבוב שני"
-      }
-    },
-    {
-      "title": {
-        "ConnectedCompID": "11",
-        "Season": "2014/15",
-        "Achievement": "מוקדמות - פלייאוף"
+        "Achievement": "מוקדמות - סיבוב 3"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
         "Season": "2015/16",
-        "Achievement": "בתים"
+        "Achievement": "בתים - מקום 4"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
-        "Season": "2016/17",
-        "Achievement": "בתים"
+        "Season": "2019/20",
+        "Achievement": "מוקדמות - סיבוב 2"
       }
     },
     {
       "title": {
         "ConnectedCompID": "11",
-        "Season": "2017/18",
-        "Achievement": "בתים"
+        "Season": "2020/21",
+        "Achievement": "32 האחרונות"
+      }
+    },
+    {
+      "title": {
+        "ConnectedCompID": "11",
+        "Season": "2020/21",
+        "Achievement": "מוקדמות - פלייאוף"
       }
     },
     {
