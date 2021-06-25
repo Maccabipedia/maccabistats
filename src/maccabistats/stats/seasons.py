@@ -185,6 +185,11 @@ class Seasons(object):
         self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.best_scorers_by_penalty),
                               sort_attribute_description=
                               "sort by the number of different penalties scorers")
+
+    def sort_by_comebacks_to_win_amount(self) -> None:
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s.comebacks.won_from_any_goal_diff()),
+                              sort_attribute_description=
+                              "sort by the number of comebacks to winning")
     # endregion
 
 
