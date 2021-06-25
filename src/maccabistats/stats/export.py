@@ -69,7 +69,7 @@ class ExportMaccabiGamesStats(object):
             all_games.append(current_game_data)
 
         return all_games
-
+v
     def to_flatten_json(self, file_path: Optional[Path] = None) -> None:
         file_path = file_path or _BASE_EXPORT_FOLDER / 'flatten_maccabistats.json'
         file_path.parent.mkdir(parents=True, exist_ok=True)
