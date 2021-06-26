@@ -4,6 +4,9 @@ import csv
 import itertools
 import json
 import logging
+import shutil
+import tempfile
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, Any, List, Optional
 
@@ -57,6 +60,7 @@ class ExportMaccabiGamesStats(object):
         return game_events
 
     def _flatten_dict_all_games(self) -> List[FlattenGame]:
+        logger.info('Starting to create a dict with all games flatten data')
         all_games = []
 
         for game in self.maccabi_games_stats:
@@ -68,22 +72,29 @@ class ExportMaccabiGamesStats(object):
 
             all_games.append(current_game_data)
 
+        logger.info('Finished to create a dict with all games flatten data')
         return all_games
 
-    def to_flatten_json(self, file_path: Optional[Path] = None) -> None:
-        file_path = file_path or _BASE_EXPORT_FOLDER / 'flatten_maccabistats.json'
-        file_path.parent.mkdir(parents=True, exist_ok=True)
+    def to_flatten_json(self, folder_path: Optional[Path] = None) -> Path:
+        folder_path = folder_path or _BASE_EXPORT_FOLDER
+        folder_path.mkdir(parents=True, exist_ok=True)
+
+        file_path = folder_path / f'{_formatted_now()}_flatten_maccabistats.json'
 
         games_data = itertools.chain.from_iterable(self._flatten_dict_all_games())
 
         jsoned_data = json.dumps(list(games_data), indent=4, ensure_ascii=False)
         file_path.write_text(jsoned_data, encoding='utf8')
 
-        logger.info(f'Wrote the MaccabiGamesStats data to: {file_path} successfully!')
+        logger.info(f'Wrote the MaccabiGamesStats flatten json to: {file_path} successfully!')
 
-    def to_flatten_csv(self, file_path: Optional[Path] = None) -> None:
-        file_path = file_path or _BASE_EXPORT_FOLDER / 'flatten_maccabistats.csv'
-        file_path.parent.mkdir(parents=True, exist_ok=True)
+        return file_path
+
+    def to_flatten_csv(self, folder_path: Optional[Path] = None) -> Path:
+        folder_path = folder_path or _BASE_EXPORT_FOLDER
+        folder_path.parent.mkdir(parents=True, exist_ok=True)
+
+        file_path = folder_path / f'{_formatted_now()}_flatten_maccabistats.csv'
 
         games_data = itertools.chain.from_iterable(self._flatten_dict_all_games())
         first_game = next(games_data)
@@ -97,4 +108,29 @@ class ExportMaccabiGamesStats(object):
             writer.writerow(first_game)  # Because we popped it out to set the header
             writer.writerows(games_data)
 
-        logger.info(f'Wrote the MaccabiGamesStats data to: {file_path} successfully!')
+        logger.info(f'Wrote the MaccabiGamesStats flatten csv to: {file_path} successfully!')
+
+        return file_path
+
+    def to_flatten_zip(self, folder_path: Optional[Path] = None) -> Path:
+        """
+        Export all the flatten formats and zip them
+        """
+        folder_path = (folder_path or _BASE_EXPORT_FOLDER)
+        folder_path.parent.mkdir(parents=True, exist_ok=True)
+
+        file_path = folder_path / f'{_formatted_now()}_flatten_maccabistats.zip'
+
+        with tempfile.TemporaryDirectory(prefix='MaccabiStatsExport') as temp_export_folder:
+            self.to_flatten_json(folder_path=Path(temp_export_folder))
+            self.to_flatten_csv(folder_path=Path(temp_export_folder))
+
+            shutil.make_archive(file_path.with_suffix(""), 'zip', temp_export_folder)
+
+        logger.info(f'Wrote the MaccabiGamesStats flatten zip to: {file_path} successfully!')
+
+        return file_path
+
+
+def _formatted_now() -> str:
+    return datetime.now().strftime("%Y-%m-%d %H-%M-%S")
