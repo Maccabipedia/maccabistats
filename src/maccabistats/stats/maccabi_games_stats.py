@@ -16,6 +16,7 @@ from maccabistats.stats.coaches import MaccabiGamesCoachesStats
 from maccabistats.stats.comebacks import MaccabiGamesComebacksStats
 from maccabistats.stats.consts import TROPHY_COMPETITIONS, EUROPE_COMPETITIONS, LEAGUE_COMPETITIONS, \
     NON_OFFICIAL_COMPETITIONS
+from maccabistats.stats.export import ExportMaccabiGamesStats
 from maccabistats.stats.goals_timing import MaccabiGamesGoalsTiming
 from maccabistats.stats.graphs import MaccabiGamesGraphsStats
 from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
@@ -65,6 +66,7 @@ class MaccabiGamesStats:
         self.players_categories = MaccabiGamesPlayersCategoriesStats(self)
         self.summary = MaccabiGamesSummary(self)
         self.goals_timing = MaccabiGamesGoalsTiming(self)
+        self.export = ExportMaccabiGamesStats(self)
 
         self.version = maccabistats_version
 

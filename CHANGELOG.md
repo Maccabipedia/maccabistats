@@ -1,3 +1,8 @@
+## Version 2.26.0 ##
+    Allow to export MaccabiGamesStats in flatten format (each player event is a record, multiple events for a game) - csv\json.
+    - Change the minimum required python version to be 3.7 (we use dataclass)
+    - Remove the need for the settings.ini, use pure python config
+
 ## Version 2.24.0 ##
     Make sure that maccabistats can be installed on fresh virtualenv.
     - Change the minimum required python version to be 3.7 (we use dataclass)
