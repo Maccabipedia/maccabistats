@@ -70,8 +70,8 @@ When exporting the data out of MaccabiStats you may find two files:
     
 # Code
 Make sure to check out our Github repositories at:
-* [MaccabiStats](https://github.com/Maccabipedia/maccabistats)
-* [MaccabiPedia org](https://github.com/Maccabipedia)
+* [MaccabiStats Repository](https://github.com/Maccabipedia/maccabistats)
+* [MaccabiPedia Organization](https://github.com/Maccabipedia)
     
 # Contact Us
 We will be glad to help with any question or hear your new ideas and requests,  
