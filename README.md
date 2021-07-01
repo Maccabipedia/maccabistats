@@ -1,158 +1,177 @@
-# Description 
+# MaccabiStats
 
-Simple package which allow to figure out more about maccabi tel-aviv football team while manipulating statistics.
-Atm all the data parsed from maccabi-tlv site.
-
+MaccabiStats package used to analyze Maccabi Tel-Aviv games data, based on several sites but mostly on [MaccabiPedia](https://maccbaipedia.co.il). 
 
 # TL;DR
-You can get the serialized maccabi games from [mega](https://mega.nz/folder/vbgEED7R#0bpotoxTX-ZXGpI8hqbHOA)
-(separate by maccabistats version).  
-after that you can just load the games:
-
+* In order to work with MaccabiStats package you need to have the serialized Maccabi Tel-Aviv games data, you can get it from [Mega](https://mega.nz/folder/vbgEED7R#0bpotoxTX-ZXGpI8hqbHOA)
+Download the latest serialized data, which can be used as:
 ```
 from maccabistats import get_maccabi_stats
-games = get_maccabi_stats(your_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
-```
+maccabi_games = get_maccabi_stats(your_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
 
-You might want to use:
+# maccabi_games object will contains everything you need
 ```
-games = games.league_games
-```
-because there are not only league games.
+* In order to use and analyze MaccabiPedia data without the Python package, checkout this [Mega](https://mega.nz/folder/jGww3bbR#5h2-xmjM-e8Dk0jROfnGdQ) link.  
+You find inside a zip with the games data and players events in json format.
 
 now, enjoy :)
 
-# Manipulating maccabi statistics
+# Intro
 
 ### Loading games
+After you've downloaded the last serialized games from [Mega](https://mega.nz/folder/vbgEED7R#0bpotoxTX-ZXGpI8hqbHOA), load it as:
+```
+from maccabistats import get_maccabi_stats
+maccabi_games = get_maccabi_stats(your_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
+```
 
+### Filtering games
+You can filter games by several sub categories, such as: home or away, game result, competition, opponent, etc.
 ```
->>> from maccabistats import get_maccabi_stats
->>> games = get_maccabi_stats()  # From default folder path (Home folder - %userprofile%)
->>> games = get_maccabi_stats(r"C:\maccabi\maccabi.games")  # From local custom file path
-```
-Each list of games is from the same type - MaccabiGamesStats.  
-All the below manipulating can be done on every sub-category of games, like:  
-old_games, old_home_games and old_home_wins.  
- 
-Getting only old home wins can be done in this way:
-
-```
->>> old_games = games.played_before("1.1.2000")
->>> old_home_games = old_games.home_games
->>> old_home_wins = old_home_games.maccabi_wins
+>>> maccabi_games = ... (look above)
 >>>
->>> or just:
->>> games.played_before("1.1.2000").home_games.maccabi_wins
-```
-
-
-### Basic usage
-
-```
->>> games.averages.goals_for_maccabi  # Avg goals for maccabi, for all the games in the list.
->>> games.results.wins_percentage  #  the win % from the games in the list.
+>>> home_games = maccabi_games.home_games
+>>> away_games = maccabi_Games.away_games
 >>>
->>> game.get_games_* = use to filter games.
->>> Lets combine all, wins % against hapoel haifa in league games:
->>> game.league_games.get_games_against_team("הפועל חיפה").results.wins_percentage
+>>> official_games = maccabi_games.official_games
+>>>
+>>> league_games = maccabi_games.league_games
+>>> europe_games = maccabi_games.europe_games
+>>>
+>>> derby = maccabi_games.get_games_against_team("הפועל תל אביב")
+>>> sheran = maccabi_games.get_games_by_played_player_name("שרן ייני")
+>>> great_season = maccabi_games.get_games_by_season("1976/77")
+>>> # Search for the others 'maccabi_Games.get_games*" functions
+>>>
+>>> old_games = maccabi_games.played_before("2000")
+>>> great_team = maccabi_games.played_before("1997").played_after("1993")
+>>>
+>>> # You can even chain these sub-categories:
+>>> home_derby = maccabi_games.home_games.get_games_against_team("הפועל תל אביב")
+>>> sheran_europe_away_wins = maccabi_games.europe_games.away_games.get_games_by_played_player_name("שרן ייני").maccabi_wins
+>>>
+>>> # If you have filtered too much, checkout the description - it's aggregated
+>>> maccabi_games.home_games.league_games.get_games_against_team("הפועל חיפה")
+>>> 'Source: MaccabiPedia + Home games + League games + Against team: Hapoel Haifa | 64 games | (from 05-12-1931 to 13-12-2020)'
 ```
 
+MaccabiStats object is based on fluent mechanism, that allows you to get the same object after filtering games for each 'sub-category', like:
+```
+>>> type(maccabi_games)
+>>> 'MaccabiGamesStats'
+>>>
+>>> home_games = maccabi_games.home_games
+>>> type(home_games)
+>>> 'MaccabiGamesStats'
+>>>
+>>> # Same for every other sub-category or any chain of them
+```
+
+# Basic Analysis
 
 ### Players
-All of the names are very intuitive, some examples:
-
+When you have your MaccabiGamesStats object, you can check some players statistics for these games:
 ```
->>> games.players.best_scorers
->>> games.players.get_most_winners_by_percentage()
->>> games.players.most_played
->>>
->>> Getting top 5 scored players in league derby:
->>> games.league_games.get_games_against_team("הפועל תל אביב").players.best_scorers[0:5]
+>>> maccabi_games.players.best_scorers[:10]  # This will show you the top 10 scorers
+>>> maccabi_games.players.most_unbeaten[:10]  # This will show you the top 10 players with most unbeaten games (from what you've filter) 
 ```
 
-### Coaches and Referees
-You can get the win\lose percentages of each one just by:
-
+MaccabiGamesStats has several analysis options - same as ".players" we just saw, all of them are accessible under your object.
+Some others general analysis options are:
 ```
->>> games.coaches.most_winner_coach_by_percentage
->>> games.referees.best_referee_by_percentage[0:2]  # Top 2 referees (in all maccabi games history).
->>>
->>> Getting best derby coaches:
->>> games.league_games.get_games_against_team("הפועל תל אביב").coaches.most_winner_coach_by_percentage
-```
-
-
-### Comebacks
-You can get the craziest maccabi comebacks:
-
-```
->>> games.comebacks.won_from_exactly_two_goal_diff()
->>> games.comebacks.won_from_exactly_x_goal_diff(goals=3)  # Wow!
+>>> maccabi_games.coaches # Analyze information from coaches perspective
+>>> maccabi_games.referees # Analyze information from referees perspective
 ```
 
 ### Streaks
-You can get the longest (or by streak length) streaks of any subset of maccabi games:
-
+Another option of analysis is to examine streaks, players streaks and teams streaks, this can be used as:
 ```
->>> games.streaks.get_longest_* = use to get the longest streak by condition, like:
->>> games.streaks.get_longest_clean_sheet_games()  #  Games in a row without goal against maccabi.
->>>
->>> games.streak.get_similar_* = use to get similar with len of at least X and by condition.
->>> # All the unbeaten rows of at least len of 20:
->>> games.streaks.get_similar_unbeaten_streak_by_length(minimum_streak_length=20)   
-```
-
-### Players Streaks
-You can get the longest players streaks of any subset of maccabi games:
-
-```
->>> # Use to get the players with best streak of scoring (count the game only if the player played).
->>> games.players_streaks.get_players_with_best_goal_scoring_streak()
->>>
->>> # Same for unbeaten:
->>> games.players_streaks.get_players_with_best_unbeaten_streak()
+>>> # Get the players with best scoring streak - count the game ONLY if the player has played
+>>> maccabi_games.players_streaks.get_players_with_best_goal_scoring_streak()
+>>> # Same for unbeaten players
+>>> maccabi_games.players_streaks.get_players_with_current_unbeaten_streak()
 >>>
 >>>
->>> # Get the players with the best current unbeaten streak
->>> games.players_streaks.get_players_with_current_unbeaten_streak()
->>> # Or those who have the best streak of maccabi score a goal with them
->>> games.players_streaks.get_players_with_current_maccabi_score_goal_streak()
-```
-
-### Teams Streaks
-Very similar to players streak section
-
-```
->>> # Get the top winning streak against one team
->>> games.teams_streaks.get_teams_with_current_win_streak()
+>>> # You can analyze teams streaks as well, for example the teams has longest active winning streak against them
+>>> maccabi_games.teams_streaks.get_teams_with_current_win_streak()
 >>>
->>> # Get the teams with the best unbeaten streak
->>> games.teams_streak.get_teams_with_current_unbeaten_streak()
-```
-
-### Teams statistics
-You can get any game related statistics that will be order all the teams from those who have the most of this condition:
-
-```
->>> # Get the teams that maccabi won the most
->>> games.teams.teams_ordered_by_maccabi_wins()
 >>>
->>> # Get the teams that maccabi had the most clean sheets games in percentage 
->>> games.teams.teams_ordered_by_maccabi_clean_sheets_percentage()
+>>> # You can analyze streak from Maccabi perspective as well, like:
+>>> maccabi_games.streaks.get_longest_clean_sheet_games()  #  Games in a row without goal against Maccabi
+>>>
+>>> # If you found interesting streak and you want to see if Maccabi had something similar before, use:
+>>> maccabi_games.streaks.get_similar_unbeaten_streak_by_length(minimum_streak_length=20)
+>>> maccabi_games.streak.get_similar_* = use to get similar with len of at least X and by condition.
 ```
+
+### Other analysis options
+```
+>>> # You can get the craziest maccabi comebacks by:
+>>> maccabi_games.comebacks.won_from_exactly_two_goal_diff()
+>>> maccabi_games.comebacks.won_from_exactly_x_goal_diff(goals=3)  # Wow!
+>>>
+>>> # Or getting the fatests 2/3/4 goals Maccabi scored in a game:
+>>> maccabi_games.goals_timing.fastest_three_goals()
+>>>
+>>> # If you want to get a short numeric summary of the results in your filtered games, use:
+>>> maccabi_games.results.*
+>>>
+>>> # In order to analysis Maccabi performance against other teams (non-streak), for example the team Maccabi has the most clean sheets games against:
+>>> maccabi_games.teams.teams_ordered_by_maccabi_clean_sheets_count()
+```
+
+# Advanced Analysis
 
 ### Seasons
-You can get the games grouped by seasons sorted by any condition, such as:
-
+You can group the filtered games by season and sort the seasons by any condition, like:
 ```
->>> seasons = games.seasons.get_seasons_stats()  # At default the season will be sorted by year.
+>>> seasons = maccabi_games.seasons.get_seasons_stats()  # At default the season will be sorted by year.
 >>> seasons.sort_by_wins_percentage()  # Sort the season by winning percentage, you should print the season object).
 >>> seasons  # Print it
 ```
 
+### Players advanced analysis
+In order to find the oldest\youngest players by the first time they scored\assist\played, use:
+```
+>>> maccabi_games.players_special_games.oldest_players_by_first_time_to_assist()
+```
 
-# Crawling maccabi games
+In order to find the the players that scored\assist in their first\last games, use:
+```
+>>> # Find the players that scored twice in their first game
+>>> maccabi_games.players_first_and_last_games.players_that_scored_at_their_first_game(score_at_least=2)
+>>> # Reminder, you can search for the players that scored twice in their first away game using:
+>>> maccabi_games.away_games.players_first_and_last_games.players_that_scored_at_their_first_game(score_at_least=2)
+```  
+
+If you are interested in the home players part in the statistics, check out this:
+```
+>>> maccabi_games.players_categories.home_players_goals_count()
+>>> # Or finding their % from the total goals on europe
+>>> maccabi_games.europe_games.players_categories.home_players_goals_ratio()
+```
+
+Sometimes it's very useful to measure which player contribute the most in the "money time", to do so, use:
+```
+>>> # Who are the top scorers - when we count only goals that made Maccabi to lead
+>>> maccabi_games.important_goals.get_top_scorers_for_advantage()
+>>> # Who did that on derby?
+>>> maccabi_games.get_games_against_team("הפועל תל אביב").important_goals.get_top_scorers_for_advantage()
+>>>
+>>> # Who scored the most in the last 5 minutes? including removal of "non-important" goals - you can change the range
+>>> maccabi_games.important_goals.get_top_scorers_in_last_minutes(minimum_diff_for_maccabi=-1, maximum_diff_for_maccabi=1, from_minute=85)
+```
+
+# Export data
+If you want to export the current object MaccabiGamesStats you work on, use:
+```
+>>> maccabi_games.export.export_everything()
+>>> # You will get a zip with some jsons and a readme - check it out  
+```
+
+# Internal & Dev
+
+### Crawling maccabi games
 
 When crawling maccabi games each page will be saved on your disk to allow optimization for the next time.
 To serialize maccabi games (it might take some time), use:
@@ -168,7 +187,7 @@ You can 'use_multi-process-crawl' from settings to allow multi-processing,
 BUT atm logging does not support multi-processing, so don't use that if you need to debug.
 
 
-# Manual fixes
+### Manual fixes
 
 There are some information that need to be fix manually.  
 When serializing maccabi games that done automatically.
@@ -181,7 +200,7 @@ If you Add anything to run_general_fixes, you can re-run it by:
 >>> serialize_maccabi_games(new_games)
 ```
 
-# Logging
+### Logging
 
 All of the log files will be saved at 'maccabistats\logs' folder under the user home folder (%userprofile%)
 There are several log files, each one has this pattern - maccabistats-{suffix}.log (at the mentioned folder): 
@@ -192,14 +211,7 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 * exception - save just exceptions (log.exception)
 * stdout - not a file but log handler that print to stdout (info level +) 
 
-
-# Known issues
-
-* Ignoring events after 120 min (in game_events_parser -> fully_game_time_without_penalties)
-* Logging with multi-process crawling mode isn't working.
-
-
-# Optimization 
+### Optimization 
 * You can use 'use-disk-to-crawl-when-available' to crawl from disk when available, each page that will be crawled from internet wil be save on disk. 
 * For the first time, you can get some of the html files from: https://mega.nz/#F!szxTUDRQ ( key will be available at forum.12p.co.il)
 * You can reduce logging when crawling by use :
@@ -208,8 +220,7 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 >>> faster_logging() will disable the stdout & debug handlers.
 ```
 
-
-# Errors Finder
+### Errors Finder
 
 Manual check for errors might be helpful, this is can be done by:
 ```
@@ -220,8 +231,12 @@ Manual check for errors might be helpful, this is can be done by:
 >>> e.get_all_errors_numbers()  # run all the manual errors exists
 ```
 
+### Known issues
 
-# MaccabiPedia Source
+* Ignoring events after 120 min (in game_events_parser -> fully_game_time_without_penalties)
+* Logging with multi-process crawling mode isn't working.
+
+### MaccabiPedia Source
 
 You can manipulate [MaccabiPedia](http:\\www.maccabipedia.co.il) data by downloading it and then loading it 
 (You may have to install some 'advanced' packages such as pywikibot), as the following:
@@ -233,4 +248,3 @@ You can manipulate [MaccabiPedia](http:\\www.maccabipedia.co.il) data by downloa
 >>> maccabipedia = run_maccabipedia_source()
 >>> # Now you can manipulate maccabipedia data as explain above (its MaccabiGamesStats object, referred as "games" above") 
 ```
-
