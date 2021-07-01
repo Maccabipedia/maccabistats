@@ -213,7 +213,6 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 
 ### Optimization 
 * You can use 'use-disk-to-crawl-when-available' to crawl from disk when available, each page that will be crawled from internet wil be save on disk. 
-* For the first time, you can get some of the html files from: https://mega.nz/#F!szxTUDRQ ( key will be available at forum.12p.co.il)
 * You can reduce logging when crawling by use :
 ```
 >>> from maccabistats import faster_logging
