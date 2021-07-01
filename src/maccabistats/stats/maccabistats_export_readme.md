@@ -9,7 +9,9 @@ take this into consideration while analyzing the data, we are still trying to fi
 Each game in MaccabiPedia is built from many "player events", each one is an occurrence from the game,  
 such as: Player started the game as part of the line-up, got a yellow card, was the captain and so on.
 
-Each record in the attached files contains two parts merged together:  
+In addition we save data at the game level, both of these data types are described below, where player_event described on section 1 and game_data on section 2.
+
+
 1. Player Data
     * player_name
     * player_number
@@ -59,6 +61,11 @@ Each record in the attached files contains two parts merged together:
     * away_team_score
     * away_team_coach
     
+    
+# Exported files
+When exporting the data out of MaccabiStats you may find two files:
+* 'player_events' - each record in this file is combination of: a player occurrence (section 1 above) and the current game data (section 2), which means that for every game we will export many records.
+* 'games_data' - each record in this file is a dump of the game information we have on MaccabiStats (section 2 above), each game will have one record only.    
     
     
 # Code

@@ -140,7 +140,7 @@ class ExportMaccabiGamesStats(object):
         folder_path = (folder_path or _BASE_EXPORT_FOLDER)
         folder_path.mkdir(parents=True, exist_ok=True)
 
-        file_path = folder_path / f'{_formatted_now()}_flatten_players_events_maccabistats.zip'
+        file_path = folder_path / f'{_formatted_now()}_maccabistats.zip'
 
         with tempfile.TemporaryDirectory(prefix='MaccabiStatsExport') as temp_export_folder:
             self._create_games_data_flatten_json(folder_path=Path(temp_export_folder))
