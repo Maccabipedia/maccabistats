@@ -6,8 +6,10 @@ from collections import defaultdict
 from datetime import timedelta
 
 from dateutil.parser import parse as datetime_parser
+
 from maccabistats.models.game_data import GameData
-from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent
+from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent, AssistTypes, \
+    AssistGameEvent
 from maccabistats.models.player_in_game import PlayerInGame
 from maccabistats.models.team_in_game import TeamInGame
 from maccabistats.parse.maccabipedia.maccabipedia_cargo_chunks_crawler import MaccabiPediaCargoChunksCrawler
@@ -33,12 +35,8 @@ MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event,
                                     2: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.BENCHED,
                                                                     211: GameEventTypes.BENCHED}),
                                     3: GameEventTypes.GOAL_SCORE,  # Special case, parse also the sub-goal-type
-                                    4: defaultdict(_unknown_event, {40: GameEventTypes.GOAL_ASSIST,
-                                                                    41: GameEventTypes.GOAL_ASSIST,
-                                                                    42: GameEventTypes.GOAL_ASSIST,
-                                                                    43: GameEventTypes.GOAL_ASSIST,
-                                                                    44: GameEventTypes.GOAL_ASSIST,
-                                                                    45: GameEventTypes.GOAL_ASSIST}),
+                                    4: GameEventTypes.GOAL_ASSIST,  # Special case, parse also the sub-assist-type
+
                                     5: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_IN}),
                                     6: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.SUBSTITUTION_OUT}),
                                     7: defaultdict(_unknown_event, {71: GameEventTypes.YELLOW_CARD,
@@ -52,13 +50,19 @@ MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event,
                                     9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
 
 MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNKNOWN,
-                           31: GoalTypes.UNKNOWN,
-                           # TODO: SHOULD be by foot (no such sub-goal-type today in maccabistats
+                           31: GoalTypes.NORMAL_KICK,
                            32: GoalTypes.HEADER,
                            33: GoalTypes.OWN_GOAL,
                            34: GoalTypes.FREE_KICK,
                            35: GoalTypes.PENALTY,
                            36: GoalTypes.BICYCLE_KICK}
+
+MACCABIPEDIA_ASSISTS_TYPE = {40: AssistTypes.UNKNOWN,
+                             41: AssistTypes.NORMAL_ASSIST,
+                             42: AssistTypes.FREE_KICK_ASSIST,
+                             43: AssistTypes.CORNER_ASSIST,
+                             44: AssistTypes.THROW_IN_ASSIST,
+                             45: AssistTypes.PENALTY_WINNING_ASSIST}
 
 
 class MaccabiPediaParser(object):
@@ -104,6 +108,9 @@ class MaccabiPediaParser(object):
 
         if GameEventTypes.GOAL_SCORE == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
             return GoalGameEvent(time_occur=event_time, goal_type=MACCABIPEDIA_GOALS_TYPE[player_event["SubType"]])
+        if GameEventTypes.GOAL_ASSIST == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
+            return AssistGameEvent(time_occur=event_time,
+                                   assist_type=MACCABIPEDIA_ASSISTS_TYPE[player_event["SubType"]])
         elif GameEventTypes.UNKNOWN == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
             return GameEvent(game_event_type=GameEventTypes.UNKNOWN, time_occur=event_time)
         else:
@@ -172,7 +179,7 @@ class MaccabiPediaParser(object):
                                       game_metadata["ResultOpponent"], not_maccabi_players)
 
         home_team, away_team = (maccabi_team, not_maccabi_team) if game_metadata["HomeAway"] == "בית" else (
-        not_maccabi_team, maccabi_team)
+            not_maccabi_team, maccabi_team)
 
         return GameData(competition=game_metadata["Competition"], fixture=game_metadata["Leg"],
                         date_as_hebrew_string="",

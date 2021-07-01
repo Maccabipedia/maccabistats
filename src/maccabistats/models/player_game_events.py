@@ -5,26 +5,54 @@ from enum import Enum
 from typing import Dict
 
 
+class AssistTypes(Enum):
+    NORMAL_ASSIST = 'NormalAssist'
+    FREE_KICK_ASSIST = 'FreeKickAssist'
+    CORNER_ASSIST = 'CornerAssist'
+    THROW_IN_ASSIST = 'ThrowInAssist'
+    PENALTY_WINNING_ASSIST = 'PenaltyWinningAssist'
+    UNKNOWN = 'UnknownAssist'
+
+
 class GoalTypes(Enum):
-    FREE_KICK = 'Free-kick'
-    PENALTY = 'Penalty'
-    HEADER = 'Header'
-    OWN_GOAL = 'Own goal'
-    UNKNOWN = 'normal goal'
-    BICYCLE_KICK = 'Bicycle-kick'
+    FREE_KICK = 'FreeKickGoal'
+    PENALTY = 'PenaltyGoal'
+    HEADER = 'HeaderGoal'
+    OWN_GOAL = 'OwnGoal'
+    BICYCLE_KICK = 'BicycleKickGoal'
+    NORMAL_KICK = 'NormalGoal'
+    UNKNOWN = 'UnknownGoal'
+
+    @classmethod
+    def _missing_(cls, value):
+        # We use this function in order to allow old MaccabiGamesStats (pickled) to be loaded,
+        # We replaced some of the values and we want to be able to load this.
+
+        # We can not differentiate between normal and unknown goals in old maccabistats versions
+        old_values_mapping = {'normal goal': GoalTypes.UNKNOWN,
+                              'Penalty': GoalTypes.PENALTY,
+                              'Own goal': GoalTypes.OWN_GOAL,
+                              'Free-kick': GoalTypes.FREE_KICK,
+                              'Header': GoalTypes.HEADER,
+                              'Bicycle-kick': GoalTypes.BICYCLE_KICK}
+
+        if value in old_values_mapping:
+            return old_values_mapping[value]
+
+        super()._missing_(value)
 
 
 class GameEventTypes(Enum):
-    GOAL_SCORE = 'Score-Goal'
-    RED_CARD = 'Red-Card'
-    YELLOW_CARD = 'Yellow-Card'
-    LINE_UP = 'Line-Up'
-    SUBSTITUTION_IN = 'Substitution-In'
-    SUBSTITUTION_OUT = 'Substitution-Out'
-    GOAL_ASSIST = 'Assist-Goal'
+    GOAL_SCORE = 'ScoreGoal'
+    RED_CARD = 'RedCard'
+    YELLOW_CARD = 'YellowCard'
+    LINE_UP = 'LineUp'
+    SUBSTITUTION_IN = 'SubstitutionIn'
+    SUBSTITUTION_OUT = 'SubstitutionOut'
+    GOAL_ASSIST = 'AssistGoal'
     CAPTAIN = 'Captain'
-    PENALTY_MISSED = 'Penalty-Missed'
-    PENALTY_STOPPED = 'Penalty-Stopped'
+    PENALTY_MISSED = 'PenaltyMissed'
+    PENALTY_STOPPED = 'PenaltyStopped'
     BENCHED = "Benched"
     UNKNOWN = "Unknown"
 
@@ -32,10 +60,21 @@ class GameEventTypes(Enum):
     def _missing_(cls, value):
         # We use this function in order to allow old MaccabiGamesStats (pickled) to be loaded,
         # We replaced some of the values and we want to be able to load this.
-        if value == 'Penalty missed':
-            return GameEventTypes.PENALTY_MISSED
+        old_values_mapping = {'Penalty missed': GameEventTypes.PENALTY_MISSED,
+                              'Penalty-Missed': GameEventTypes.PENALTY_MISSED,
+                              'Line-Up': GameEventTypes.LINE_UP,
+                              'Score-Goal': GameEventTypes.GOAL_SCORE,
+                              'Assist-Goal': GameEventTypes.GOAL_ASSIST,
+                              'Substitution-In': GameEventTypes.SUBSTITUTION_IN,
+                              'Substitution-Out': GameEventTypes.SUBSTITUTION_OUT,
+                              'Red-Card': GameEventTypes.RED_CARD,
+                              'Yellow-Card': GameEventTypes.YELLOW_CARD,
+                              'Penalty-Stopped': GameEventTypes.PENALTY_STOPPED}
 
-        super()._missing_(cls, value)
+        if value in old_values_mapping:
+            return old_values_mapping[value]
+
+        super()._missing_(value)
 
 
 class GameEvent(object):
@@ -75,4 +114,20 @@ class GoalGameEvent(GameEvent):
         base_class_json_dict = super(GoalGameEvent, self).json_dict()
 
         base_class_json_dict['goal_type'] = self.goal_type.value
+        return base_class_json_dict
+
+
+class AssistGameEvent(GameEvent):
+    def __init__(self, time_occur: timedelta, assist_type: AssistTypes = AssistTypes.UNKNOWN):
+        super(AssistGameEvent, self).__init__(GameEventTypes.GOAL_ASSIST, time_occur)
+        self.assist_type = assist_type
+
+    def __repr__(self) -> str:
+        return "{game_event}\n" \
+               "Assist type : {self.assist_type}".format(game_event=super(AssistGameEvent, self).__repr__(), self=self)
+
+    def json_dict(self) -> Dict:
+        base_class_json_dict = super(AssistGameEvent, self).json_dict()
+
+        base_class_json_dict['assist_type'] = self.assist_type.value
         return base_class_json_dict
