@@ -341,10 +341,6 @@ class MaccabiGamesStats:
 
         print(summary)
 
-    def create_team_summary(self, team_name: str) -> MaccabiGamesSummary:
-        team_games_stats = self.get_games_against_team(team_name)
-        return team_games_stats.summary
-
     def to_json(self) -> str:
         return json.dumps([game.to_json() for game in self.games], indent=4)
 

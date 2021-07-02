@@ -12,8 +12,10 @@ if not os.path.isdir(log_file_folder_path):
 logger = logging.getLogger("maccabistats")
 
 
-class SpecificLevelFilter(object):
+class SpecificLevelFilter(logging.Filter):
     def __init__(self, level):
+        super().__init__(name=f'specific_level_filter__{level}')
+        
         self.__level = level
 
     def filter(self, log_record):
