@@ -15,7 +15,7 @@ In addition we save data at the game level, both of these data types are describ
 1. Player Data
     * player_name
     * player_number
-    * player_time_occur: in this format: "h:mm:ss", the lowest resolution in minutes
+    * player_time_occur: The minute this event occurred at
     * player_event_type
         1. ScoreGoal
         1. RedCard

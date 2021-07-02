@@ -60,6 +60,9 @@ class ExportMaccabiGamesStats(object):
             # In order to prevent name collision and make te data more readable:
             event_data_with_player_prefix = {f'player_{key}': value for key, value in current_event_data.items()}
 
+            hours, minutes, seconds = event_data_with_player_prefix['player_time_occur'].split(":")
+            event_data_with_player_prefix['player_time_occur'] = (int(hours) * 60) + int(minutes)
+
             game_events.append({**game_data, **event_data_with_player_prefix})
 
         return game_events
