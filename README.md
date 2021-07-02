@@ -1,6 +1,9 @@
 # MaccabiStats
 
-MaccabiStats package used to analyze Maccabi Tel-Aviv games data, based on several sites but mostly on [MaccabiPedia](https://maccbaipedia.co.il). 
+MaccabiStats package used to analyze Maccabi Tel-Aviv games data, based on several sites but mostly on [MaccabiPedia](https://maccbaipedia.co.il).
+```
+pip install maccabistats
+``` 
 
 # TL;DR
 * In order to work with MaccabiStats package you need to have the serialized Maccabi Tel-Aviv games data, you can get it from [Mega](https://mega.nz/folder/vbgEED7R#0bpotoxTX-ZXGpI8hqbHOA)
