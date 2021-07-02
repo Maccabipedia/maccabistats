@@ -2,13 +2,15 @@ import logging
 from collections import defaultdict
 from datetime import timedelta
 from itertools import chain, repeat
+from typing import Tuple, List
 
+from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
-""" This class responsible to find errors in maccabigamesstats object, such as games that the amount of goals does not match to the final score sum,
-    empty events and so on.
+""" This class responsible to find errors in MaccabiGamesStats object,
+    such as games that the amount of goals does not match to the final score sum, empty events and so on.
 
     This should be run manually.
 """
@@ -24,7 +26,7 @@ class ErrorsFinder(object):
         self.maccabi_games_stats = maccabi_games_stats
 
     def get_games_without_11_maccabi_players_on_lineup(self):
-        """ Each team should has 11 players with lineup event! but we care more about maccabi"""
+        """ Each team should have 11 players with lineup event! but we care more about maccabi"""
 
         missing_lineup_games = [game for game in self.maccabi_games_stats
                                 if 11 != len(game.maccabi_team.lineup_players)]
@@ -32,7 +34,7 @@ class ErrorsFinder(object):
         return MaccabiGamesStats(missing_lineup_games)
 
     def get_lineup_players_with_substitution_in(self):
-        """ Players that opened on lineup, should'nt has substitution in event. """
+        """ Players that opened on lineup, shouldn't have substitution in event. """
 
         players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
                               game.maccabi_team.players
@@ -142,33 +144,19 @@ class ErrorsFinder(object):
                            len(games) > 1]
         return double_fixtures
 
-    def get_games_without_stadium(self):
-        """
-        Returns the games without defined stadium
-        """
-
+    def get_games_without_stadium(self) -> List[GameData]:
         return [game for game in self.maccabi_games_stats.games if not game.stadium]
 
-    def get_games_without_referee(self):
-        """
-        Returns the games without defined referee
-        """
-
+    def get_games_without_referee(self) -> List[GameData]:
         return [game for game in self.maccabi_games_stats.games if not game.referee]
 
-    def get_players_which_play_more_than_x_years(self, number_of_years=25):
-        """
-        Returns the players who play more than the given years, default 25 years.
-        This may indicate on naming errors
-        :type number_of_years: int
-        :return: Player name and his games
-        :rtype: str, maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
-        """
-
+    def get_players_which_play_more_than_x_years(self, years_number: int = 25) -> List[Tuple[str, MaccabiGamesStats]]:
         players_who_played_too_much = []
+
         for player_name in self.maccabi_games_stats.available_players_names:
             player_games = self.maccabi_games_stats.get_games_by_player_name(player_name)
-            if player_games[-1].date - player_games[0].date > timedelta(days=365 * number_of_years):
+
+            if player_games[-1].date - player_games[0].date > timedelta(days=365 * years_number):
                 players_who_played_too_much.append((player_name, player_games))
 
         players_who_played_too_much.sort(key=lambda item: item[1][-1].date - item[1][0].date)

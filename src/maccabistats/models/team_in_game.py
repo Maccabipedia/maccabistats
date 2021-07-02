@@ -4,6 +4,7 @@ import json
 import logging
 import typing
 from collections import Counter
+from dataclasses import dataclass
 from typing import List, Callable, Dict, Any
 
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
@@ -13,13 +14,11 @@ from maccabistats.models.team import Team
 logger = logging.getLogger(__name__)
 
 
+@dataclass
 class TeamInGame(Team):
-    def __init__(self, name: str, coach: str, score: int, players: List[PlayerInGame]):
-        super(TeamInGame, self).__init__(name)
-
-        self.coach = coach
-        self.score = score
-        self.players = players
+    coach: str
+    score: int
+    players: List[PlayerInGame]
 
     @property
     def lineup_players(self) -> List[PlayerInGame]:
@@ -67,13 +66,13 @@ class TeamInGame(Team):
             return captains[0]
         else:
             logger.warning("Cant find any captain for this game :(")
-            return PlayerInGame("Not a captain", 0, [])
+            return PlayerInGame("Not a captain", '0', [])
 
     def get_players_with_most_of_this_condition(self, condition: Callable[[PlayerInGame], int]) \
             -> typing.Counter[str]:
         """
         :param condition: this function should get PlayerInGame as param, and return int.
-                          0 wont count this player in the final summary.
+                          0 won't count this player in the final summary.
         """
         return Counter({player.name: condition(player) for player in self.players if
                         condition(player) > 0})
@@ -166,12 +165,3 @@ class TeamInGame(Team):
 
     def to_json(self) -> str:
         return json.dumps(self.json_dict())
-
-    def __str__(self) -> str:
-        return "{team_repr}" \
-               "Scored: {self.score}\n" \
-               "Coach: {self.coach}\n".format(team_repr=super(TeamInGame, self).__repr__(), self=self)
-
-    def __repr__(self) -> str:
-        return "{my_str}\n" \
-               "Players: {self.players}\n\n".format(my_str=self.__str__(), self=self)

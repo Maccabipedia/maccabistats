@@ -1,18 +1,16 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import timedelta
-from pprint import pformat
 from typing import List, Optional, cast
 
 from maccabistats.models.player import Player
 from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent
 
 
+@dataclass
 class PlayerInGame(Player):
-    def __init__(self, name: str, number: int, game_events: List[GameEvent]):
-        super(PlayerInGame, self).__init__(name, number)
-
-        self.events = game_events
+    events: List[GameEvent]
 
     def add_event(self, game_event: GameEvent) -> None:
         self.events.append(game_event)
@@ -71,22 +69,3 @@ class PlayerInGame(Player):
             return None
         else:
             return similar_events[0]
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, PlayerInGame):
-            return NotImplemented
-
-        return self.name == other.name and self.number == other.number
-
-    # In order to save this object in collections.Counter as key
-    def __hash__(self) -> int:
-        return hash((self.name, self.number))
-
-    def __str__(self) -> str:
-        return super(PlayerInGame, self).__repr__()
-
-    def __repr__(self) -> str:
-        return "{my_str}" \
-               "Player game events: \n{pretty_events}\n\n".format(my_str=self.__str__(),
-                                                                  pretty_events=pformat(self.events, indent=4,
-                                                                                        width=1))

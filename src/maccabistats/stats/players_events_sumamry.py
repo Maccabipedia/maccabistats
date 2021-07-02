@@ -65,7 +65,7 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
     def _players_with_numbers_for_maccabi(self) -> Tuple[int, int]:
         """
         Checks how many players (PlayerInGame) are registered with a player number.
-        In old games we may could not find any evidence for the number of the player shirt.
+        In old games we could not find any evidence for the number of the player shirt.
 
         "A player" - means a player in a game, because we based on PlayerInGame class.
 
