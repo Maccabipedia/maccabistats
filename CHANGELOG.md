@@ -1,6 +1,9 @@
 ## Version 2.27.0 ##
     Support exporting of game data (in addition of players events data)
     Add AssistType and AssistGameEvent
+    
+    2.27.2:
+    Use minutes instead of HH:MM:SS in the exported file
 
 ## Version 2.26.0 ##
     Allow to export MaccabiGamesStats in flatten format (each player event is a record, multiple events for a game) - csv\json.
