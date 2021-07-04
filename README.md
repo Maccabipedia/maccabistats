@@ -34,7 +34,7 @@ You can filter games by several sub categories, such as: home or away, game resu
 >>> maccabi_games = ... (look above)
 >>>
 >>> home_games = maccabi_games.home_games
->>> away_games = maccabi_Games.away_games
+>>> away_games = maccabi_games.away_games
 >>>
 >>> official_games = maccabi_games.official_games
 >>>
@@ -44,7 +44,7 @@ You can filter games by several sub categories, such as: home or away, game resu
 >>> derby = maccabi_games.get_games_against_team("הפועל תל אביב")
 >>> sheran = maccabi_games.get_games_by_played_player_name("שרן ייני")
 >>> great_season = maccabi_games.get_games_by_season("1976/77")
->>> # Search for the others 'maccabi_Games.get_games*" functions
+>>> # Search for the others 'maccabi_games.get_games*" functions
 >>>
 >>> old_games = maccabi_games.played_before("2000")
 >>> great_team = maccabi_games.played_before("1997").played_after("1993")
