@@ -42,6 +42,7 @@ _players_name_fixes = [("מיקו בלו", ["מנחם 'מיקו' בלו"]),
                        ("גרינגרוס איזמן", ["גרינגרוס"]),
                        ("אלדו אדורנו", ["אוסמר"]),
                        ("עומרי בן הרוש", ["עמרי בן הרוש"]),
+                       ("דור תורג'מן", ["תורג'מן דור"]),
                        ]
 
 # The format is like players above.
@@ -54,6 +55,7 @@ _competitions_name_fixes = [("גביע אירופה למחזיקות גביע", 
                             ("ליגת העל", ["ליגת Winner", "ליגת הבורסה לניירות ערך", "ליגת ג׳פניקה"]),
                             ("ליגה לאומית", ["ליגת לאומית"]),
                             ("ליגה א", ["ליגה א'"]),
+                            ("הליגה האזורית", ["מוקדמות קונפרנס ליג"]),
                             ]
 
 # the format is like the players above.
@@ -152,7 +154,7 @@ def __fix_maccabi_players_names(game):
     for player in game.maccabi_team.players:
         for player_best_name, player_similar_names in _players_name_fixes:
             # TODO: this is a huge patch, Maccabi tlv site doing balagan with Tal ben haim names, we can assume that the defender won't come back to maccabi anymore as a player:
-            if player.name == 'טל בן חיים' and game.season == '2020/21':
+            if player.name == 'טל בן חיים' and game.season >= '2020/21':
                 logger.info("Changing Tel ben haim (Striker) player name (Special case)")
                 player.name = 'טל בן חיים (החלוץ)'
                 break

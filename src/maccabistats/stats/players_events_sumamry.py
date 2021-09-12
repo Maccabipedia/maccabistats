@@ -17,10 +17,30 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
     def __init__(self, maccabi_games_stats: MaccabiGamesStats):
         self.maccabi_games_stats = maccabi_games_stats
 
+    # region assists
     @property
     def total_goals_assists_counted_for_maccabi_players(self) -> int:
         return sum(player[1] for player in self.maccabi_games_stats.players.best_assisters)
 
+    @property
+    def total_goals_assists_by_penalty_winning_for_maccabi_players(self) -> int:
+        return sum(player[1] for player in self.maccabi_games_stats.players.best_assisters_by_penalty_winning)
+
+    @property
+    def total_goals_assists_by_corner_for_maccabi_players(self) -> int:
+        return sum(player[1] for player in self.maccabi_games_stats.players.best_assisters_by_corner)
+
+    @property
+    def total_goals_assists_by_free_kick_for_maccabi_players(self) -> int:
+        return sum(player[1] for player in self.maccabi_games_stats.players.best_assisters_by_free_kick)
+
+    @property
+    def total_goals_assists_by_throw_in_for_maccabi_players(self) -> int:
+        return sum(player[1] for player in self.maccabi_games_stats.players.best_assisters_by_throw_in)
+
+    # endregion
+
+    # region goals
     @property
     def total_goals_scoring_counted_for_maccabi_players(self) -> int:
         return sum(player[1] for player in self.maccabi_games_stats.players.best_scorers)
@@ -41,6 +61,11 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
     def total_head_goals_scoring_counted_for_maccabi_players(self) -> int:
         return sum(player[1] for player in self.maccabi_games_stats.players.best_scorers_by_head)
 
+    @property
+    def total_foot_goals_scoring_counted_for_maccabi_players(self) -> int:
+        return sum(player[1] for player in self.maccabi_games_stats.players.best_scorers_by_foot)
+
+    # endregion
     @property
     def total_goals_involved_counted_for_maccabi_players(self) -> int:
         return sum(player[1] for player in self.maccabi_games_stats.players.most_goals_involved)
@@ -101,15 +126,20 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
         comparison = f"Comparing self <---> other events summary for maccabi players:\n\n" \
                      f"   Games Count: {len(self.maccabi_games_stats) - len(other)}\n" \
                      f"   Goals: {compared_field('total_goals_scoring_counted_for_maccabi_players')}\n" \
-                     f"        By head: {compared_field('total_head_goals_scoring_counted_for_maccabi_players')}\n" \
-                     f"        By freekick: {compared_field('total_freekicks_goals_scoring_counted_for_maccabi_players')}\n" \
-                     f"        By penalty: {compared_field('total_penalties_goals_scoring_counted_for_maccabi_players')}\n" \
-                     f"        Own: {compared_field('total_own_goals_scoring_counted_for_maccabi_players')}\n" \
+                     f"         By foot: {compared_field('total_foot_goals_scoring_counted_for_maccabi_players')}\n" \
+                     f"         By head: {compared_field('total_head_goals_scoring_counted_for_maccabi_players')}\n" \
+                     f"         By freekick: {compared_field('total_freekicks_goals_scoring_counted_for_maccabi_players')}\n" \
+                     f"         By penalty: {compared_field('total_penalties_goals_scoring_counted_for_maccabi_players')}\n" \
+                     f"         Own: {compared_field('total_own_goals_scoring_counted_for_maccabi_players')}\n" \
                      f"   Assists: {compared_field('total_goals_assists_counted_for_maccabi_players')}\n" \
+                     f"         By penalty winning: {compared_field('total_goals_assists_by_penalty_winning_for_maccabi_players')}\n" \
+                     f"         By corner: {compared_field('total_goals_assists_by_corner_for_maccabi_players')}\n" \
+                     f"         By freekick: {compared_field('total_goals_assists_by_free_kick_for_maccabi_players')}\n" \
+                     f"         By throw-in: {compared_field('total_goals_assists_by_throw_in_for_maccabi_players')}\n" \
                      f"   Goals involved: {compared_field('total_goals_involved_counted_for_maccabi_players')}\n" \
                      f"   Cards:\n" \
-                     f"        Yellow cards: {compared_field('total_yellow_card_counted_for_maccabi_players')}\n" \
-                     f"        Red cards: {compared_field('total_red_card_counted_for_maccabi_players')}\n" \
+                     f"         Yellow cards: {compared_field('total_yellow_card_counted_for_maccabi_players')}\n" \
+                     f"         Red cards: {compared_field('total_red_card_counted_for_maccabi_players')}\n" \
                      f"   Captains: {compared_field('total_captains_counted_for_maccabi_players')}\n" \
                      f"   Lineups: {compared_field('total_lineups_counted_for_maccabi_players')}\n" \
                      f"   Players shirt number: {compared_field('total_players_with_shirt_number_for_maccabi')}\n"
@@ -120,11 +150,16 @@ class MaccabiGamesPlayersEventsSummaryStats(object):
         return f"Total event counting for maccabi players:\n\n" \
                f"   Games Count: {len(self.maccabi_games_stats)}\n" \
                f"   Goals: {self.total_goals_scoring_counted_for_maccabi_players}\n" \
-               f"        By head: {self.total_head_goals_scoring_counted_for_maccabi_players}\n" \
-               f"        By freekick: {self.total_freekicks_goals_scoring_counted_for_maccabi_players}\n" \
-               f"        By penalty: {self.total_penalties_goals_scoring_counted_for_maccabi_players}\n" \
-               f"        Own: {self.total_own_goals_scoring_counted_for_maccabi_players}\n" \
+               f"           By foot: {self.total_foot_goals_scoring_counted_for_maccabi_players}\n" \
+               f"           By head: {self.total_head_goals_scoring_counted_for_maccabi_players}\n" \
+               f"           By freekick: {self.total_freekicks_goals_scoring_counted_for_maccabi_players}\n" \
+               f"           By penalty: {self.total_penalties_goals_scoring_counted_for_maccabi_players}\n" \
+               f"           Own: {self.total_own_goals_scoring_counted_for_maccabi_players}\n" \
                f"   Assists: {self.total_goals_assists_counted_for_maccabi_players}\n" \
+               f"           By penalty winning: {self.total_goals_assists_by_penalty_winning_for_maccabi_players}\n" \
+               f"           By corner: {self.total_goals_assists_by_corner_for_maccabi_players}\n" \
+               f"           By freekick: {self.total_goals_assists_by_free_kick_for_maccabi_players}\n" \
+               f"           By throw-in: {self.total_goals_assists_by_throw_in_for_maccabi_players}\n" \
                f"   Goals involved: {self.total_goals_involved_counted_for_maccabi_players}\n" \
                f"   Cards:\n" \
                f"        Yellow cards: {self.total_yellow_card_counted_for_maccabi_players}\n" \

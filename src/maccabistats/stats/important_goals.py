@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Tuple
 
+from maccabistats.models.player_game_events import GoalTypes
+
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
@@ -30,7 +32,8 @@ class MaccabiGamesImportantGoalsStats(object):
         if goal_condition is None:
             goal_condition = lambda x: True
 
-        maccabi_goals = [goal for game in self.games for goal in game.goals() if goal['team'] == "מכבי תל אביב"]
+        maccabi_goals = [goal for game in self.games for goal in game.goals() if
+                         goal['team'] == "מכבי תל אביב" and goal['goal_type'] != GoalTypes.OWN_GOAL.value]
         maccabi_important_goals = [
             goal for goal in maccabi_goals if
             (minimum_diff_for_maccabi <= goal['maccabi_score'] - goal['not_maccabi_score'] <= maximum_diff_for_maccabi)
@@ -56,7 +59,7 @@ class MaccabiGamesImportantGoalsStats(object):
             if players_important_goals[player_name] >= minimum_important_goals:
                 key_name = "{player} - {total_goals} goals".format(player=player_name,
                                                                    total_goals=total_goals_for_player)
-                best_players[key_name] = round(players_important_goals[player_name] / total_goals_for_player * 100, 2)
+                best_players[key_name] = round(players_important_goals[player_name] / total_goals_for_player * 100, 5)
 
         return best_players.most_common()
 
@@ -72,10 +75,10 @@ class MaccabiGamesImportantGoalsStats(object):
 
         best_players = Counter()
         for player_name, total_games_for_player in players_total_played.items():
-            if players_important_goals[player_name] >= minimum_games:
+            if total_games_for_player >= minimum_games:
                 key_name = "{player} - {total_games} games".format(player=player_name,
                                                                    total_games=total_games_for_player)
-                best_players[key_name] = round(players_important_goals[player_name] / total_games_for_player, 2)
+                best_players[key_name] = round(players_important_goals[player_name] / total_games_for_player, 5)
 
         return best_players.most_common()
 

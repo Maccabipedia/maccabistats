@@ -5,7 +5,7 @@ from pprint import pformat
 from typing import List, Optional, cast
 
 from maccabistats.models.player import Player
-from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent
+from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent, AssistTypes
 
 
 class PlayerInGame(Player):
@@ -31,6 +31,10 @@ class PlayerInGame(Player):
     def goals_count_by_goal_type(self, goal_type: GoalTypes) -> int:
         return [cast(GoalGameEvent, event).goal_type for event in
                 self.get_events_by_type(GameEventTypes.GOAL_SCORE)].count(goal_type)
+
+    def assists_count_by_assist_type(self, assist_type: AssistTypes) -> int:
+        return [cast(AssistTypes, event).assist_type for event in
+                self.get_events_by_type(GameEventTypes.GOAL_ASSIST)].count(assist_type)
 
     def get_as_normal_player(self) -> Player:
         return Player(self.name, self.number)

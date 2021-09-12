@@ -49,20 +49,24 @@ MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event,
                                     # No support atm for penalty save
                                     9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
 
-MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNKNOWN,
+MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNCATEGORIZED,
                            31: GoalTypes.NORMAL_KICK,
                            32: GoalTypes.HEADER,
                            33: GoalTypes.OWN_GOAL,
                            34: GoalTypes.FREE_KICK,
                            35: GoalTypes.PENALTY,
-                           36: GoalTypes.BICYCLE_KICK}
+                           36: GoalTypes.BICYCLE_KICK,
+                           37: GoalTypes.UNKNOWN,
+                           }
 
-MACCABIPEDIA_ASSISTS_TYPE = {40: AssistTypes.UNKNOWN,
+MACCABIPEDIA_ASSISTS_TYPE = {40: AssistTypes.UNCATEGORIZED,
                              41: AssistTypes.NORMAL_ASSIST,
                              42: AssistTypes.FREE_KICK_ASSIST,
                              43: AssistTypes.CORNER_ASSIST,
                              44: AssistTypes.THROW_IN_ASSIST,
-                             45: AssistTypes.PENALTY_WINNING_ASSIST}
+                             45: AssistTypes.PENALTY_WINNING_ASSIST,
+                             46: AssistTypes.UNKNOWN,
+                             }
 
 
 class MaccabiPediaParser(object):

@@ -11,6 +11,9 @@ from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 _DESCRIPTION_WHICH_MEANS_MACCABI_WON_TITLE = ['מקום 1', 'זכיה']
 
+BASE_FOLDER = Path(r"C:\maccabipedia\infographics\titles")
+
+
 # To check titles with coaches - uncomment line 42
 # To check specific competition titles, uncomment line 28
 # This query can generate the achievements.json:
@@ -40,7 +43,7 @@ def generate_season_to_played_players(maccabi_games: MaccabiGamesStats) -> Dict[
 
     for game in pbar(maccabi_games):
         seasons_to_players[game.season].update(game.maccabi_team.played_players_with_amount.keys())
-        # seasons_to_players[game.season].add(game.maccabi_team.coach)
+        seasons_to_players[game.season].add(game.maccabi_team.coach)
 
     return seasons_to_players
 
@@ -67,6 +70,9 @@ if __name__ == '__main__':
     all_titles = extract_seasons_with_titles()
 
     top_players = find_top_players_by_achievements(games, all_titles)
+
+    # (BASE_FOLDER / "top_players_achievements.json").write_text(json.dumps(top_players))
+    (BASE_FOLDER / "top_players_and_coaches_achievements.json").write_text(json.dumps(top_players))
 
     print(f'\n\nPlayers sorted by titles amount: {pformat(top_players.most_common(50))}')
     a = 6

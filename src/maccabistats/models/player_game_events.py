@@ -12,6 +12,7 @@ class AssistTypes(Enum):
     THROW_IN_ASSIST = 'ThrowInAssist'
     PENALTY_WINNING_ASSIST = 'PenaltyWinningAssist'
     UNKNOWN = 'UnknownAssist'
+    UNCATEGORIZED = 'UnCategorizedAssist'
 
 
 class GoalTypes(Enum):
@@ -22,6 +23,7 @@ class GoalTypes(Enum):
     BICYCLE_KICK = 'BicycleKickGoal'
     NORMAL_KICK = 'NormalGoal'
     UNKNOWN = 'UnknownGoal'
+    UNCATEGORIZED = 'UnCategorizedGoal'
 
     @classmethod
     def _missing_(cls, value):
