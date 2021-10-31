@@ -63,8 +63,8 @@ MACCABIPEDIA_ASSISTS_TYPE = {40: AssistTypes.UNCATEGORIZED,
                              41: AssistTypes.NORMAL_ASSIST,
                              42: AssistTypes.FREE_KICK_ASSIST,
                              43: AssistTypes.CORNER_ASSIST,
-                             44: AssistTypes.THROW_IN_ASSIST,
-                             45: AssistTypes.PENALTY_WINNING_ASSIST,
+                             44: AssistTypes.PENALTY_WINNING_ASSIST,
+                             45: AssistTypes.THROW_IN_ASSIST,
                              46: AssistTypes.UNKNOWN,
                              }
 
@@ -144,9 +144,20 @@ class MaccabiPediaParser(object):
          game_events_as_json]
 
         for player_name, player_json_events in players_events_by_name.items():
+            # Removing any 0 from this player number Set, 0 is a side effect of the events we add on maccabipedia,
+            # like penalty scored or missed
             player_number = set(event["PlayerNumber"] for event in player_json_events)
+
             if len(player_number) > 1:
-                logger.warning(f"Found more than 1 player_number for {player_name}: {player_number}")
+                non_empty_number = (player_number - {''}) - {0}
+
+                if len(non_empty_number) > 1:
+                    logger.warning(f"Found more than 1 player_number for {player_name}: {player_number}, "
+                                   f"{player_json_events[0]['_pageName']}")
+                else:
+                    logger.warning(f"{player_name} has a number in this game: {non_empty_number}, "
+                                   f" but at least one event is missing this number,"
+                                   f"{player_json_events[0]['_pageName']}")
 
             player_number = player_number.pop()  # Take the first/only number
             # Adds all events, remove the None ones (means they are duplicates

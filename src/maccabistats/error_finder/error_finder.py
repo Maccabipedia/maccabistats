@@ -2,7 +2,9 @@ import logging
 from collections import defaultdict
 from datetime import timedelta
 from itertools import chain, repeat
+from typing import List, Tuple
 
+from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
@@ -173,6 +175,20 @@ class ErrorsFinder(object):
 
         players_who_played_too_much.sort(key=lambda item: item[1][-1].date - item[1][0].date)
         return players_who_played_too_much
+
+    def get_players_who_scored_without_play(self) -> List[Tuple[List[str], GameData]]:
+        scored_without_play = []
+
+        for game in self.maccabi_games_stats:
+            maccabi_scored = set(game.maccabi_team.scored_players_with_amount.keys())
+            maccabi_played = set(game.maccabi_team.played_players_with_amount.keys())
+
+            weird_players = maccabi_scored - maccabi_played
+
+            if weird_players:
+                scored_without_play.append((list(weird_players), game))
+
+        return scored_without_play
 
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
