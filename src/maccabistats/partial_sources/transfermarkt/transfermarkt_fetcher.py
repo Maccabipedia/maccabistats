@@ -29,7 +29,7 @@ class TransfermarktFetcher:
     def _dump_player_id_to_file(self) -> None:
         self.players_ids_file.write_text(data=json.dumps(self.players_ids), encoding='utf8')
 
-    async def fetch(self, force_refetch: bool = False) -> None:
+    def fetch(self, force_refetch: bool = False) -> None:
         _logger.info(f'Fetching data to {self.data_storage_folder}, force_refetch: {force_refetch}')
         self.data_storage_folder.mkdir(parents=True, exist_ok=True)
 
