@@ -196,14 +196,16 @@ class MaccabiPediaParser(object):
         home_team, away_team = (maccabi_team, not_maccabi_team) if game_metadata["HomeAway"] == "בית" else (
             not_maccabi_team, maccabi_team)
 
+        # 'Technical' is 1: for win, 2: for lose, -1: for non technical result game (regular game)
+        technical = True if game_metadata['Technical'] in [1, 2] else False
+
         return GameData(competition=game_metadata["Competition"], fixture=game_metadata["Leg"],
                         date_as_hebrew_string="",
                         stadium=game_metadata["Stadium"], crowd=game_metadata["Crowd"], referee=game_metadata["Refs"],
                         home_team=home_team,
                         away_team=away_team, season_string=str(game_metadata["Season"]), half_parsed_events=[],
                         date=datetime_parser(f"{game_metadata['Date']} {game_metadata['Hour']}"),
-                        technical_result=bool(
-                            game_metadata['Technical']))  # 'Technical' is 0/1/'', 1 means a technical result
+                        technical_result=technical)
 
     def parse(self):
         """
