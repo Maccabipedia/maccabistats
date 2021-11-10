@@ -42,6 +42,7 @@ class MaccabiPediaPlayers(object):
         players_data = dict()
         for player_raw_data in players_data_iterator:
             # Player Date of birth is missing for some players, we just take the default value for those
+            # Birth date format is YYYY_MM_DD:
             birth_date = datetime_parser(player_raw_data['DoB']) if player_raw_data[
                 'DoB'] else MaccabiPediaPlayers.missing_birth_date_value
             player_name = player_raw_data['_pageName']

@@ -189,7 +189,7 @@ class MaccabiGamesStats:
 
     def played_at(self, date: Union[datetime.datetime, datetime.date, str]) -> MaccabiGamesStats:
         if isinstance(date, str):
-            date = datetime_parser(date).date()
+            date = datetime_parser(date, dayfirst=True).date()
         elif isinstance(date, datetime.datetime):
             date = date.date()  # Leave only year & month & day
 

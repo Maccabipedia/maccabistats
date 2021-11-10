@@ -49,20 +49,24 @@ MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event,
                                     # No support atm for penalty save
                                     9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
 
-MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNKNOWN,
+MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNCATEGORIZED,
                            31: GoalTypes.NORMAL_KICK,
                            32: GoalTypes.HEADER,
                            33: GoalTypes.OWN_GOAL,
                            34: GoalTypes.FREE_KICK,
                            35: GoalTypes.PENALTY,
-                           36: GoalTypes.BICYCLE_KICK}
+                           36: GoalTypes.BICYCLE_KICK,
+                           37: GoalTypes.UNKNOWN,
+                           }
 
-MACCABIPEDIA_ASSISTS_TYPE = {40: AssistTypes.UNKNOWN,
+MACCABIPEDIA_ASSISTS_TYPE = {40: AssistTypes.UNCATEGORIZED,
                              41: AssistTypes.NORMAL_ASSIST,
                              42: AssistTypes.FREE_KICK_ASSIST,
                              43: AssistTypes.CORNER_ASSIST,
-                             44: AssistTypes.THROW_IN_ASSIST,
-                             45: AssistTypes.PENALTY_WINNING_ASSIST}
+                             44: AssistTypes.PENALTY_WINNING_ASSIST,
+                             45: AssistTypes.THROW_IN_ASSIST,
+                             46: AssistTypes.UNKNOWN,
+                             }
 
 
 class MaccabiPediaParser(object):
@@ -140,9 +144,20 @@ class MaccabiPediaParser(object):
          game_events_as_json]
 
         for player_name, player_json_events in players_events_by_name.items():
+            # Removing any 0 from this player number Set, 0 is a side effect of the events we add on maccabipedia,
+            # like penalty scored or missed
             player_number = set(event["PlayerNumber"] for event in player_json_events)
+
             if len(player_number) > 1:
-                logger.warning(f"Found more than 1 player_number for {player_name}: {player_number}")
+                non_empty_number = (player_number - {''}) - {0}
+
+                if len(non_empty_number) > 1:
+                    logger.warning(f"Found more than 1 player_number for {player_name}: {player_number}, "
+                                   f"{player_json_events[0]['_pageName']}")
+                else:
+                    logger.warning(f"{player_name} has a number in this game: {non_empty_number}, "
+                                   f" but at least one event is missing this number,"
+                                   f"{player_json_events[0]['_pageName']}")
 
             player_number = player_number.pop()  # Take the first/only number
             # Adds all events, remove the None ones (means they are duplicates
@@ -181,14 +196,16 @@ class MaccabiPediaParser(object):
         home_team, away_team = (maccabi_team, not_maccabi_team) if game_metadata["HomeAway"] == "בית" else (
             not_maccabi_team, maccabi_team)
 
+        # 'Technical' is 1: for win, 2: for lose, -1: for non technical result game (regular game)
+        technical = True if game_metadata['Technical'] in [1, 2] else False
+
         return GameData(competition=game_metadata["Competition"], fixture=game_metadata["Leg"],
                         date_as_hebrew_string="",
                         stadium=game_metadata["Stadium"], crowd=game_metadata["Crowd"], referee=game_metadata["Refs"],
                         home_team=home_team,
                         away_team=away_team, season_string=str(game_metadata["Season"]), half_parsed_events=[],
                         date=datetime_parser(f"{game_metadata['Date']} {game_metadata['Hour']}"),
-                        technical_result=bool(
-                            game_metadata['Technical']))  # 'Technical' is 0/1/'', 1 means a technical result
+                        technical_result=technical)
 
     def parse(self):
         """

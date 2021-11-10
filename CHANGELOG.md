@@ -1,3 +1,9 @@
+## Version 2.28.0 ##
+    Add error monitoring for players who scored without playing
+    Support uncategorized goal and assist (new in maccabipedia)
+    Support comparing assist types when comparing MaccabiGamesStats
+    Fix technical games parsing issue
+
 ## Version 2.27.0 ##
     Support exporting of game data (in addition of players events data)
     Add AssistType and AssistGameEvent

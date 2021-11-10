@@ -12,7 +12,7 @@ from collections import Counter
 from datetime import timedelta
 from functools import reduce
 import logging
-from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
+from maccabistats.models.player_game_events import GameEventTypes, GoalTypes, AssistTypes
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +57,19 @@ class MaccabiGamesPlayersStats(object):
 
         return best_players.most_common()
 
+    def get_top_players_for_goals_involvement_per_game(self, minimum_games_played: int = 10) -> List[PlayerStats]:
+        players_total_played = Counter(dict(self.most_played))
+        players_total_goals_involvement = Counter(dict(self.most_goals_involved))
+
+        best_players = Counter()
+        for player_name, total_games_for_player in players_total_played.items():
+            if total_games_for_player >= minimum_games_played:
+                key_name = "{player} - {total_games} games".format(player=player_name,
+                                                                   total_games=total_games_for_player)
+                best_players[key_name] = round(players_total_goals_involvement[player_name] / total_games_for_player, 2)
+
+        return best_players.most_common()
+
     # endregion
 
     # region Top players by goals related sorting
@@ -82,6 +95,11 @@ class MaccabiGamesPlayersStats(object):
             lambda p: p.goals_count_by_goal_type(GoalTypes.HEADER))
 
     @property
+    def best_scorers_by_foot(self) -> List[PlayerStats]:
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: p.goals_count_by_goal_type(GoalTypes.NORMAL_KICK))
+
+    @property
     def best_scorers_by_own_goal(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.OWN_GOAL))
@@ -90,6 +108,26 @@ class MaccabiGamesPlayersStats(object):
     def best_assisters(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST))
+
+    @property
+    def best_assisters_by_penalty_winning(self) -> List[PlayerStats]:
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: p.assists_count_by_assist_type(AssistTypes.PENALTY_WINNING_ASSIST))
+
+    @property
+    def best_assisters_by_corner(self) -> List[PlayerStats]:
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: p.assists_count_by_assist_type(AssistTypes.CORNER_ASSIST))
+
+    @property
+    def best_assisters_by_free_kick(self) -> List[PlayerStats]:
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: p.assists_count_by_assist_type(AssistTypes.FREE_KICK_ASSIST))
+
+    @property
+    def best_assisters_by_throw_in(self) -> List[PlayerStats]:
+        return self.__get_players_from_all_games_with_most_of_this_condition(
+            lambda p: p.assists_count_by_assist_type(AssistTypes.THROW_IN_ASSIST))
 
     @property
     def most_goals_involved(self) -> List[PlayerStats]:
