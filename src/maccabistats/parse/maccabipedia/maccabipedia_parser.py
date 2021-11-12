@@ -127,7 +127,7 @@ class MaccabiPediaParser(object):
             else:
                 return GameEvent(game_event_type=event_type, time_occur=event_time)
 
-    def _extract_players_events_for_team(self, game_events_as_json):
+    def _extract_players_events_for_team(self, game_events_as_json, log_errors: bool):
         """
         Extract all the players events from the game events.
 
@@ -144,20 +144,26 @@ class MaccabiPediaParser(object):
          game_events_as_json]
 
         for player_name, player_json_events in players_events_by_name.items():
-            # Removing any 0 from this player number Set, 0 is a side effect of the events we add on maccabipedia,
-            # like penalty scored or missed
+
             player_number = set(event["PlayerNumber"] for event in player_json_events)
 
-            if len(player_number) > 1:
+            if log_errors and len(player_number) > 1:
+                # Removing any 0 from this player number Set,
+                # 0 may indicates we are not sure about his number or it's a mistake
+
+                # We don't log a case when player has only empty numbers,
+                # because this is is an information we could not have for the entire games (1920-1950 are hardest)
                 non_empty_number = (player_number - {''}) - {0}
 
                 if len(non_empty_number) > 1:
-                    logger.warning(f"Found more than 1 player_number for {player_name}: {player_number}, "
-                                   f"{player_json_events[0]['_pageName']}")
-                else:
-                    logger.warning(f"{player_name} has a number in this game: {non_empty_number}, "
-                                   f" but at least one event is missing this number,"
-                                   f"{player_json_events[0]['_pageName']}")
+                    logger.warning(f"Found more than 1 player_number for player: {player_name}, "
+                                   f"numbers: {player_number}, "
+                                   f"game: {player_json_events[0]['_pageName']}")
+
+                elif len(non_empty_number) == 1:
+                    logger.warning(f"Player: {player_name} has a number in this game: {non_empty_number}, "
+                                   f" but at least one event is missing this number, "
+                                   f"game: {player_json_events[0]['_pageName']}")
 
             player_number = player_number.pop()  # Take the first/only number
             # Adds all events, remove the None ones (means they are duplicates
@@ -183,12 +189,14 @@ class MaccabiPediaParser(object):
 
         # TODO: atm opponent is number, should add join to the query with opponents table, SAME for competition
         maccabi_players = self._extract_players_events_for_team(
-            [event for event in game_events if event['Team'] == _MACCABI_TEAM])
+            [event for event in game_events if event['Team'] == _MACCABI_TEAM],
+            log_errors=True)
         maccabi_team = TeamInGame("מכבי תל אביב", game_metadata["CoachMaccabi"], game_metadata["ResultMaccabi"],
                                   maccabi_players)
 
         not_maccabi_players = self._extract_players_events_for_team(
-            [event for event in game_events if event['Team'] == _NOT_MACCABI_TEAM])
+            [event for event in game_events if event['Team'] == _NOT_MACCABI_TEAM],
+            log_errors=False)
 
         not_maccabi_team = TeamInGame(game_metadata["Opponent"], game_metadata["CoachOpponent"],
                                       game_metadata["ResultOpponent"], not_maccabi_players)
