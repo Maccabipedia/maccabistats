@@ -1,7 +1,7 @@
 import logging
 from typing import Tuple, Dict, List
 
-import requests
+import aiohttp
 from bs4 import BeautifulSoup
 
 _logger = logging.getLogger(__name__)
@@ -93,32 +93,35 @@ def _get_predefined_request(player_name: str) -> Tuple[Dict, List]:
     return headers, data
 
 
-def get_player_id_by_player_name(player_name: str) -> int:
-    headers, data = _get_predefined_request(player_name)
-    search_player_response = requests.post(SEARCH_PLAYER_URL, headers=headers, data=data)
+async def get_player_id_by_player_name(player_name: str) -> int:
+    async with aiohttp.ClientSession() as async_session:
 
-    search_player_response.raise_for_status()
+        headers, data = _get_predefined_request(player_name)
 
-    search_page_soupped = BeautifulSoup(search_player_response.content, "html.parser")
+        search_player_response = await async_session.request('POST', SEARCH_PLAYER_URL, headers=headers, data=data)
 
-    result_div = search_page_soupped.select('div#yw0')
+        search_player_response.raise_for_status()
 
-    if len(result_div) > 1:
-        raise RuntimeError('Should be one div with id yw0, might change in the future')
+        search_page_soupped = BeautifulSoup(await search_player_response.content.read(), "html.parser")
 
-    result_div = result_div[0]
+        result_div = search_page_soupped.select('div#yw0')
 
-    # Find the players rows, they are marked in the outer html table with odd or even classes
-    players_rows = list(result_div.find_all('tr', class_=['odd', 'even']))
+        if len(result_div) > 1:
+            raise RuntimeError('Should be one div with id yw0, might change in the future')
 
-    if len(players_rows) != 1:
-        raise RuntimeError(f'Could not find exactly one player for: {player_name}, text: {result_div.text}')
+        result_div = result_div[0]
 
-    player_row = players_rows[0]
+        # Find the players rows, they are marked in the outer html table with odd or even classes
+        players_rows = list(result_div.find_all('tr', class_=['odd', 'even']))
 
-    for link in player_row.find_all('a'):
-        # Working example: /sheran-yeini/profil/spieler/58342
-        if 'profil/spieler' in link.attrs['href']:
-            return link.attrs['href'].split('/')[-1]
+        if len(players_rows) != 1:
+            raise RuntimeError(f'Could not find exactly one player for: {player_name}, text: {result_div.text}')
 
-    raise RuntimeError('Could not locate the player href link')
+        player_row = players_rows[0]
+
+        for link in player_row.find_all('a'):
+            # Working example: /sheran-yeini/profil/spieler/58342
+            if 'profil/spieler' in link.attrs['href']:
+                return link.attrs['href'].split('/')[-1]
+
+        raise RuntimeError('Could not locate the player href link')
