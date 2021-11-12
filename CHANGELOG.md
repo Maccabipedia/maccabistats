@@ -1,3 +1,6 @@
+## Version 2.29.0 ##
+    Add Transfermarkt partial source, used to valudate which players played in a game (useful from 1990~+)
+
 ## Version 2.28.0 ##
     Add error monitoring for players who scored without playing
     Support uncategorized goal and assist (new in maccabipedia)
