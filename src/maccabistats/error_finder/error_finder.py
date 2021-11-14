@@ -176,19 +176,46 @@ class ErrorsFinder(object):
         players_who_played_too_much.sort(key=lambda item: item[1][-1].date - item[1][0].date)
         return players_who_played_too_much
 
-    def get_players_who_scored_without_play(self) -> List[Tuple[List[str], GameData]]:
-        scored_without_play = []
+    def get_players_with_any_event_that_did_not_count_as_played(self) -> List[Tuple[str, GameData]]:
+        players_with_events_that_did_not_play = []
+        played_player_events = {GameEventTypes.SUBSTITUTION_IN, GameEventTypes.LINE_UP}
 
         for game in self.maccabi_games_stats:
-            maccabi_scored = set(game.maccabi_team.scored_players_with_amount.keys())
-            maccabi_played = set(game.maccabi_team.played_players_with_amount.keys())
+            for player in game.maccabi_team.players:
+                player_events = set([event.event_type for event in player.events])
 
-            weird_players = maccabi_scored - maccabi_played
+                # We have special event for benched player, we can't count this event as "any event" in this function
+                if GameEventTypes.BENCHED in player_events:
+                    continue
 
-            if weird_players:
-                scored_without_play.append((list(weird_players), game))
+                # If player did not played and has any other events besides it
+                if not player_events.intersection(played_player_events) and \
+                        player_events.difference(played_player_events):
+                    players_with_events_that_did_not_play.append((player.name, game))
 
-        return scored_without_play
+        return players_with_events_that_did_not_play
+
+    def get_benched_players_that_has_events_without_sub_in(self) -> List[Tuple[str, GameData]]:
+        benched_players_with_weird_events = []
+
+        for game in self.maccabi_games_stats:
+            for player in game.maccabi_team.players:
+                player_events = set([event.event_type for event in player.events])
+
+                if GameEventTypes.BENCHED not in player_events:
+                    continue
+
+                # If this player has only bench event it's ok
+                if len(player_events) == 1:
+                    continue
+
+                if GameEventTypes.SUBSTITUTION_IN in player_events:
+                    continue
+
+                # This player has any other event besides sub-in, we must count him as sub-in in order to fix it
+                benched_players_with_weird_events.append((player.name, game))
+
+        return benched_players_with_weird_events
 
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
