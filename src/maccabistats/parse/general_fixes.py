@@ -1,7 +1,7 @@
-from maccabistats.parse.teams_names_changer import teams_names_changer
-from maccabistats.parse.add_manual_games import add_manual_games
-
 import logging
+
+from maccabistats.parse.add_manual_games import add_manual_games
+from maccabistats.parse.teams_names_changer import teams_names_changer
 
 logger = logging.getLogger(__name__)
 
@@ -132,8 +132,9 @@ def __fix_teams_names(game):
         game.not_maccabi_team.name = teams_names_changer[old_team_name].change_name(game)
         # Some teams names wont be changed (because the mapping is between team original name and the team name along the years)
         if old_team_name != game.not_maccabi_team.name:
-            logger.info(
-                f"Changing {'Home' if game.is_maccabi_home_team else 'Away'} team name from :{old_team_name}-->{game.not_maccabi_team.name}")
+            logger.info(f"Changing {'Home' if game.is_maccabi_home_team else 'Away'} team name from: "
+                        f"{old_team_name}-->{game.not_maccabi_team.name}")
+            game.not_maccabi_team.linked_name = old_team_name
 
 
 def __fix_referees_names(game):

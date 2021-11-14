@@ -220,7 +220,9 @@ class MaccabiGamesStats:
                                  self._new_description(f'Stadium: {stadium_name}'))
 
     def get_games_against_team(self, team_name: str) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if team_name == game.not_maccabi_team.name],
+        # We count the team name as the name when they appear to the game or the name as they have these days
+        return MaccabiGamesStats([game for game in self.games if
+                                  team_name in [game.not_maccabi_team.name, game.not_maccabi_team.linked_name]],
                                  self._new_description(f'Against team: {team_name}'))
 
     def get_games_by_coach(self, coach_name: str) -> MaccabiGamesStats:

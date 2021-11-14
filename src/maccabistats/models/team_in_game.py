@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import json
 import logging
-import typing
 from collections import Counter
-from typing import List, Callable, Dict, Any
+from typing import List, Callable, Dict, Any, Optional
 
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 from maccabistats.models.player_in_game import PlayerInGame
@@ -14,12 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 class TeamInGame(Team):
-    def __init__(self, name: str, coach: str, score: int, players: List[PlayerInGame]):
+    def __init__(self, name: str, coach: str, score: int, players: List[PlayerInGame],
+                 linked_name: Optional[str] = None):
         super(TeamInGame, self).__init__(name)
 
         self.coach = coach
         self.score = score
         self.players = players
+        # In case team name change the name during the years, the self.name will contain the name as they appear
+        # to the specific game and the self.linked_name is the current name they has
+        self.linked_name = linked_name
 
     @property
     def lineup_players(self) -> List[PlayerInGame]:
