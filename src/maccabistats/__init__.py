@@ -9,3 +9,4 @@ from .parse.parse_from_all_sites import merge_maccabi_games_from_all_input_seria
     run_maccabipedia_source, run_maccabitlv_site_source, run_table_source
 from .parse.general_fixes import run_general_fixes
 from .maccabilogging import faster_logging
+from .error_finder import ErrorsFinder
