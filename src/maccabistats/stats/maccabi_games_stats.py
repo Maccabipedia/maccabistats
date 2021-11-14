@@ -54,7 +54,6 @@ class MaccabiGamesStats:
         self.results = MaccabiGamesResultsStats(self)
         self.referees = MaccabiGamesRefereesStats(self)
         self.comebacks = MaccabiGamesComebacksStats(self)
-        self.seasons = MaccabiGamesSeasonsStats(self)
         self.important_goals = MaccabiGamesImportantGoalsStats(self)
         self.graphs = MaccabiGamesGraphsStats(self)
         self.players_streaks = MaccabiGamesPlayersStreaksStats(self)
@@ -67,6 +66,13 @@ class MaccabiGamesStats:
         self.summary = MaccabiGamesSummary(self)
         self.goals_timing = MaccabiGamesGoalsTiming(self)
         self.export = ExportMaccabiGamesStats(self)
+
+        # In order to avoid recursion, when we face one season ony, don't create new MaccabiGamesStats object
+        if len(self.available_seasons) == 1:
+            self.seasons = MaccabiGamesSeasonsStats({self.available_seasons[0]: self})
+        else:
+            self.seasons = MaccabiGamesSeasonsStats(
+                {season: self.get_games_by_season(season) for season in self.available_seasons})
 
         self.version = maccabistats_version
 
