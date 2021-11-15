@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class MaccabiGamesSeasonsStats(dict):
+class MaccabiGamesSeasonsStats:
     """
     This class is responsible for maccabi seasons manipulating, such as sorting by wins count, goals for maccabi and so on.
 
@@ -20,8 +20,15 @@ class MaccabiGamesSeasonsStats(dict):
     example function - sort_by_wins_count.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, maccabi_games_stats: MaccabiGamesStats):
+        self.maccabi_games_stats = maccabi_games_stats
+
+        # In order to avoid recursion, when we face one season ony, don't create new MaccabiGamesStats object
+        if len(self.maccabi_games_stats.available_seasons) == 1:
+            self._seasons_dict = {self.maccabi_games_stats.available_seasons[0]: self.maccabi_games_stats}
+        else:
+            self._seasons_dict = {season: self.maccabi_games_stats.get_games_by_season(season) for season in
+                                  self.maccabi_games_stats.available_seasons}
 
         # sort attribute use to show the relevant data after sorting.
         self._current_sort_attribute_function = lambda s: ""
@@ -30,7 +37,7 @@ class MaccabiGamesSeasonsStats(dict):
     def __repr__(self) -> str:
         # Pad the season representation to 7 chars, like '2015/16', to have one year seasons aligned (like '1955')
         ordered_seasons = pprint.pformat([f'{season: <7} ({self._current_sort_attribute_function(self[season])})'
-                                          for season in self.keys()])
+                                          for season in self._seasons_dict.keys()])
 
         return f'{self._current_sort_attribute_description}: \n\n{ordered_seasons}'
 
@@ -39,9 +46,9 @@ class MaccabiGamesSeasonsStats(dict):
         :param item: Allow to use ['1990-91'] or by indexing [0]
         """
         if isinstance(item, int):
-            return list(self.values())[item]
+            return list(self._seasons_dict.values())[item]
         else:
-            return super().__getitem__(item)
+            return self._seasons_dict[item]
 
     def _refresh_sorting(self,
                          sort_attribute_function: Callable[[MaccabiGamesStats], Any],
@@ -54,8 +61,9 @@ class MaccabiGamesSeasonsStats(dict):
         self._current_sort_attribute_function = sort_attribute_function
         self._current_sort_attribute_description = sort_attribute_description
 
-        self.seasons = OrderedDict(
-            sorted(self.seasons.items(), key=lambda item: self._current_sort_attribute_function(item[1]), reverse=True))
+        self._seasons_dict = OrderedDict(
+            sorted(self._seasons_dict.items(), key=lambda item: self._current_sort_attribute_function(item[1]),
+                   reverse=True))
 
     # region Games Results
     def sort_by_games_count(self) -> None:
