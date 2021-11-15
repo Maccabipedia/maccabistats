@@ -54,7 +54,6 @@ class MaccabiGamesStats:
         self.results = MaccabiGamesResultsStats(self)
         self.referees = MaccabiGamesRefereesStats(self)
         self.comebacks = MaccabiGamesComebacksStats(self)
-        self.seasons = MaccabiGamesSeasonsStats(self)
         self.important_goals = MaccabiGamesImportantGoalsStats(self)
         self.graphs = MaccabiGamesGraphsStats(self)
         self.players_streaks = MaccabiGamesPlayersStreaksStats(self)
@@ -67,6 +66,8 @@ class MaccabiGamesStats:
         self.summary = MaccabiGamesSummary(self)
         self.goals_timing = MaccabiGamesGoalsTiming(self)
         self.export = ExportMaccabiGamesStats(self)
+
+        self.seasons = MaccabiGamesSeasonsStats(self)
 
         self.version = maccabistats_version
 
