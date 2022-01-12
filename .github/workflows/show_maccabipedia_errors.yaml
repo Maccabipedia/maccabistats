@@ -1,5 +1,5 @@
-name: Find Errors From MaccabiPedia
-on: [ push, workflow_dispatch ]
+name: Find MaccabiPedia Errors
+on: [ push, workflow_dispatch]
 
 jobs:
   build:
@@ -10,4 +10,4 @@ jobs:
       with:
         python-version: 3.7
         architecture: x64
-      - run: python
+      - run: python scripts\find_maccabipedia_errors.py
