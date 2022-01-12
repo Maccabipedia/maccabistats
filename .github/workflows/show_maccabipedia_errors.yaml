@@ -1,0 +1,12 @@
+name: Find Errors From MaccabiPedia
+on: [ push, workflow_dispatch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+      run: ls
