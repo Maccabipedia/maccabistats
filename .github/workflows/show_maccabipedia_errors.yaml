@@ -10,4 +10,4 @@ jobs:
         with:
           python-version: 3.7
           architecture: x64
-      - run: python scripts\find_maccabipedia_errors.py
+      - run: python scripts/find_maccabipedia_errors.py
