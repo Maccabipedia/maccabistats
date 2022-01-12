@@ -122,3 +122,22 @@ class MaccabiGamesPlayersSpecialGamesStats(object):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_assist_x_goals_in_game__condition(assist_at_least),
             PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS, players_count)
+
+    def youngest_players_by_first_time_to_be_captain(self, players_count: int = 500):
+        return self._players_by_game_condition_ordered_by_age(_player_was_captain_in_a_game,
+                                                              PlayerGameMatcher.FIRST_GAME,
+                                                              PlayerAging.YOUNGEST_PLAYERS, players_count)
+
+    def oldest_players_by_first_time_to_be_captain(self, players_count: int = 500):
+        return self._players_by_game_condition_ordered_by_age(_player_was_captain_in_a_game,
+                                                              PlayerGameMatcher.FIRST_GAME, PlayerAging.OLDEST_PLAYERS,
+                                                              players_count)
+
+    def oldest_players_by_last_time_to_be_captain(self, players_count: int = 500):
+        return self._players_by_game_condition_ordered_by_age(_player_was_captain_in_a_game,
+                                                              PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS,
+                                                              players_count)
+
+
+def _player_was_captain_in_a_game(game: GameData, player_name: str) -> bool:
+    return player_name in game.maccabi_team.captains_players_with_amount
