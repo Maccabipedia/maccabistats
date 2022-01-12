@@ -1,3 +1,6 @@
+## Version 2.30.0 ##
+    Add streaks that count on player+specific team, for example what is the longest streak of unbeaten player against a specific team (any team)?
+    
 ## Version 2.29.0 ##
     Add Transfermarkt partial source, used to valudate which players played in a game (useful from 1990~+)
 

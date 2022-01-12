@@ -21,6 +21,7 @@ from maccabistats.stats.goals_timing import MaccabiGamesGoalsTiming
 from maccabistats.stats.graphs import MaccabiGamesGraphsStats
 from maccabistats.stats.important_goals import MaccabiGamesImportantGoalsStats
 from maccabistats.stats.players import MaccabiGamesPlayersStats
+from maccabistats.stats.players_and_teams_streaks import PlayersAndTeamsStreaksStats
 from maccabistats.stats.players_categories import MaccabiGamesPlayersCategoriesStats
 from maccabistats.stats.players_events_sumamry import MaccabiGamesPlayersEventsSummaryStats
 from maccabistats.stats.players_first_and_last_games import MaccabiGamesPlayersFirstAndLastGamesStats
@@ -66,6 +67,7 @@ class MaccabiGamesStats:
         self.summary = MaccabiGamesSummary(self)
         self.goals_timing = MaccabiGamesGoalsTiming(self)
         self.export = ExportMaccabiGamesStats(self)
+        self.players_and_teams_streaks = PlayersAndTeamsStreaksStats(self)
 
         self.seasons = MaccabiGamesSeasonsStats(self)
 
@@ -269,7 +271,7 @@ class MaccabiGamesStats:
 
     def played_games_by_player_name(self) -> DefaultDict[str, MaccabiGamesStats]:
         """
-        Returns a mapping between a player name to the games he played at
+        Returns a mapping between a player name to the games he participated
         """
         players_games = defaultdict(list)
 
@@ -283,6 +285,32 @@ class MaccabiGamesStats:
 
         # Allow to return an empty list for unknown players
         return defaultdict(lambda: MaccabiGamesStats([]), games_by_player)
+
+    def played_games_by_player_and_team(self) -> Dict[str, DefaultDict[str, MaccabiGamesStats]]:
+        """
+        Returns a mapping between a player name to a dict from team to games, means:
+        {'player_name1': {'team1': game1,
+                          'team2': game2},
+         'player_name2': {'team1': game1,
+                          'team3': game3}
+        }
+        """
+        players_to_teams_to_games_mapping = defaultdict(lambda: defaultdict(list))
+
+        for game in self.games:
+            for player in game.maccabi_team.played_players:
+                # adds at [player][team].append(game)
+                players_to_teams_to_games_mapping[player.name][game.not_maccabi_team.name].append(game)
+
+        games_by_player_and_team = defaultdict(lambda: defaultdict(lambda: MaccabiGamesStats([])))
+        for player_name, teams_mapping in players_to_teams_to_games_mapping.items():
+            for team_name, specific_player_and_team_games in teams_mapping.items():
+                current_combination_games = MaccabiGamesStats(specific_player_and_team_games,
+                                                              f'Players {player_name} and Team: {team_name} games')
+                games_by_player_and_team[player_name][team_name] = current_combination_games
+
+        # Allow to return an empty list for unknown players, same default dict as above but with MaccabiGamesStats
+        return defaultdict(lambda: defaultdict(lambda: MaccabiGamesStats([])), games_by_player_and_team)
 
     @classmethod
     def create_maccabi_stats_from_games(cls, games: List[GameData]) -> MaccabiGamesStats:
