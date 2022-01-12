@@ -11,7 +11,7 @@ jobs:
           python-version: 3.7
           architecture: x64
       - name: Install dependencies
-      - run: python -m pip install --upgrade pip
+        run: python -m pip install --upgrade pip
              pip install -e .
       - name: Find errors
-      - run: python scripts/find_maccabipedia_errors.py
+        run: python scripts/find_maccabipedia_errors.py
