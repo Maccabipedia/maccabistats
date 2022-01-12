@@ -1,3 +1,6 @@
+## Version 2.31.0 ##
+    Find the players that used to be captains (youngest + oldest)
+
 ## Version 2.30.0 ##
     Add streaks that count on player+specific team, for example what is the longest streak of unbeaten player against a specific team (any team)?
     
