@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from operator import itemgetter
 from typing import TYPE_CHECKING, Callable, Tuple, List
 
 from progressbar import ProgressBar
@@ -40,8 +39,8 @@ class MaccabiGamesPlayersStreaksStats(object):
         """
         players_games = self.maccabi_games_stats.played_games_by_player_name()
 
-        unsorted_players_streaks = {player.name: streak_condition(players_games[player.name], player.name) for
-                                    player in self.maccabi_games_stats.available_players}
+        unsorted_players_streaks = {player_name: streak_condition(players_games[player_name], player_name) for
+                                    player_name in self.maccabi_games_stats.available_players_names}
 
         return sorted(unsorted_players_streaks.items(), key=lambda kv: len(kv[1]), reverse=True)[:top_players_count]
 
