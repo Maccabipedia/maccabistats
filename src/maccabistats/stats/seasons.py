@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
 class MaccabiGamesSeasonsStats:
     """
     This class is responsible for maccabi seasons manipulating, such as sorting by wins count, goals for maccabi and so on.

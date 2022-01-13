@@ -1,6 +1,6 @@
 from .maccabilogging import initialize_logging
 
-# This should stays first to enable logging across all package
+# This should be first to enable logging across all package
 initialize_logging()
 
 from .stats.serialized_games import get_maccabi_stats, get_maccabi_stats_as_newest_wrapper, serialize_maccabi_games

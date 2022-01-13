@@ -13,5 +13,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip
              pip install -e .
-      - name: Find errors
-        run: python scripts/find_maccabipedia_errors.py
+      - name: Fetch MaccabiPedia Data
+        run: python src/maccabistats/github_actions_scripts/fetch_games_from_maccabipedia.py
+      - name: Find Errors
+        run: python src/maccabistats/github_actions_scripts/find_maccabipedia_errors.py
