@@ -1,10 +1,16 @@
 import logging
+from logging import StreamHandler
+from pathlib import Path
 
 from maccabistats import load_from_maccabipedia_source, ErrorsFinder
 from maccabistats.maccabilogging import remove_live_logging
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
-logging.basicConfig(format='%(message)s', level=logging.INFO)
+ROOT_FOLDER = Path(__file__).absolute().parent.parent.parent.parent
+RESULT_LOG_FILE = ROOT_FOLDER / 'maccabipedia_errors.txt'
+
+logging.basicConfig(filename=RESULT_LOG_FILE, filemode='a', format='%(message)s', level=logging.INFO)
+logging.getLogger().addHandler(StreamHandler())
 
 
 def show_double_league_fixtures(errors_finder: ErrorsFinder) -> None:
