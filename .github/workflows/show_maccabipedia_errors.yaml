@@ -17,10 +17,13 @@ jobs:
         run: python src/maccabistats/github_actions_scripts/fetch_games_from_maccabipedia.py
       - name: Find Errors
         run: python src/maccabistats/github_actions_scripts/find_maccabipedia_errors.py
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y_%m_%d')"
       - name: Send Errors to Telegram
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TO }}
           token: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TOKEN }}
           message: New errors file
-          document: maccabipedia_errors.txt
+          document: ${{ steps.date.outputs.date }}__maccabipedia_errors.txt

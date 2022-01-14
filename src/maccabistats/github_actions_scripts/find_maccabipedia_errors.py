@@ -8,7 +8,7 @@ from maccabistats.maccabilogging import remove_live_logging
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 ROOT_FOLDER = Path(__file__).absolute().parent.parent.parent.parent
-RESULT_LOG_FILE = ROOT_FOLDER / f'{datetime.now().strftime("%Y_%m_%d-%H_%M_%S")}__maccabipedia_errors.txt'
+RESULT_LOG_FILE = ROOT_FOLDER / f'{datetime.now().strftime("%Y_%m_%d")}__maccabipedia_errors.txt'
 
 logging.basicConfig(filename=RESULT_LOG_FILE, filemode='a', format='%(message)s', level=logging.INFO)
 logging.getLogger().addHandler(StreamHandler())
