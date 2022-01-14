@@ -28,12 +28,12 @@ jobs:
         with:
           to: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TO }}
           token: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TOKEN }}
-          message: New errors file
+          message: MaccabiPedia errors for game before 1950
           document: ${{ steps.date.outputs.date }}__maccabipedia_errors_before_1950.txt
       - name: Send Errors to Telegram (After 1950)
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TO }}
           token: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TOKEN }}
-          message: New errors file
+          message: MaccabiPedia errors for game after 1950
           document: ${{ steps.date.outputs.date }}__maccabipedia_errors_after_1950.txt
