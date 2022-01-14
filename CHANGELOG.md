@@ -1,3 +1,6 @@
+## Version 2.32.0 ##
+    Created a Github Actions that find the errors from MaccabiPedia and sends them to our Telegram group
+
 ## Version 2.31.0 ##
     Find the players that used to be captains (youngest + oldest)
 

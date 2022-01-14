@@ -1,8 +1,9 @@
 import logging
 from collections import defaultdict
 from datetime import timedelta
-from itertools import chain, repeat
 from typing import List, Tuple
+
+from itertools import chain, repeat
 
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEventTypes
@@ -52,18 +53,28 @@ class ErrorsFinder(object):
 
         return MaccabiGamesStats(games)
 
-    def get_games_with_different_score_and_goals(self):
-        """ Game score should be equal to the last score at the last goal event.
-            Counting only games same goals count and score count (means they wont fail at "get_games_with_missing_goals_events").
-            and games that were not finished by technical result (the score will be different always). """
+    def get_games_with_wrong_goals_team_belonging(self):
+        """ Maccabi score in the game should be equal to the maccabi score that written in the last goal event
+            We exclude technical games and the games that has some missing goals events which is counter by
+            get_games_with_missing_goals_events """
 
         games_with_wrong_goals_count = self.get_games_with_missing_goals_events()
 
-        # If the goals count is the same, we can only check for maccabi goals (opponent goals will be equal if maccabi goals is).
-        games = [game for game in self.maccabi_games_stats if
-                 not game.technical_result
-                 and game not in games_with_wrong_goals_count
-                 and (0 if not game.goals() else game.goals()[-1]["maccabi_score"]) != game.maccabi_score]
+        def game_has_wrong_goals_belonging(game_to_check: GameData) -> bool:
+            if game_to_check.technical_result:
+                return False
+
+            if game_to_check in games_with_wrong_goals_count:
+                return False
+
+            maccabi_score, not_maccabi_score = 0, 0
+            if game_to_check.goals():
+                last_goal = game_to_check.goals()[-1]
+                maccabi_score, not_maccabi_score = last_goal['maccabi_score'], last_goal['not_maccabi_score']
+
+            return maccabi_score != game_to_check.maccabi_score or not_maccabi_score != not_maccabi_score
+
+        games = list(filter(game_has_wrong_goals_belonging, self.maccabi_games_stats))
 
         return MaccabiGamesStats(games)
 
@@ -93,8 +104,8 @@ class ErrorsFinder(object):
             else:
                 return int(game.season[:4]) <= game.date.year <= int(game.season[:2] + game.season[-2:])
 
-        games_with_incorrect_season = [(game.season, str(game.date), game) for game in self.maccabi_games_stats if
-                                       not validate_season(game)]
+        games_with_incorrect_season = [(game.season, str(game.date.date()), game) for game in self.maccabi_games_stats
+                                       if not validate_season(game)]
 
         return games_with_incorrect_season
 
@@ -108,10 +119,10 @@ class ErrorsFinder(object):
         """
         For each season get the max fixture number and check whether the len of this season games equal to it
         """
-
         missing_fixtures_from_all_seasons = []
 
-        seasons = self.maccabi_games_stats.league_games.seasons.get_seasons_stats()
+        seasons = self.maccabi_games_stats.league_games.seasons
+
         for season in seasons:
             current_season_fixtures = [game.league_fixture for game in season if game.league_fixture]
             if not current_season_fixtures:  # If we are dealing with no league games in this season
@@ -130,18 +141,22 @@ class ErrorsFinder(object):
         """
         For each season check whether we have double fixtures (numbers)
         """
-
         fixtures_from_all_seasons = defaultdict(list)
 
-        seasons = self.maccabi_games_stats.league_games.seasons.get_seasons_stats()
+        seasons = self.maccabi_games_stats.league_games.seasons
+
         for season in seasons:
-            if season:  # Any games at this season
-                for game in season:
-                    fixtures_from_all_seasons[f"season {season[0].season} fixture {game.league_fixture}"].append(game)
+            if not season:
+                continue
+
+            # This season is not empty
+            for game in season:
+                fixtures_from_all_seasons[f"Season {season[0].season} Fixture {game.league_fixture}"].append(game)
 
         double_fixtures = [(season_and_fixture, MaccabiGamesStats(games)) for season_and_fixture, games in
                            fixtures_from_all_seasons.items() if
                            len(games) > 1]
+
         return double_fixtures
 
     def get_games_without_stadium(self):

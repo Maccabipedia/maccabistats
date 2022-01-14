@@ -31,7 +31,7 @@ class MaccabiGamesSeasonsStats:
                                   self.maccabi_games_stats.available_seasons}
 
         # sort attribute use to show the relevant data after sorting.
-        self._current_sort_attribute_function = lambda s: ""
+        self._current_sort_attribute_function = str  # Use empty str as default sort
         self._current_sort_attribute_description = "order by season number"
 
     def __repr__(self) -> str:
