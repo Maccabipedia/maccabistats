@@ -29,4 +29,5 @@ jobs:
           to: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TO }}
           token: ${{ secrets.MACCABIPEDIA_ERRORS_TELEGRAM_TOKEN }}
           message: New errors file
-          document: ${{ steps.date.outputs.date }}__maccabipedia_errors.txt
+          document: ${{ steps.date.outputs.date }}__maccabipedia_errors_before_1950.txt
+          document: ${{ steps.date.outputs.date }}__maccabipedia_errors_after_1950.txt
