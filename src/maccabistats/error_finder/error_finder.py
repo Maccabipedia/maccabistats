@@ -27,9 +27,10 @@ class ErrorsFinder(object):
         self.maccabi_games_stats = maccabi_games_stats
 
     def get_games_without_11_maccabi_players_on_lineup(self):
-        """ Each team should has 11 players with lineup event! but we care more about maccabi"""
+        """ Each team should have 11 players with lineup event! but we care more about maccabi, skip technical games """
 
         missing_lineup_games = [game for game in self.maccabi_games_stats
+                                if not game.technical_result
                                 if 11 != len(game.maccabi_team.lineup_players)]
 
         return MaccabiGamesStats(missing_lineup_games)
