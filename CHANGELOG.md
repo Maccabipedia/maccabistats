@@ -1,12 +1,19 @@
+## Version 2.33.0 ##
+
+    New Github Action that upload the latest MaccabiPedia games data to our FTP server (to be used by the Telegram bot)
+
 ## Version 2.32.0 ##
+
     Created a Github Actions that find the errors from MaccabiPedia and sends them to our Telegram group
 
 ## Version 2.31.0 ##
+
     Find the players that used to be captains (youngest + oldest)
 
 ## Version 2.30.0 ##
+
     Add streaks that count on player+specific team, for example what is the longest streak of unbeaten player against a specific team (any team)?
-    
+
 ## Version 2.29.0 ##
     Add Transfermarkt partial source, used to valudate which players played in a game (useful from 1990~+)
 
@@ -183,7 +190,7 @@
 	Bug-fix: removed maccabi.games from manifest.in
 
 ## Version 1.5.0 ##
-	
+
 	Add logging handlers.
 	Add faster logging.
 	Add name normalization for all (players, referees, coaches ...).
@@ -211,8 +218,6 @@
 
 	This version created just to reupload to pypi
 
-
-
 ## Version 1.1.0 ##
 
 	## Summary ##
@@ -222,10 +227,7 @@
 		Enable logging on linux
 		require py3+
 
-
-
 ## Version 1.0.0 ##
-
 
 	## Summary ##
 	

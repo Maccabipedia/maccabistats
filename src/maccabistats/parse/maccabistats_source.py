@@ -1,6 +1,6 @@
+import glob
 import logging
 import os
-import glob
 import pickle
 from datetime import datetime
 from pathlib import Path
@@ -11,7 +11,8 @@ from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 logger = logging.getLogger(__name__)
 
 home_folder = Path.home().as_posix()
-serialized_sources_path_pattern = os.path.join(home_folder, "maccabistats", "sources", "{source_name}", "{source_name}-{version}-{date}.games")
+serialized_sources_path_pattern = os.path.join(home_folder, "maccabistats", "sources", "{source_name}",
+                                               "{source_name}-{version}-{date}.games")
 
 """
 This class is responsible to set the api for each maccabistats source, the common usage should be :
@@ -78,17 +79,20 @@ class MaccabiStatsSource(object):
         Load the serialized games to self.maccabi_games_stats
         :return: MaccabiGamesStats
         """
+        last_created_source_games_file = self.find_last_created_source_maccabi_games_file()
 
+        logger.info(f"Loading source {self.name} as MaccabiGamesStats from: {last_created_source_games_file},"
+                    f" This is the last created serialized maccabi games file on this source folder")
+        with open(last_created_source_games_file, 'rb') as f:
+            self.maccabi_games_stats = pickle.load(f)
+
+    def find_last_created_source_maccabi_games_file(self) -> str:
         serialized_source_games = glob.glob(self._serialized_games_path_pattern)
         if not serialized_source_games:
             raise RuntimeError(f"Cant find source serialized games at: {self._serialized_games_path_pattern}")
 
         last_created_serialized_maccabi_games_file = max(serialized_source_games, key=os.path.getctime)
-
-        logger.info(f"Loading source {self.name} as MaccabiGamesStats from: {last_created_serialized_maccabi_games_file},"
-                    f" This is the last created serialized maccabi games file on this source folder")
-        with open(last_created_serialized_maccabi_games_file, 'rb') as f:
-            self.maccabi_games_stats = pickle.load(f)
+        return last_created_serialized_maccabi_games_file
 
     def serialize_games(self):
         """
