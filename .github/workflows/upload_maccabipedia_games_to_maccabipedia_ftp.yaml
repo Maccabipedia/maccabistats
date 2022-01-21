@@ -1,4 +1,4 @@
-name: Find MaccabiPedia Errors
+name: Upload MaccabiPedia Games FTP
 on:
   schedule:
     - cron: "0 20 * * *"
