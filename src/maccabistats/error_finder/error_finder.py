@@ -1,29 +1,27 @@
 import logging
 from collections import defaultdict
 from datetime import timedelta
-from typing import List, Tuple
-
 from itertools import chain, repeat
+from typing import List, Tuple
 
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
-""" This class responsible to find errors in maccabigamesstats object, such as games that the amount of goals does not match to the final score sum,
-    empty events and so on.
+""" 
+This class is responsible to find errors in MaccabiGamesStats object, 
+such as games that the amount of goals does not match to the final score sum,
+empty events and so on.
 
-    This should be run manually.
+This should be run manually.
 """
 
 
-class ErrorsFinder(object):
+class ErrorsFinder:
     """ Each public function on this class wil lbe run automatically by 'get_all_errors_numbers'. """
 
-    def __init__(self, maccabi_games_stats):
-        """
-        :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
-        """
+    def __init__(self, maccabi_games_stats: MaccabiGamesStats) -> None:
         self.maccabi_games_stats = maccabi_games_stats
 
     def get_games_without_11_maccabi_players_on_lineup(self):
@@ -243,3 +241,9 @@ class ErrorsFinder(object):
             error_finder_func = getattr(self, func_name)
             logger.info("{func_name}: returned {count} items".format(func_name=func_name,
                                                                      count=len(error_finder_func())))
+
+    def __str__(self) -> str:
+        return f'ErrorsFinder: [{self.maccabi_games_stats}]'
+
+    def __repr__(self) -> str:
+        return str(self)
