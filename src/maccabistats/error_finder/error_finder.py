@@ -33,6 +33,18 @@ class ErrorsFinder:
 
         return MaccabiGamesStats(missing_lineup_games)
 
+    def get_dates_with_more_than_one_game(self):
+        """
+        Each game should be played in a unique date (that how our MaccabiPedia football modeling system works atm)
+        """
+        games_by_date = defaultdict(list)
+
+        for game in self.maccabi_games_stats:
+            games_by_date[game.date.date()].append(game)
+
+        problematic_dates = {date: games for date, games in games_by_date.items() if len(games) > 1}
+        return problematic_dates
+
     def get_lineup_players_with_substitution_in(self):
         """ Players that opened on lineup, should'nt has substitution in event. """
 
@@ -230,6 +242,28 @@ class ErrorsFinder:
                 benched_players_with_weird_events.append((player.name, game))
 
         return benched_players_with_weird_events
+
+    def get_items_category_with_empty_names(self) -> List[str]:
+        """
+        return the category name that may contain invalid item name (coaches, opponents, players and so on),
+        it may happen due to exception while we extract the data from maccabipedia
+        """
+        bad_items_category = []
+
+        if any(True for name in self.maccabi_games_stats.available_players_names if not name.strip()):
+            bad_items_category.append('players_names')
+        if any(True for name in self.maccabi_games_stats.available_competitions if not name.strip()):
+            bad_items_category.append('competition')
+        if any(True for name in self.maccabi_games_stats.available_stadiums if not name.strip()):
+            bad_items_category.append('stadiums')
+        if any(True for name in self.maccabi_games_stats.available_coaches if not name.strip()):
+            bad_items_category.append('coaches')
+        if any(True for name in self.maccabi_games_stats.available_referees if not name.strip()):
+            bad_items_category.append('referees')
+        if any(True for name in self.maccabi_games_stats.available_opponents if not name.strip()):
+            bad_items_category.append('opponents')
+
+        return bad_items_category
 
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
