@@ -57,6 +57,7 @@ MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNCATEGORIZED,
                            35: GoalTypes.PENALTY,
                            36: GoalTypes.BICYCLE_KICK,
                            37: GoalTypes.UNKNOWN,
+                           38: GoalTypes.CORNER,
                            }
 
 MACCABIPEDIA_ASSISTS_TYPE = {40: AssistTypes.UNCATEGORIZED,

@@ -23,6 +23,7 @@ class GoalTypes(Enum):
     BICYCLE_KICK = 'BicycleKickGoal'
     NORMAL_KICK = 'NormalGoal'
     UNKNOWN = 'UnknownGoal'
+    CORNER = 'CornerGoal'
     UNCATEGORIZED = 'UnCategorizedGoal'
 
     @classmethod
