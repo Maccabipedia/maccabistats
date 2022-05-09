@@ -312,9 +312,8 @@ class MaccabiGamesStats:
         # Allow to return an empty list for unknown players, same default dict as above but with MaccabiGamesStats
         return defaultdict(lambda: defaultdict(lambda: MaccabiGamesStats([])), games_by_player_and_team)
 
-    @classmethod
-    def create_maccabi_stats_from_games(cls, games: List[GameData]) -> MaccabiGamesStats:
-        return cls(games)
+    def create_maccabi_stats_from_games(self, games: List[GameData]) -> MaccabiGamesStats:
+        return MaccabiGamesStats(games, description=self.description)
 
     @property
     def points(self):

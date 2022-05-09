@@ -1,17 +1,17 @@
 ## Version 2.33.0 ##
+    Add new Goal sub-type (Corner)
+    Add new errors types for ErrorsFinder
 
+## Version 2.33.0 ##
     New Github Action that upload the latest MaccabiPedia games data to our FTP server (to be used by the Telegram bot)
 
 ## Version 2.32.0 ##
-
     Created a Github Actions that find the errors from MaccabiPedia and sends them to our Telegram group
 
 ## Version 2.31.0 ##
-
     Find the players that used to be captains (youngest + oldest)
 
 ## Version 2.30.0 ##
-
     Add streaks that count on player+specific team, for example what is the longest streak of unbeaten player against a specific team (any team)?
 
 ## Version 2.29.0 ##

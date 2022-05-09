@@ -1,29 +1,27 @@
 import logging
 from collections import defaultdict
 from datetime import timedelta
-from typing import List, Tuple
-
 from itertools import chain, repeat
+from typing import List, Tuple
 
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
-""" This class responsible to find errors in maccabigamesstats object, such as games that the amount of goals does not match to the final score sum,
-    empty events and so on.
+""" 
+This class is responsible to find errors in MaccabiGamesStats object, 
+such as games that the amount of goals does not match to the final score sum,
+empty events and so on.
 
-    This should be run manually.
+This should be run manually.
 """
 
 
-class ErrorsFinder(object):
+class ErrorsFinder:
     """ Each public function on this class wil lbe run automatically by 'get_all_errors_numbers'. """
 
-    def __init__(self, maccabi_games_stats):
-        """
-        :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
-        """
+    def __init__(self, maccabi_games_stats: MaccabiGamesStats) -> None:
         self.maccabi_games_stats = maccabi_games_stats
 
     def get_games_without_11_maccabi_players_on_lineup(self):
@@ -34,6 +32,18 @@ class ErrorsFinder(object):
                                 if 11 != len(game.maccabi_team.lineup_players)]
 
         return MaccabiGamesStats(missing_lineup_games)
+
+    def get_dates_with_more_than_one_game(self):
+        """
+        Each game should be played in a unique date (that how our MaccabiPedia football modeling system works atm)
+        """
+        games_by_date = defaultdict(list)
+
+        for game in self.maccabi_games_stats:
+            games_by_date[game.date.date()].append(game)
+
+        problematic_dates = {date: games for date, games in games_by_date.items() if len(games) > 1}
+        return problematic_dates
 
     def get_lineup_players_with_substitution_in(self):
         """ Players that opened on lineup, should'nt has substitution in event. """
@@ -233,6 +243,28 @@ class ErrorsFinder(object):
 
         return benched_players_with_weird_events
 
+    def get_items_category_with_empty_names(self) -> List[str]:
+        """
+        return the category name that may contain invalid item name (coaches, opponents, players and so on),
+        it may happen due to exception while we extract the data from maccabipedia
+        """
+        bad_items_category = []
+
+        if any(True for name in self.maccabi_games_stats.available_players_names if not name.strip()):
+            bad_items_category.append('players_names')
+        if any(True for name in self.maccabi_games_stats.available_competitions if not name.strip()):
+            bad_items_category.append('competition')
+        if any(True for name in self.maccabi_games_stats.available_stadiums if not name.strip()):
+            bad_items_category.append('stadiums')
+        if any(True for name in self.maccabi_games_stats.available_coaches if not name.strip()):
+            bad_items_category.append('coaches')
+        if any(True for name in self.maccabi_games_stats.available_referees if not name.strip()):
+            bad_items_category.append('referees')
+        if any(True for name in self.maccabi_games_stats.available_opponents if not name.strip()):
+            bad_items_category.append('opponents')
+
+        return bad_items_category
+
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
         errors_finders = [func for func in dir(self) if
@@ -243,3 +275,9 @@ class ErrorsFinder(object):
             error_finder_func = getattr(self, func_name)
             logger.info("{func_name}: returned {count} items".format(func_name=func_name,
                                                                      count=len(error_finder_func())))
+
+    def __str__(self) -> str:
+        return f'ErrorsFinder: [{self.maccabi_games_stats}]'
+
+    def __repr__(self) -> str:
+        return str(self)
