@@ -184,15 +184,13 @@ class ErrorsFinder:
 
         return [game for game in self.maccabi_games_stats.games if not game.referee]
 
-    def get_players_which_play_more_than_x_years(self, number_of_years=25):
+    def get_players_which_play_more_than_x_years(self, number_of_years: int = 20) -> \
+            List[Tuple[str, MaccabiGamesStats]]:
         """
-        Returns the players who play more than the given years, default 25 years.
+        Returns the players who play more than the given years.
         This may indicate on naming errors
-        :type number_of_years: int
         :return: Player name and his games
-        :rtype: str, maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         """
-
         players_who_played_too_much = []
         for player_name in self.maccabi_games_stats.available_players_names:
             player_games = self.maccabi_games_stats.get_games_by_player_name(player_name)

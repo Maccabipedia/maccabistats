@@ -50,6 +50,9 @@ class MaccabiGamesSeasonsStats:
         else:
             return self._seasons_dict[item]
 
+    def __len__(self) -> int:
+        return len(self._seasons_dict)
+
     def _refresh_sorting(self,
                          sort_attribute_function: Callable[[MaccabiGamesStats], Any],
                          sort_attribute_description: str) -> None:
