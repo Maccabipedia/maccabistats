@@ -25,15 +25,15 @@ class MaccabiGamesCoachesStats(object):
 
     @property
     def most_games_with_goals_from_bench_coach(self) -> List[CoachStats]:
-        return self._calculate_coaches_stats(lambda g: g.maccabi_team.has_goal_from_bench == 0)
+        return self._calculate_coaches_stats(lambda g: 1 if g.maccabi_team.has_goal_from_bench else 0)
 
     @property
     def most_goals_for_maccabi_coach(self) -> List[CoachStats]:
-        return self._calculate_coaches_stats(lambda g: g.maccabi_team.score == 0)
+        return self._calculate_coaches_stats(lambda g: g.maccabi_team.score)
 
     @property
     def most_goals_against_maccabi_coach(self) -> List[CoachStats]:
-        return self._calculate_coaches_stats(lambda g: g.not_maccabi_team.score == 0)
+        return self._calculate_coaches_stats(lambda g: g.not_maccabi_team.score)
 
     @property
     def most_trained_coach(self) -> List[CoachStats]:

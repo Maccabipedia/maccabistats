@@ -1,11 +1,19 @@
-## Version 2.33.0 ##
+## Version 2.35.0 ##
+
+    Coaches stats fixes
+    New Ligat Haal sponser support
+
+## Version 2.34.0 ##
+
     Add new Goal sub-type (Corner)
     Add new errors types for ErrorsFinder
 
 ## Version 2.33.0 ##
+
     New Github Action that upload the latest MaccabiPedia games data to our FTP server (to be used by the Telegram bot)
 
 ## Version 2.32.0 ##
+
     Created a Github Actions that find the errors from MaccabiPedia and sends them to our Telegram group
 
 ## Version 2.31.0 ##
