@@ -39,7 +39,7 @@ class PlayerGamesCondition:
     @staticmethod
     def create_involved_in_x_goals_in_game__condition(involved_at_least) -> Callable[[GameData, str], bool]:
         def involved_in_game_x_goals(game: GameData, player_name: str) -> bool:
-            assists = game.maccabi_team.goal_involved_players_with_amount.get(player_name, 0)
+            assists = game.maccabi_team.assist_players_with_amount.get(player_name, 0)
             scored = game.maccabi_team.scored_players_with_amount.get(player_name, 0)
 
             return assists + scored >= involved_at_least
