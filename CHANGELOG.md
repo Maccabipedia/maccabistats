@@ -1,3 +1,8 @@
+## Version 2.36.0 ##
+
+    Fix player goals involved calculations
+    Adapt to new Maccabipedia Cargo tables format
+
 ## Version 2.35.0 ##
 
     Coaches stats fixes
@@ -9,11 +14,9 @@
     Add new errors types for ErrorsFinder
 
 ## Version 2.33.0 ##
-
     New Github Action that upload the latest MaccabiPedia games data to our FTP server (to be used by the Telegram bot)
 
 ## Version 2.32.0 ##
-
     Created a Github Actions that find the errors from MaccabiPedia and sends them to our Telegram group
 
 ## Version 2.31.0 ##

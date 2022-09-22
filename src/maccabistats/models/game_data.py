@@ -171,6 +171,16 @@ class GameData(object):
     def to_json(self) -> str:
         return json.dumps(self.json_dict())
 
+    @property
+    def _maccabipedia_page_name(self):
+        return "{maccabipedia}/{prefix}: {date} {home_team} נגד {away_team} - {competition}".format(
+            maccabipedia="https://www.maccabipedia.co.il",
+            prefix="משחק",
+            date=self.date.strftime('%d-%m-%Y'),
+            home_team=self.home_team.name,
+            away_team=self.away_team.name,
+            competition=self.competition)
+
     def __repr__(self) -> str:
         return f"{self.date.date()} {self.competition}: {self.home_team.name}({self.home_team.score}) - ({self.away_team.score}){self.away_team.name}"
 

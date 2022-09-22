@@ -98,6 +98,11 @@ class MaccabiGamesPlayersSpecialGamesStats(object):
             PlayerGamesCondition.create_score_x_goals_in_game__condition(score_at_least),
             PlayerGameMatcher.FIRST_GAME, PlayerAging.YOUNGEST_PLAYERS, players_count)
 
+    def youngest_players_by_first_time_to_goal_involved(self, involved_at_least: int = 1, players_count: int = 50):
+        return self._players_by_game_condition_ordered_by_age(
+            PlayerGamesCondition.create_involved_in_x_goals_in_game__condition(involved_at_least),
+            PlayerGameMatcher.FIRST_GAME, PlayerAging.YOUNGEST_PLAYERS, players_count)
+
     def oldest_players_by_first_time_to_score(self, score_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_score_x_goals_in_game__condition(score_at_least),
