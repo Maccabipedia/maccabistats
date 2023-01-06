@@ -150,7 +150,8 @@ class MaccabiGamesPlayersStats(object):
     @property
     def most_red_carded(self) -> List[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.RED_CARD))
+            lambda p: p.event_count_by_type(GameEventTypes.RED_CARD) + p.event_count_by_type(
+                GameEventTypes.SECOND_YELLOW_CARD))
 
     @property
     def most_substitute_off(self) -> List[PlayerStats]:

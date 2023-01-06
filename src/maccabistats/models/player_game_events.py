@@ -48,7 +48,9 @@ class GoalTypes(Enum):
 class GameEventTypes(Enum):
     GOAL_SCORE = 'ScoreGoal'
     RED_CARD = 'RedCard'
-    YELLOW_CARD = 'YellowCard'
+    YELLOW_CARD = 'YellowCard'  # No more than 1 yellow card in this game for this player
+    FIRST_YELLOW_CARD = 'FirstYellowCard'
+    SECOND_YELLOW_CARD = 'SecondYellowCard'
     LINE_UP = 'LineUp'
     SUBSTITUTION_IN = 'SubstitutionIn'
     SUBSTITUTION_OUT = 'SubstitutionOut'
@@ -105,7 +107,6 @@ class GameEvent(object):
 
 class GoalGameEvent(GameEvent):
     def __init__(self, time_occur: timedelta, goal_type: GoalTypes = GoalTypes.UNKNOWN):
-
         super(GoalGameEvent, self).__init__(GameEventTypes.GOAL_SCORE, time_occur)
         self.goal_type = goal_type
 
