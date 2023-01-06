@@ -1,3 +1,7 @@
+## Version 2.37.0 ##
+
+    Support second yellow change from MaccabiPedia
+
 ## Version 2.36.0 ##
 
     Fix player goals involved calculations
@@ -9,7 +13,6 @@
     New Ligat Haal sponser support
 
 ## Version 2.34.0 ##
-
     Add new Goal sub-type (Corner)
     Add new errors types for ErrorsFinder
 

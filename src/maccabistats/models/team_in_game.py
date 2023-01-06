@@ -54,7 +54,9 @@ class TeamInGame(Team):
 
     @property
     def red_carded_players(self) -> List[PlayerInGame]:
-        return [player for player in self.players if player.has_event_type(GameEventTypes.RED_CARD)]
+        return [player for player in self.players if
+                player.has_event_type(GameEventTypes.RED_CARD) or
+                player.has_event_type(GameEventTypes.SECOND_YELLOW_CARD)]
 
     @property
     def played_players(self) -> List[PlayerInGame]:
@@ -126,7 +128,8 @@ class TeamInGame(Team):
     @property
     def red_carded_players_with_amount(self) -> typing.Counter[str]:
         return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.RED_CARD))
+            lambda p: p.event_count_by_type(GameEventTypes.RED_CARD) + p.event_count_by_type(
+                GameEventTypes.SECOND_YELLOW_CARD))
 
     @property
     def captains_players_with_amount(self) -> typing.Counter[str]:
