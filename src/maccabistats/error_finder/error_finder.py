@@ -263,6 +263,18 @@ class ErrorsFinder:
 
         return bad_items_category
 
+    def get_players_with_two_yellows_without_red_card_in_the_same_game(self) -> List[Tuple[str, GameData]]:
+        players_and_games = []
+
+        for game in self.maccabi_games_stats:
+            # YELLOW_CARD event indicates a yellow which is not first/yellow (which is part of red card)
+            players_with_two_yellows = [player_name for player_name, count in
+                                        game.maccabi_team.yellow_carded_players_with_amount.items() if count > 1]
+            for player_name in players_with_two_yellows:
+                players_and_games.append((player_name, game))
+
+        return players_and_games
+
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
         errors_finders = [func for func in dir(self) if

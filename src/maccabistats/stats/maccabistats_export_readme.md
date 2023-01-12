@@ -17,26 +17,28 @@ In addition we save data at the game level, both of these data types are describ
     * player_number
     * player_time_occur: The minute this event occurred at
     * player_event_type
-        1. ScoreGoal
-        1. RedCard
-        1. YellowCard
-        1. LineUp
-        1. SubstitutionIn
-        1. SubstitutionOut
-        1. AssistGoal
-        1. Captain
-        1. PenaltyMissed
-        1. PenaltyStopped: Goalkeeper event only
-        1. Benched
-        1. Unknown
+       1. ScoreGoal
+       2. RedCard
+       3. YellowCard: Yellow card which is not part of future red card (2 yellows)
+       4. FirstYellowCard: First yellow card out of two
+       5. SecondYellowCard: Second yellow card out of two (should be counted as red card)
+       6. LineUp
+       7. SubstitutionIn
+       8. SubstitutionOut
+       9. AssistGoal
+       10. Captain
+       11. PenaltyMissed
+       12. PenaltyStopped: Goalkeeper event only
+       13. Benched
+       14. Unknown
     * player_goal_type:
-        1. FreeKickGoal
-        1. PenaltyGoal
-        1. HeaderGoal
-        1. OwnGoal
-        1. BicycleKickGoal
-        1. NormalGoal: The goal is not relevant for every other category
-        1. UnknownGoal
+       1. FreeKickGoal
+       1. PenaltyGoal
+       1. HeaderGoal
+       1. OwnGoal
+       1. BicycleKickGoal
+       1. NormalGoal: The goal is not relevant for every other category
+       1. UnknownGoal
     * player_assist_type:
         1. NormalAssist: The assist is not relevant for every other category
         1. FreeKickAssist
