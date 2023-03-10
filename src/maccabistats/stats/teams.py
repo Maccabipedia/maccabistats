@@ -36,7 +36,7 @@ class MaccabiGamesTeamsStats(object):
         minimum_games_against_team = minimum_games_against_team or 0
 
         for game in self.games:
-            teams_games[game.not_maccabi_team.name].append(game)
+            teams_games[game.not_maccabi_team.current_name].append(game)
 
         teams_with_condition = {}
         for team_name in teams_games.keys():

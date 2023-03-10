@@ -193,4 +193,10 @@ class MaccabiGamesSeasonsStats:
         self._refresh_sorting(sort_attribute_function=lambda s: len(s.comebacks.won_from_any_goal_diff()),
                               sort_attribute_description=
                               "sort by the number of comebacks to winning")
+
+    def sort_by_potential_comebacks_that_maccabi_didnt_win(self) -> None:
+        self._refresh_sorting(
+            sort_attribute_function=lambda s: len(s.comebacks.games_with_potential_comebacks_that_maccabi_didnt_win()),
+            sort_attribute_description=
+            "sort by the number of potential comebacks that maccabi didn't win")
     # endregion

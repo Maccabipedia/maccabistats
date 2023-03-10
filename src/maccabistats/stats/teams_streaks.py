@@ -31,7 +31,7 @@ class MaccabiGamesTeamsStreaksStats(object):
         teams_games = defaultdict(list)
 
         for game in self.games:
-            teams_games[game.not_maccabi_team.name].append(game)
+            teams_games[game.not_maccabi_team.current_name].append(game)
 
         teams_maccabi_games_stats: Dict[str, MaccabiGamesStats] = dict()
         for team_name in teams_games.keys():

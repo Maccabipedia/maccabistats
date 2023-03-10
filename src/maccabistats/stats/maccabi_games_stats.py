@@ -33,6 +33,7 @@ from maccabistats.stats.seasons import MaccabiGamesSeasonsStats
 from maccabistats.stats.streaks import MaccabiGamesStreaksStats
 from maccabistats.stats.summary import MaccabiGamesSummary
 from maccabistats.stats.teams import MaccabiGamesTeamsStats
+from maccabistats.stats.teams_names_convertor import TeamNamesConvertor
 from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
 from maccabistats.stats_utilities.points_calculator import calculate_points_for_games, \
     calculate_possible_points_for_games
@@ -70,6 +71,7 @@ class MaccabiGamesStats:
         self.players_and_teams_streaks = PlayersAndTeamsStreaksStats(self)
 
         self.seasons = MaccabiGamesSeasonsStats(self)
+        self._team_names_convertor = TeamNamesConvertor(self)
 
         self.version = maccabistats_version
 
@@ -224,8 +226,10 @@ class MaccabiGamesStats:
 
     def get_games_against_team(self, team_name: str) -> MaccabiGamesStats:
         # We count the team name as the name when they appear to the game or the name as they have these days
+        current_team_name = self._team_names_convertor.find_team_current_name(team_name)
+
         return MaccabiGamesStats([game for game in self.games if
-                                  team_name in [game.not_maccabi_team.name, game.not_maccabi_team.linked_name]],
+                                  current_team_name == game.not_maccabi_team.current_name],
                                  self._new_description(f'Against team: {team_name}'))
 
     def get_games_by_coach(self, coach_name: str) -> MaccabiGamesStats:
@@ -300,7 +304,7 @@ class MaccabiGamesStats:
         for game in self.games:
             for player in game.maccabi_team.played_players:
                 # adds at [player][team].append(game)
-                players_to_teams_to_games_mapping[player.name][game.not_maccabi_team.name].append(game)
+                players_to_teams_to_games_mapping[player.name][game.not_maccabi_team.current_name].append(game)
 
         games_by_player_and_team = defaultdict(lambda: defaultdict(lambda: MaccabiGamesStats([])))
         for player_name, teams_mapping in players_to_teams_to_games_mapping.items():

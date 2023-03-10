@@ -315,7 +315,10 @@ class MaccabiGamesPlayersStats(object):
         most_played_players_with_game_condition = reduce(
             lambda played_counter_a, played_counter_b: played_counter_a + played_counter_b,
             [game.maccabi_team.played_players_with_amount
-             for game in self.games if condition(game)])
+             for game in self.games if condition(game)],
+            # Have an initializer for the case that no game satisfies the condition
+            Counter({})
+        )
 
         return Counter(most_played_players_with_game_condition).most_common()
 

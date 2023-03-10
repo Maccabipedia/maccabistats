@@ -1,3 +1,6 @@
+## Version 2.38.0 ##
+    Better support teams with multiple names in timeline
+
 ## Version 2.37.0 ##
 
     Support second yellow change from MaccabiPedia

@@ -110,6 +110,20 @@ class MaccabiGamesComebacksStats(object):
 
         return self.maccabi_games_stats.create_maccabi_stats_from_games(crazy_maccabi_comebacks)
 
+    def games_with_potential_comebacks(self) -> MaccabiGamesStats:
+        """
+        Return a list of games that Maccabi could have comebacks at
+        """
+        return self.maccabi_games_stats.create_maccabi_stats_from_games(
+            [game for game in self.games if self._max_opponent_goals_advantage(game) < -1])
+
+    def games_with_potential_comebacks_that_maccabi_didnt_win(self) -> MaccabiGamesStats:
+        """
+        Return a list of games that Maccabi could have comebacks at
+        """
+        return self.maccabi_games_stats.create_maccabi_stats_from_games(
+            [game for game in self.games if self._max_opponent_goals_advantage(game) < -1 and not game.is_maccabi_win])
+
     def _conditions_for_tie_comeback_occur(self, game: GameData, tie_comeback_from_x_goals_disadvantage: int) -> bool:
         """
         Check whether the conditions for tie comeback exists in this game:

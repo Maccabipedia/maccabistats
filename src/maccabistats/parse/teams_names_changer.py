@@ -41,8 +41,16 @@ class TeamNameChanger(object):
             if team_name_by_years.from_year <= game.date.year <= team_name_by_years.to_year:
                 return team_name_by_years.better_name
 
-        raise ValueError(f"Cant find any better name using the years range: {team_name_by_years.from_year}-{team_name_by_years.to_year},"
-                         f" game year: {game.date.year}")
+        raise ValueError(
+            f"Cant find any better name using the years range: {team_name_by_years.from_year}-{team_name_by_years.to_year},"
+            f" game year: {game.date.year}")
+
+    @property
+    def current_name(self) -> str:
+        if not self.better_names:
+            return self.old_name
+
+        return max(self.better_names, key=lambda i: i.from_year).better_name
 
 
 _teams_names = [
@@ -123,13 +131,12 @@ _teams_names = [
     TeamNameChanger("צפרירים חולון").add_better_name("הפועל חולון", 1940, 1985).add_better_name("הפועל צפרירים חולון",
                                                                                                 from_year=1985),
     TeamNameChanger("עירוני ראשלצ").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name(
-        "הפועל עירוני ראשון לציון", 1992, 2008)
-        .add_better_name("הפועל ראשון לציון", from_year=2008),
+        "הפועל עירוני ראשון לציון", 1992, 2008).add_better_name("הפועל ראשון לציון", from_year=2008),
     TeamNameChanger("עירוני ראשון לציון").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name(
-        "הפועל עירוני ראשון לציון", 1992, 2008)
-        .add_better_name("הפועל ראשון לציון", from_year=2008),
+        "הפועל עירוני ראשון לציון", 1992, 2008).add_better_name("הפועל ראשון לציון", from_year=2008),
     TeamNameChanger("הפועל ראשון לציון").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name(
-        "הפועל עירוני ראשון לציון", 1992, 2008)
+        "הפועל עירוני ראשון לציון", 1992, 2008).add_better_name("הפועל ראשון לציון", from_year=2008),
+    TeamNameChanger("הפועל עירוני ראשון לציון").add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
         .add_better_name("הפועל ראשון לציון", from_year=2008),
     TeamNameChanger("הפועל רג").add_better_name("הפועל רמת גן", 1927, 1956).add_better_name("הפועל רמת גן גבעתיים",
                                                                                             from_year=1956),
@@ -165,8 +172,10 @@ _teams_names = [
                                                                                                      from_year=2000),
     TeamNameChanger('בית"ר תל אביב/רמלה').add_better_name('בית"ר תל אביב', 1924, 2011).add_better_name(
         'בית"ר תל אביב רמלה', from_year=2011),
-    TeamNameChanger('ביתר תא').add_better_name('בית"ר תל אביב', 1924, 2011).add_better_name('בית"ר תל אביב רמלה', from_year=2011),
-    TeamNameChanger("הכח תל אביב").add_better_name("הכח תל אביב", 1934, 1959).add_better_name("הכח עמידר רמת גן", from_year=2005),
+    TeamNameChanger('ביתר תא').add_better_name('בית"ר תל אביב', 1924, 2011).add_better_name('בית"ר תל אביב רמלה',
+                                                                                            from_year=2011),
+    TeamNameChanger("הכח תל אביב").add_better_name("הכח תל אביב", 1934, 1959).add_better_name("הכח עמידר רמת גן",
+                                                                                              from_year=2005),
 ]
 
 # Make that a dictionary:
