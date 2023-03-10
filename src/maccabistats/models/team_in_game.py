@@ -15,15 +15,16 @@ logger = logging.getLogger(__name__)
 
 class TeamInGame(Team):
     def __init__(self, name: str, coach: str, score: int, players: List[PlayerInGame],
-                 linked_name: Optional[str] = None):
+                 current_name: Optional[str] = None):
         super(TeamInGame, self).__init__(name)
 
         self.coach = coach
         self.score = score
         self.players = players
+
         # In case team name change the name during the years, the self.name will contain the name as they appear
-        # to the specific game and the self.linked_name is the current name they has
-        self.linked_name = linked_name
+        # to the specific game and the self.current_name is the current name they has
+        self.current_name = current_name or name
 
     @property
     def lineup_players(self) -> List[PlayerInGame]:
