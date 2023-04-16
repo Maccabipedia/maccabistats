@@ -1,4 +1,10 @@
+## Version 2.38.1 ##
+
+    Use new MaccabiPedia page format (no spaces)
+    Fix player names
+
 ## Version 2.38.0 ##
+
     Better support teams with multiple names in timeline
 
 ## Version 2.37.0 ##
@@ -11,7 +17,6 @@
     Adapt to new Maccabipedia Cargo tables format
 
 ## Version 2.35.0 ##
-
     Coaches stats fixes
     New Ligat Haal sponser support
 

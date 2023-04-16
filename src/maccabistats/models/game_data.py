@@ -173,7 +173,7 @@ class GameData(object):
 
     @property
     def _maccabipedia_page_name(self):
-        return "{maccabipedia}/{prefix}: {date} {home_team} נגד {away_team} - {competition}".format(
+        return "{maccabipedia}/{prefix}:{date} {home_team} נגד {away_team} - {competition}".format(
             maccabipedia="https://www.maccabipedia.co.il",
             prefix="משחק",
             date=self.date.strftime('%d-%m-%Y'),
