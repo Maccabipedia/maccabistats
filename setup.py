@@ -25,7 +25,7 @@ setup(
     python_requires='>=3.7',
     url='https://github.com/Maccabipedia/maccabistats',
     project_urls={'MaccabiPedia': 'https://www.maccabipedia.co.il'},
-    install_requires=["setuptools>=28.*",
+    install_requires=["setuptools>=28",
                       "requests>=2.20, <3",
                       "beautifulsoup4>=4.6, <5",
                       "lxml>=4.1, <5",
