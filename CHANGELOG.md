@@ -1,3 +1,7 @@
+## Version 2.39 ##
+
+    Adapt to MaccabiPedia with MediaWIki 1.35 (new cargo version)
+
 ## Version 2.38.1 ##
 
     Use new MaccabiPedia page format (no spaces)

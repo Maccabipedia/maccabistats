@@ -42,13 +42,17 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
 
     @property
     def full_crawl_address(self):
+        # Cargo for mediawiki 1.35 has a bug that enforce us to send some params with empty values
         return f"{self.base_crawling_address}" \
                f"&tables={self.tables_name}" \
                f"&fields={self.tables_fields}" \
                f"&join_on={self.join_tables_on}" \
                f"&limit={_MAX_LIMIT_PER_REQUEST}" \
                f"&offset={self._current_offset}" \
-               f"&where={self.where_condition}"
+               f"&where={self.where_condition}" \
+               f"&group_by=" \
+               f"&order_by=" \
+               f"&having="
 
     def _request_more_data(self):
         """
