@@ -56,6 +56,12 @@ class MaccabiGamesTeamsStats(object):
         return self.__get_teams_sorted_by_most_of_this_condition(lambda t: t.results.wins_count, top_teams_count,
                                                                  minimum_games_against_team)
 
+    def teams_ordered_by_games_played(self,
+                                      top_teams_count: Optional[int] = None,
+                                      minimum_games_against_team: Optional[int] = None) -> List[TeamStats]:
+        return self.__get_teams_sorted_by_most_of_this_condition(lambda t: t.results.total_games_count, top_teams_count,
+                                                                 minimum_games_against_team)
+
     def teams_ordered_by_maccabi_wins_percentage(self, top_teams_count: Optional[int] = None,
                                                  minimum_games_against_team: Optional[int] = None) -> List[TeamStats]:
         return self.__get_teams_sorted_by_most_of_this_condition(lambda t: t.results.wins_percentage, top_teams_count,

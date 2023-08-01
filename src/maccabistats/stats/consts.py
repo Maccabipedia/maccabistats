@@ -7,4 +7,4 @@ LEAGUE_COMPETITIONS = ["ליגת העל", "ליגה לאומית", "ליגת Win
                        "ליגה א", "הליגה הארצית"]
 
 
-NON_OFFICIAL_COMPETITIONS = ["ידידות"]
+NON_OFFICIAL_COMPETITIONS = ["ידידות", "מחנה האימונים בארצות הברית", "מחנה האימונים באוסטרליה", "גביע לייבו"]

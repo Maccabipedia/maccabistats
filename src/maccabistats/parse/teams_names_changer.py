@@ -142,8 +142,6 @@ _teams_names = [
                                                                                             from_year=1956),
     TeamNameChanger("הפועל רמת גן").add_better_name("הפועל רמת גן", 1927, 1956).add_better_name("הפועל רמת גן גבעתיים",
                                                                                                 from_year=1956),
-    TeamNameChanger("הפועל טבריה").add_better_name("הפועל טבריה", 1953, 2006).add_better_name("עירוני טבריה",
-                                                                                              from_year=2006),
     TeamNameChanger("ביתר ירושלים").add_better_name('בית"ר ירושלים', 1936, 1947).add_better_name("נורדיה ירושלים", 1946,
                                                                                                  1947)
         .add_better_name('בית"ר ירושלים', from_year=1948),
