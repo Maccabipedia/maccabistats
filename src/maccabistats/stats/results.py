@@ -39,6 +39,10 @@ class MaccabiGamesResultsStats(object):
         return round(self.total_goals_for_maccabi / self.total_goals_against_maccabi, 3)
 
     @property
+    def total_games_count(self) -> int:
+        return len(self.games)
+
+    @property
     def wins_count(self) -> int:
         return len([game for game in self.games if game.is_maccabi_win])
 
@@ -83,7 +87,8 @@ class MaccabiGamesResultsStats(object):
         return round(self.clean_sheets_count / len(self.games), 3)
 
     def json_dict(self) -> Dict[str, Any]:
-        return dict(wins_count=self.wins_count,
+        return dict(total_games_count=self.total_games_count,
+                    wins_count=self.wins_count,
                     losses_count=self.losses_count,
                     ties_count=self.ties_count,
                     clean_sheets_count=self.clean_sheets_count,
