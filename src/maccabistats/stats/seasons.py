@@ -167,6 +167,10 @@ class MaccabiGamesSeasonsStats:
             sort_attribute_function=lambda s: s.players_categories.home_players_goals_involved_ratio(),
             sort_attribute_description="sort by home players goals involved ratio")
 
+    def sort_by_captains_count(self) -> None:
+        self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.most_captains),
+                              sort_attribute_description="sort by the number of different players that were captains")
+
     def sort_by_played_players_count(self) -> None:
         self._refresh_sorting(sort_attribute_function=lambda s: len(s.players.most_played),
                               sort_attribute_description="sort by the number of different players that played")

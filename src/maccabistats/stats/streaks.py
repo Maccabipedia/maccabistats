@@ -107,6 +107,10 @@ class MaccabiGamesStreaksStats(object):
         return self._get_similar_streaks(lambda g: g.maccabi_score_diff < 0,
                                          minimum_streak_length=minimum_streak_length)
 
+    def get_similar_not_win_streak_by_length(self, minimum_streak_length: int = 0) -> List[MaccabiGamesStats]:
+        return self._get_similar_streaks(lambda g: g.maccabi_score_diff <= 0,
+                                         minimum_streak_length=minimum_streak_length)
+
     def get_current_losses_streak(self) -> MaccabiGamesStats:
         return self._get_current_streak_by_condition(lambda g: g.maccabi_score_diff < 0)
 
