@@ -56,6 +56,8 @@ def __get_parsed_maccabi_games_from_web():
     start_to_parse_from_season_number = int(os.environ.get('START_SEASON_TO_CRAWL', 0))
     season_to_crawl = MaccabiStatsConfigSingleton.maccabi_site.max_seasons_to_crawl
 
+    logging.info(f"Crawling seasons from index: {start_to_parse_from_season_number}, to: {season_to_crawl}")
+
     for season_number in range(start_to_parse_from_season_number, season_to_crawl):
         logger.info("Parsing season number {s_n}".format(s_n=season_number))
         maccabi_games.extend(__parse_games_from_season_number(season_number))
