@@ -1,3 +1,7 @@
+## Version 2.41 ##
+
+    Add more name aliases for Ligat Haal 
+
 ## Version 2.39 ##
 
     Adapt to MaccabiPedia with MediaWIki 1.35 (new cargo version)
