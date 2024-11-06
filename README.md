@@ -168,7 +168,7 @@ Sometimes it's very useful to measure which player contribute the most in the "m
 # Export data
 If you want to export the current object MaccabiGamesStats you work on, use:
 ```
->>> maccabi_games.export.export_everything()
+>>> maccabi_games.export.export_everything_json()
 >>> # You will get a zip with some jsons and a readme - check it out  
 ```
 

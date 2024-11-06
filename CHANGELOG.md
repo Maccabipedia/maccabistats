@@ -1,3 +1,7 @@
+## Version 2.42 ##
+
+    Support export maccabistats data to csv 
+
 ## Version 2.41 ##
 
     Add more name aliases for Ligat Haal 
