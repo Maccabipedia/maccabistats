@@ -25,6 +25,7 @@ class GoalTypes(Enum):
     UNKNOWN = 'UnknownGoal'
     CORNER = 'CornerGoal'
     UNCATEGORIZED = 'UnCategorizedGoal'
+    CHEST = 'Chest'
 
     @classmethod
     def _missing_(cls, value):
