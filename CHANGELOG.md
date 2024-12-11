@@ -1,3 +1,7 @@
+## Version 2.50 ##
+
+    Minimum python version changed from 3.7 to 3.11 
+
 ## Version 2.42 ##
 
     Support export maccabistats data to csv 

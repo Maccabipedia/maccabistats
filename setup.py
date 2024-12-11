@@ -22,14 +22,13 @@ setup(
     description='Maccabi tel-aviv football team statistics manipulation.',
     long_description=(here.parent / 'README.md').read_text(encoding="utf-8"),
     long_description_content_type='text/markdown',
-    python_requires='>=3.7',
+    python_requires='>=3.11',
     url='https://github.com/Maccabipedia/maccabistats',
     project_urls={'MaccabiPedia': 'https://www.maccabipedia.co.il'},
-    install_requires=["setuptools>=28",
-                      "requests>=2.20, <3",
-                      "beautifulsoup4>=4.6, <5",
-                      "lxml>=4.1, <5",
-                      "python-dateutil>=2.7, <5",
-                      "matplotlib>=2.2.2, <3",
-                      "progressbar>=2.5, <3"]
+    install_requires=["requests>=2.28, <3",
+                      "beautifulsoup4>=4.12, <5",
+                      "lxml>=4.9.1, <5",
+                      "python-dateutil>=2.7, <3",
+                      "matplotlib>=3.6.0, <4",
+                      "progressbar2>=4.0.0, <5"]
 )
