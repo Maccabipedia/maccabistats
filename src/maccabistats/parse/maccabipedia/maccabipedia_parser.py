@@ -112,16 +112,18 @@ class MaccabiPediaParser(object):
         """
 
         event_time = timedelta(minutes=player_event["Minute"])
+        # While upgrading MaccabiPedia from 1.35 to 1.39, cargo returned Nulls (instead of "" as before):
+        sub_type = player_event.get("SubType", "")
 
         if GameEventTypes.GOAL_SCORE == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
-            return GoalGameEvent(time_occur=event_time, goal_type=MACCABIPEDIA_GOALS_TYPE[player_event["SubType"]])
+            return GoalGameEvent(time_occur=event_time, goal_type=MACCABIPEDIA_GOALS_TYPE[sub_type])
         if GameEventTypes.GOAL_ASSIST == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
             return AssistGameEvent(time_occur=event_time,
-                                   assist_type=MACCABIPEDIA_ASSISTS_TYPE[player_event["SubType"]])
+                                   assist_type=MACCABIPEDIA_ASSISTS_TYPE[sub_type])
         elif GameEventTypes.UNKNOWN == MACCABI_PEDIA_EVENTS[player_event["EventType"]]:
             return GameEvent(game_event_type=GameEventTypes.UNKNOWN, time_occur=event_time)
         else:
-            event_type = MACCABI_PEDIA_EVENTS[player_event["EventType"]][player_event["SubType"]]
+            event_type = MACCABI_PEDIA_EVENTS[player_event["EventType"]][sub_type]
             if event_type == GameEventTypes.UNKNOWN:
                 logger.warning(f"Encountered unknown event at this event: {player_event}")
 
@@ -148,7 +150,7 @@ class MaccabiPediaParser(object):
 
         for player_name, player_json_events in players_events_by_name.items():
 
-            player_number = set(event["PlayerNumber"] for event in player_json_events)
+            player_number = set(event.get("PlayerNumber", "") for event in player_json_events)
 
             if log_errors and len(player_number) > 1:
                 # Removing any 0 from this player number Set,
@@ -194,28 +196,29 @@ class MaccabiPediaParser(object):
         maccabi_players = self._extract_players_events_for_team(
             [event for event in game_events if event['Team'] == _MACCABI_TEAM],
             log_errors=True)
-        maccabi_team = TeamInGame("מכבי תל אביב", game_metadata["CoachMaccabi"], game_metadata["ResultMaccabi"],
+        maccabi_team = TeamInGame("מכבי תל אביב", game_metadata.get("CoachMaccabi", ''), game_metadata["ResultMaccabi"],
                                   maccabi_players)
 
         not_maccabi_players = self._extract_players_events_for_team(
             [event for event in game_events if event['Team'] == _NOT_MACCABI_TEAM],
             log_errors=False)
 
-        not_maccabi_team = TeamInGame(game_metadata["Opponent"], game_metadata["CoachOpponent"],
+        not_maccabi_team = TeamInGame(game_metadata.get("Opponent", ""), game_metadata.get("CoachOpponent", ''),
                                       game_metadata["ResultOpponent"], not_maccabi_players)
 
-        home_team, away_team = (maccabi_team, not_maccabi_team) if game_metadata["HomeAway"] == "בית" else (
+        home_team, away_team = (maccabi_team, not_maccabi_team) if game_metadata.get("HomeAway", '') == "בית" else (
             not_maccabi_team, maccabi_team)
 
         # 'Technical' is 1: for win, 2: for lose, -1: for non technical result game (regular game)
         technical = True if game_metadata['Technical'] in [1, 2] else False
 
-        return GameData(competition=game_metadata["Competition"], fixture=game_metadata["Leg"],
+        return GameData(competition=game_metadata["Competition"], fixture=game_metadata.get("Leg", ''),
                         date_as_hebrew_string="",
-                        stadium=game_metadata["Stadium"], crowd=game_metadata["Crowd"], referee=game_metadata["Refs"],
+                        stadium=game_metadata.get("Stadium", ''), crowd=game_metadata.get("Crowd", ''),
+                        referee=game_metadata.get("Refs", ''),
                         home_team=home_team,
                         away_team=away_team, season_string=str(game_metadata["Season"]), half_parsed_events=[],
-                        date=datetime_parser(f"{game_metadata['Date']} {game_metadata['Hour']}"),
+                        date=datetime_parser(f"{game_metadata['Date']} {game_metadata.get('Hour', '')}"),
                         technical_result=technical)
 
     def parse(self):

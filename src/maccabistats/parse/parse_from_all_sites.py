@@ -6,6 +6,7 @@ from maccabistats.config import MaccabiStatsConfigSingleton
 from maccabistats.parse.general_fixes import run_general_fixes
 from maccabistats.parse.maccabi_tlv_site.maccabi_tlv_site_source import MaccabiTlvSiteSource
 from maccabistats.parse.maccabipedia.maccabipedia_source import MaccabiPediaSource
+from maccabistats.parse.maccabipedia.maccabipedia_single_file_source import MaccabiPediaSingleFileSource
 from maccabistats.parse.merge_sources import merge_maccabitlv_and_table
 from maccabistats.parse.table.table_source import TableSource
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -129,6 +130,10 @@ def _load_from_source(source):
 
 def load_from_maccabipedia_source():
     return _load_from_source(MaccabiPediaSource())
+
+
+def load_from_maccabipedia_file_source(maccabi_games_file: str):
+    return _load_from_source(MaccabiPediaSingleFileSource(maccabi_games_file))
 
 
 def load_from_table_source():

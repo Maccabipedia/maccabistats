@@ -55,6 +55,9 @@ class PlayerInGame(Player):
         if not self.scored:
             return False
 
+        if not self.has_event_type(GameEventTypes.SUBSTITUTION_IN):
+            return False
+
         min_goal_time = min(goal.time_occur for goal in self.get_events_by_type(GameEventTypes.GOAL_SCORE))
         subs_in_time = self.get_events_by_type(GameEventTypes.SUBSTITUTION_IN)[0].time_occur
 

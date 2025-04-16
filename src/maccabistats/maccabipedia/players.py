@@ -43,10 +43,11 @@ class MaccabiPediaPlayers(object):
         for player_raw_data in players_data_iterator:
             # Player Date of birth is missing for some players, we just take the default value for those
             # Birth date format is YYYY_MM_DD:
-            birth_date = datetime_parser(player_raw_data['DoB']) if player_raw_data[
-                'DoB'] else MaccabiPediaPlayers.missing_birth_date_value
+            birth_date = datetime_parser(
+                player_raw_data['DoB']) if 'DoB' in player_raw_data else MaccabiPediaPlayers.missing_birth_date_value
             player_name = player_raw_data['_pageName']
-            is_home_player = bool(player_raw_data['HomePlayer'])  # Should be 0 or 1
+            # We have players and coaches in the same table today, for coaches we don't set HomePlayer:
+            is_home_player = bool(player_raw_data.get('HomePlayer', False))  # Should be 0 or 1
 
             players_data[player_name] = MaccabiPediaPlayerData(name=player_name, birth_date=birth_date,
                                                                is_home_player=is_home_player)

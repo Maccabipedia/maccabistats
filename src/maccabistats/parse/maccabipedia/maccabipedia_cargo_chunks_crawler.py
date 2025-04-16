@@ -74,17 +74,20 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
             self._finished_to_crawl = True
 
         # Add to queue for iteration
-        [self._already_fetched_data_queue.append(self._decode_maccabipedia_data(data)) for data in
+        [self._already_fetched_data_queue.append(self._decode_maccabipedia_data_and_remove_nones(data)) for data in
          current_request_as_json]
 
     @staticmethod
-    def _decode_maccabipedia_data(maccabipedia_data) -> Dict:
-        if 'Opponent' in maccabipedia_data:
-            maccabipedia_data['Opponent'] = html.unescape(maccabipedia_data['Opponent'])
-        if 'Stadium' in maccabipedia_data:
-            maccabipedia_data['Stadium'] = html.unescape(maccabipedia_data['Stadium'])
+    def _decode_maccabipedia_data_and_remove_nones(maccabipedia_data) -> Dict:
 
-        return maccabipedia_data
+        maccabipedia_data_without_nulls = {k: v for k, v in maccabipedia_data.items() if v is not None}
+
+        if 'Opponent' in maccabipedia_data_without_nulls:
+            maccabipedia_data_without_nulls['Opponent'] = html.unescape(maccabipedia_data_without_nulls['Opponent'])
+        if 'Stadium' in maccabipedia_data_without_nulls:
+            maccabipedia_data_without_nulls['Stadium'] = html.unescape(maccabipedia_data_without_nulls['Stadium'])
+
+        return maccabipedia_data_without_nulls
 
     def __next__(self):
         if not self._already_fetched_data_queue:
