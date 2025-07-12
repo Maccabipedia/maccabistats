@@ -1,14 +1,16 @@
 # MaccabiStats
 
 MaccabiStats package used to analyze Maccabi Tel-Aviv games data, based on several sites but mostly on [MaccabiPedia](https://maccbaipedia.co.il).
-```
+```shell
 pip install maccabistats
+# Or with uv
+uv add maccabistats
 ``` 
 
 # TL;DR
 * In order to work with MaccabiStats package you need to have the serialized Maccabi Tel-Aviv games data, you can get it from [Mega](https://mega.nz/folder/vbgEED7R#0bpotoxTX-ZXGpI8hqbHOA)
 Download the latest serialized data, which can be used as:
-```
+```python
 from maccabistats import get_maccabi_stats
 maccabi_games = get_maccabi_stats(your_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
 
@@ -23,14 +25,14 @@ now, enjoy :)
 
 ### Loading games
 After you've downloaded the last serialized games from [Mega](https://mega.nz/folder/vbgEED7R#0bpotoxTX-ZXGpI8hqbHOA), load it as:
-```
+```python
 from maccabistats import get_maccabi_stats
 maccabi_games = get_maccabi_stats(your_maccabi.games_file_path)  # Use the local path you've downloaded the file from mega.
 ```
 
 ### Filtering games
 You can filter games by several sub categories, such as: home or away, game result, competition, opponent, etc.
-```
+```python
 >>> maccabi_games = ... (look above)
 >>>
 >>> home_games = maccabi_games.home_games
@@ -59,7 +61,7 @@ You can filter games by several sub categories, such as: home or away, game resu
 ```
 
 MaccabiStats object is based on fluent mechanism, that allows you to get the same object after filtering games for each 'sub-category', like:
-```
+```python
 >>> type(maccabi_games)
 >>> 'MaccabiGamesStats'
 >>>
@@ -74,21 +76,21 @@ MaccabiStats object is based on fluent mechanism, that allows you to get the sam
 
 ### Players
 When you have your MaccabiGamesStats object, you can check some players statistics for these games:
-```
+```python
 >>> maccabi_games.players.best_scorers[:10]  # This will show you the top 10 scorers
 >>> maccabi_games.players.most_unbeaten[:10]  # This will show you the top 10 players with most unbeaten games (from what you've filter) 
 ```
 
 MaccabiGamesStats has several analysis options - same as ".players" we just saw, all of them are accessible under your object.
 Some others general analysis options are:
-```
+```python
 >>> maccabi_games.coaches # Analyze information from coaches perspective
 >>> maccabi_games.referees # Analyze information from referees perspective
 ```
 
 ### Streaks
 Another option of analysis is to examine streaks, players streaks and teams streaks, this can be used as:
-```
+```python
 >>> # Get the players with best scoring streak - count the game ONLY if the player has played
 >>> maccabi_games.players_streaks.get_players_with_best_goal_scoring_streak()
 >>> # Same for unbeaten players
@@ -108,7 +110,7 @@ Another option of analysis is to examine streaks, players streaks and teams stre
 ```
 
 ### Other analysis options
-```
+```python
 >>> # You can get the craziest maccabi comebacks by:
 >>> maccabi_games.comebacks.won_from_exactly_two_goal_diff()
 >>> maccabi_games.comebacks.won_from_exactly_x_goal_diff(goals=3)  # Wow!
@@ -127,7 +129,7 @@ Another option of analysis is to examine streaks, players streaks and teams stre
 
 ### Seasons
 You can group the filtered games by season and sort the seasons by any condition, like:
-```
+```python
 >>> seasons = maccabi_games.seasons.get_seasons_stats()  # At default the season will be sorted by year.
 >>> seasons.sort_by_wins_percentage()  # Sort the season by winning percentage, you should print the season object).
 >>> seasons  # Print it
@@ -135,12 +137,12 @@ You can group the filtered games by season and sort the seasons by any condition
 
 ### Players advanced analysis
 In order to find the oldest\youngest players by the first time they scored\assist\played, use:
-```
+```python
 >>> maccabi_games.players_special_games.oldest_players_by_first_time_to_assist()
 ```
 
 In order to find the the players that scored\assist in their first\last games, use:
-```
+```python
 >>> # Find the players that scored twice in their first game
 >>> maccabi_games.players_first_and_last_games.players_that_scored_at_their_first_game(score_at_least=2)
 >>> # Reminder, you can search for the players that scored twice in their first away game using:
@@ -148,14 +150,14 @@ In order to find the the players that scored\assist in their first\last games, u
 ```  
 
 If you are interested in the home players part in the statistics, check out this:
-```
+```python
 >>> maccabi_games.players_categories.home_players_goals_count()
 >>> # Or finding their % from the total goals on europe
 >>> maccabi_games.europe_games.players_categories.home_players_goals_ratio()
 ```
 
 Sometimes it's very useful to measure which player contribute the most in the "money time", to do so, use:
-```
+```python
 >>> # Who are the top scorers - when we count only goals that made Maccabi to lead
 >>> maccabi_games.important_goals.get_top_scorers_for_advantage()
 >>> # Who did that on derby?
@@ -167,7 +169,7 @@ Sometimes it's very useful to measure which player contribute the most in the "m
 
 # Export data
 If you want to export the current object MaccabiGamesStats you work on, use:
-```
+```python
 >>> maccabi_games.export.export_everything_json()
 >>> # You will get a zip with some jsons and a readme - check it out  
 ```
@@ -178,7 +180,7 @@ If you want to export the current object MaccabiGamesStats you work on, use:
 
 When crawling maccabi games each page will be saved on your disk to allow optimization for the next time.
 To serialize maccabi games (it might take some time), use:
-```
+```python
 >>> from maccabistats import serialize_maccabi_games
 # The object will be serialized to home folder (%userprofile%) with its version and the current date.
 >>> serialize_maccabi_games(maccabi_games_stats_object)
@@ -195,7 +197,7 @@ BUT atm logging does not support multi-processing, so don't use that if you need
 There are some information that need to be fix manually.  
 When serializing maccabi games that done automatically.
 If you Add anything to run_general_fixes, you can re-run it by:
-```
+```python
 >>> from maccabistats import get_maccabi_stats, run_general_fixes, serialize_maccabi_games
 >>> 
 >>> games = get_maccabi_stats()
@@ -217,7 +219,7 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 ### Optimization 
 * You can use 'use-disk-to-crawl-when-available' to crawl from disk when available, each page that will be crawled from internet wil be save on disk. 
 * You can reduce logging when crawling by use :
-```
+```python
 >>> from maccabistats import faster_logging
 >>> faster_logging() will disable the stdout & debug handlers.
 ```
@@ -225,7 +227,7 @@ There are several log files, each one has this pattern - maccabistats-{suffix}.l
 ### Errors Finder
 
 Manual check for errors might be helpful, this is can be done by:
-```
+```python
 >>> from maccabistats import get_maccabi_stats
 >>> from maccabistats.error_finder.error_finder import ErrorsFinder
 >>> games = get_maccabi_stats()
@@ -243,10 +245,39 @@ Manual check for errors might be helpful, this is can be done by:
 You can manipulate [MaccabiPedia](http:\\www.maccabipedia.co.il) data by downloading it and then loading it 
 (You may have to install some 'advanced' packages such as pywikibot), as the following:
 
-```
+```python
 >>> from maccabistats import run_maccabipedia_source
 >>>
 >>> # You should run this once a while, this is a heavy action to do:
 >>> maccabipedia = run_maccabipedia_source()
 >>> # Now you can manipulate maccabipedia data as explain above (its MaccabiGamesStats object, referred as "games" above") 
+```
+
+# Development
+
+### Ruff
+```shell
+uv pip install --upgrade ruff
+# Lint and fix
+ruff check --fix
+# Format and fix
+ruff format
+```
+
+### pytest
+```shell
+pip install --upgrade pytest
+```
+and than to run all tests:
+```shell
+pytest
+```
+or a tests file:
+```shell
+pytest tests/test_apis.py
+```
+
+or a specific function:
+```shell
+pytest tests/test_apis.py::test_call_api_success
 ```

@@ -1,0 +1,88 @@
+[build-system]
+requires = ["uv_build>=0.7.20,<0.8.0"]
+build-backend = "uv_build"
+
+[project]
+name = "maccabistats"
+version = "2.6.0"
+description = "Maccabi Tel Aviv football team statistics manipulation and analysis tool"
+requires-python = ">=3.13.5"
+readme = "README.md"
+license = { file = "LICENSE.md" }
+authors = [
+    { name = "Maccabipedia", email = "maccabipedia@gmail.com" },
+    { name = "Roee Babayoff", email = "roeebaba@gmail.com" },
+    { name = "Shlomi Hafif", email = "shlomixg@gmail.com" },
+]
+keywords = [
+    "maccabi",
+    "maccabistats",
+    "football",
+    "soccer",
+    "statistics",
+    "data analysis",
+    "sports analytics",
+]
+classifiers = [
+    "Private :: Do Not Upload",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    'Programming Language :: Python',
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "aiohttp>=3.12.13",
+    "beautifulsoup4>=4.13.4, <5",
+    "matplotlib>=3.10.3, <4",
+    "lxml>=6.0.0, <7",
+    "progressbar2>=4.5.0, <5",
+    "python-dateutil>=2.9.0.post0, <3",
+    "requests>=2.32.4, <3",
+]
+
+[project.urls]
+Homepage = 'https://github.com/Maccabipedia/maccabistats'
+Documentation = 'https://github.com/Maccabipedia/maccabistats/blob/master/README.md'
+Funding = 'https://payboxapp.page.link/3aBrPEfTbcDMhbsp9'
+Source = 'https://github.com/Maccabipedia/maccabistats'
+Changelog = 'https://github.com/Maccabipedia/maccabistats/blob/master/CHANGELOG.md'
+
+[dependency-groups]
+dev = ["debugpy", "pytest", "ruff"]
+production = []
+
+[tool.uv]
+conflicts = [[{ group = "dev" }, { group = "production" }]]
+
+# Lint and Format settings
+[tool.ruff]
+line-length = 120
+lint.select = ["F", "E", "W", "PL", "RUF", "I", "PIE"]
+lint.ignore = [
+    "E501",
+    "PLR0913",
+    "PLR2004",
+    "PLR0912",
+    "PLW2901",
+    "PLR0915",
+    "RUF001",
+    "RUF012",
+]
+
+# Static type checking settings
+[tool.pyright]
+include = ["**/src", "/tests"]
+exclude = ["**/__pycache__", "**/node_modules"]
+
+typeCheckingMode = "strict"
+
+reportUnusedVariable = "error"
+reportMissingImports = "error"
+reportMatchNotExhaustive = "warning"
+reportImplicitStringConcatenation = "warning"
+reportPrivateUsage = "warning"
+reportUnnecessaryContains = "warning"
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportUnusedFunction = "none"
+reportMissingTypeStubs = "none"
