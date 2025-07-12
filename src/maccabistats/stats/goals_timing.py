@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Tuple, List, Optional
+from typing import TYPE_CHECKING, List, Tuple
 
 from maccabistats.models.game_data import GameData
 
@@ -35,8 +35,9 @@ class MaccabiGamesGoalsTiming(object):
     def _top_games_with_minimum_goals_time_frame(self, goals_number: int) -> List[GameGoalTiming]:
         games_with_enough_goals = [game for game in self.maccabi_games_stats if game.maccabi_score >= goals_number]
 
-        games_goals_timings = [(game, _minimum_goals_time_frame_for_a_game(game, goals_number)) for game in
-                               games_with_enough_goals]
+        games_goals_timings = [
+            (game, _minimum_goals_time_frame_for_a_game(game, goals_number)) for game in games_with_enough_goals
+        ]
         games_goals_timings_without_errors = [item for item in games_goals_timings if item[1] is not None]
 
         return sorted(games_goals_timings_without_errors, key=lambda item: item[1])
@@ -46,18 +47,22 @@ def _maccabi_goals_minutes_for_game(goals):
     minutes = []
 
     for current_goal in goals:
-        goal_time = datetime.strptime(current_goal['time_occur'], "%H:%M:%S") - _ZERO_TIME
+        goal_time = datetime.strptime(current_goal["time_occur"], "%H:%M:%S") - _ZERO_TIME
         minutes.append(int(goal_time.total_seconds() / 60))
 
     return minutes
 
 
-def _minimum_goals_time_frame_for_a_game(maccabi_game: GameData, goals_number: int) -> Optional[int]:
+def _minimum_goals_time_frame_for_a_game(maccabi_game: GameData, goals_number: int) -> int | None:
     maccabi_goals_time = _maccabi_goals_minutes_for_game(maccabi_game.maccabi_goals())
 
     # We might miss some data on the actual scorers and time (even if we have the final result)
     if len(maccabi_goals_time) < goals_number:
         return None
 
-    return min([maccabi_goals_time[i + goals_number - 1] - maccabi_goals_time[i] for i in
-                range(len(maccabi_goals_time) - goals_number + 1)])
+    return min(
+        [
+            maccabi_goals_time[i + goals_number - 1] - maccabi_goals_time[i]
+            for i in range(len(maccabi_goals_time) - goals_number + 1)
+        ]
+    )

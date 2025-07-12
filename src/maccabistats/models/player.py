@@ -11,5 +11,4 @@ class Player(object):
         return hash((self.name, self.number))
 
     def __repr__(self) -> str:
-        return "\nPlayer Name: {self.name}\n" \
-               "Player Number: {self.number}\n\n".format(self=self)
+        return "\nPlayer Name: {self.name}\nPlayer Number: {self.number}\n\n".format(self=self)

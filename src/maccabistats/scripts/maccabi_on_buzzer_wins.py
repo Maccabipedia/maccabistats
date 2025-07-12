@@ -1,7 +1,7 @@
-from maccabistats import load_from_maccabipedia_source
+import logging
 from datetime import timedelta
 
-import logging
+from maccabistats import load_from_maccabipedia_source
 
 # Allow to log when running with __name__ == "__main__"
 logger = logging.getLogger("maccabistats")
@@ -21,7 +21,7 @@ def last_minutes_win(maccabi_game):
 
     last_goal = maccabi_game.goals()[-1]
 
-    last_goal_time = last_goal['time_occur']
+    last_goal_time = last_goal["time_occur"]
     min_90_as_str = str(timedelta(minutes=90))
 
     if min_90_as_str > last_goal_time:
@@ -29,7 +29,7 @@ def last_minutes_win(maccabi_game):
 
     # Make sure we dont count situation of 2-0 to maccabi and the opponent scored.
     # Moreover, dont count own goals
-    if last_goal['team'] != "מכבי תל אביב":
+    if last_goal["team"] != "מכבי תל אביב":
         return False
 
     return True

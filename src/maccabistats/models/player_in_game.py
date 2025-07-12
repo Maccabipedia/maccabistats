@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from datetime import timedelta
 from pprint import pformat
-from typing import List, Optional, cast
+from typing import List, cast
 
 from maccabistats.models.player import Player
-from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalTypes, GoalGameEvent, AssistTypes
+from maccabistats.models.player_game_events import AssistTypes, GameEvent, GameEventTypes, GoalGameEvent, GoalTypes
 
 
 class PlayerInGame(Player):
@@ -29,12 +29,14 @@ class PlayerInGame(Player):
         return [event.event_type for event in self.events].count(event_type)
 
     def goals_count_by_goal_type(self, goal_type: GoalTypes) -> int:
-        return [cast(GoalGameEvent, event).goal_type for event in
-                self.get_events_by_type(GameEventTypes.GOAL_SCORE)].count(goal_type)
+        return [
+            cast(GoalGameEvent, event).goal_type for event in self.get_events_by_type(GameEventTypes.GOAL_SCORE)
+        ].count(goal_type)
 
     def assists_count_by_assist_type(self, assist_type: AssistTypes) -> int:
-        return [cast(AssistTypes, event).assist_type for event in
-                self.get_events_by_type(GameEventTypes.GOAL_ASSIST)].count(assist_type)
+        return [
+            cast(AssistTypes, event).assist_type for event in self.get_events_by_type(GameEventTypes.GOAL_ASSIST)
+        ].count(assist_type)
 
     def get_as_normal_player(self) -> Player:
         return Player(self.name, self.number)
@@ -64,8 +66,8 @@ class PlayerInGame(Player):
 
         return min_goal_time >= subs_in_time
 
-    def get_event_by_similar_event(self, event_to_find: GameEvent) -> Optional[GameEvent]:
-        """  Return events that equals to the given event.
+    def get_event_by_similar_event(self, event_to_find: GameEvent) -> GameEvent | None:
+        """Return events that equals to the given event.
         :type event_to_find: GameEvent
         """
         similar_events = [event for event in self.events if event == event_to_find]
@@ -90,7 +92,6 @@ class PlayerInGame(Player):
         return super(PlayerInGame, self).__repr__()
 
     def __repr__(self) -> str:
-        return "{my_str}" \
-               "Player game events: \n{pretty_events}\n\n".format(my_str=self.__str__(),
-                                                                  pretty_events=pformat(self.events, indent=4,
-                                                                                        width=1))
+        return "{my_str}Player game events: \n{pretty_events}\n\n".format(
+            my_str=self.__str__(), pretty_events=pformat(self.events, indent=4, width=1)
+        )

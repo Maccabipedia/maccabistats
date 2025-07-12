@@ -17,7 +17,6 @@ class PlayerGameMatcher(Enum):
 
 
 class PlayerGamesCondition:
-
     @staticmethod
     def play_in_game(game: GameData, player_name: str) -> bool:
         return player_name in [p.name for p in game.maccabi_team.played_players]

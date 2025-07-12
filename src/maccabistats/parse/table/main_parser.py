@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
 import json
+from pathlib import Path
+
 from dateutil.parser import parse as datetime_parser
+
 from maccabistats.models.game_data import GameData
 from maccabistats.models.team_in_game import TeamInGame
 
@@ -27,7 +29,7 @@ jsoned_games_path = root_folder / "maccabistats" / "sources" / "table-games.json
 
 
 def get_jsoned_table_games():
-    with open(jsoned_games_path, 'rb') as f:
+    with open(jsoned_games_path, "rb") as f:
         return json.load(f)
 
 
@@ -39,11 +41,22 @@ def parse_to_maccabistats_game(jsoned_game):
     :return: maccabistats.models.game_data.GameData
     """
 
-    home_team = TeamInGame(jsoned_game['home_team'], None, jsoned_game['home_team_score'], [])
-    away_team = TeamInGame(jsoned_game['away_team'], None, jsoned_game['away_team_score'], [])
-    date = datetime_parser(jsoned_game['date'])
-    game = GameData("ליגת העל", jsoned_game["fixture"], "", jsoned_game["stadium"], "", jsoned_game["referee"], home_team, away_team,
-                    jsoned_game["season"], [], date)
+    home_team = TeamInGame(jsoned_game["home_team"], None, jsoned_game["home_team_score"], [])
+    away_team = TeamInGame(jsoned_game["away_team"], None, jsoned_game["away_team_score"], [])
+    date = datetime_parser(jsoned_game["date"])
+    game = GameData(
+        "ליגת העל",
+        jsoned_game["fixture"],
+        "",
+        jsoned_game["stadium"],
+        "",
+        jsoned_game["referee"],
+        home_team,
+        away_team,
+        jsoned_game["season"],
+        [],
+        date,
+    )
 
     return game
 

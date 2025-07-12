@@ -3,12 +3,11 @@ from __future__ import annotations
 import datetime
 import logging
 from datetime import timedelta
-from typing import TYPE_CHECKING, List, Callable
+from typing import TYPE_CHECKING, Callable, List
 
 from maccabistats.maccabipedia.players import MaccabiPediaPlayers
 from maccabistats.models.game_data import GameData
-from maccabistats.stats.players_games_condition import PlayerAging
-from maccabistats.stats.players_games_condition import PlayerGameMatcher, PlayerGamesCondition
+from maccabistats.stats.players_games_condition import PlayerAging, PlayerGameMatcher, PlayerGamesCondition
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -42,11 +41,13 @@ class MaccabiGamesPlayersSpecialGamesStats(object):
         self.games = maccabi_games_stats.games
         self.players_birth_dates = MaccabiPediaPlayers.get_players_data().players_dates
 
-    def _players_by_game_condition_ordered_by_age(self,
-                                                  player_game_condition: Callable[[GameData, str], bool],
-                                                  player_game_to_search_for: PlayerGameMatcher,
-                                                  order_by_age_option: PlayerAging,
-                                                  players_count: int) -> List[PlayerAgeAtSpecialGame]:
+    def _players_by_game_condition_ordered_by_age(
+        self,
+        player_game_condition: Callable[[GameData, str], bool],
+        player_game_to_search_for: PlayerGameMatcher,
+        order_by_age_option: PlayerAging,
+        players_count: int,
+    ) -> List[PlayerAgeAtSpecialGame]:
         """
         :param player_game_condition: A function that will check whether the given player satisfy a condition in a game
         :param player_game_to_search_for: Search for first/last game of this player (to satisfy the condition)
@@ -67,81 +68,103 @@ class MaccabiGamesPlayersSpecialGamesStats(object):
             if MaccabiPediaPlayers.missing_birth_date_value == self.players_birth_dates[player_name]:
                 continue  # This player does not have any birth date on our db
 
-            first_game_by_player_name[player_name] = PlayerAgeAtSpecialGame(player_name,
-                                                                            self.players_birth_dates[player_name],
-                                                                            first_game)
+            first_game_by_player_name[player_name] = PlayerAgeAtSpecialGame(
+                player_name, self.players_birth_dates[player_name], first_game
+            )
 
-        players_by_age = sorted(first_game_by_player_name.values(),
-                                key=lambda player_first_game: player_first_game.time_in_days)
+        players_by_age = sorted(
+            first_game_by_player_name.values(), key=lambda player_first_game: player_first_game.time_in_days
+        )
         if order_by_age_option.value == PlayerAging.OLDEST_PLAYERS.value:
             players_by_age = list(reversed(players_by_age))
 
         return players_by_age[:players_count]
 
     def youngest_players_by_first_time_to_play(self, players_count: int = 50):
-        return self._players_by_game_condition_ordered_by_age(PlayerGamesCondition.play_in_game,
-                                                              PlayerGameMatcher.FIRST_GAME,
-                                                              PlayerAging.YOUNGEST_PLAYERS, players_count)
+        return self._players_by_game_condition_ordered_by_age(
+            PlayerGamesCondition.play_in_game, PlayerGameMatcher.FIRST_GAME, PlayerAging.YOUNGEST_PLAYERS, players_count
+        )
 
     def oldest_players_by_first_time_to_play(self, players_count: int = 50):
-        return self._players_by_game_condition_ordered_by_age(PlayerGamesCondition.play_in_game,
-                                                              PlayerGameMatcher.FIRST_GAME, PlayerAging.OLDEST_PLAYERS,
-                                                              players_count)
+        return self._players_by_game_condition_ordered_by_age(
+            PlayerGamesCondition.play_in_game, PlayerGameMatcher.FIRST_GAME, PlayerAging.OLDEST_PLAYERS, players_count
+        )
 
     def oldest_players_by_last_time_to_play(self, players_count: int = 50):
-        return self._players_by_game_condition_ordered_by_age(PlayerGamesCondition.play_in_game,
-                                                              PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS,
-                                                              players_count)
+        return self._players_by_game_condition_ordered_by_age(
+            PlayerGamesCondition.play_in_game, PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS, players_count
+        )
 
     def youngest_players_by_first_time_to_score(self, score_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_score_x_goals_in_game__condition(score_at_least),
-            PlayerGameMatcher.FIRST_GAME, PlayerAging.YOUNGEST_PLAYERS, players_count)
+            PlayerGameMatcher.FIRST_GAME,
+            PlayerAging.YOUNGEST_PLAYERS,
+            players_count,
+        )
 
     def youngest_players_by_first_time_to_goal_involved(self, involved_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_involved_in_x_goals_in_game__condition(involved_at_least),
-            PlayerGameMatcher.FIRST_GAME, PlayerAging.YOUNGEST_PLAYERS, players_count)
+            PlayerGameMatcher.FIRST_GAME,
+            PlayerAging.YOUNGEST_PLAYERS,
+            players_count,
+        )
 
     def oldest_players_by_first_time_to_score(self, score_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_score_x_goals_in_game__condition(score_at_least),
-            PlayerGameMatcher.FIRST_GAME, PlayerAging.OLDEST_PLAYERS, players_count)
+            PlayerGameMatcher.FIRST_GAME,
+            PlayerAging.OLDEST_PLAYERS,
+            players_count,
+        )
 
     def oldest_players_by_last_time_to_score(self, score_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_score_x_goals_in_game__condition(score_at_least),
-            PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS, players_count)
+            PlayerGameMatcher.LAST_GAME,
+            PlayerAging.OLDEST_PLAYERS,
+            players_count,
+        )
 
     def youngest_players_by_first_time_to_assist(self, assist_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_assist_x_goals_in_game__condition(assist_at_least),
-            PlayerGameMatcher.FIRST_GAME, PlayerAging.YOUNGEST_PLAYERS, players_count)
+            PlayerGameMatcher.FIRST_GAME,
+            PlayerAging.YOUNGEST_PLAYERS,
+            players_count,
+        )
 
     def oldest_players_by_first_time_to_assist(self, assist_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_assist_x_goals_in_game__condition(assist_at_least),
-            PlayerGameMatcher.FIRST_GAME, PlayerAging.OLDEST_PLAYERS, players_count)
+            PlayerGameMatcher.FIRST_GAME,
+            PlayerAging.OLDEST_PLAYERS,
+            players_count,
+        )
 
     def oldest_players_by_last_time_to_assist(self, assist_at_least: int = 1, players_count: int = 50):
         return self._players_by_game_condition_ordered_by_age(
             PlayerGamesCondition.create_assist_x_goals_in_game__condition(assist_at_least),
-            PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS, players_count)
+            PlayerGameMatcher.LAST_GAME,
+            PlayerAging.OLDEST_PLAYERS,
+            players_count,
+        )
 
     def youngest_players_by_first_time_to_be_captain(self, players_count: int = 500):
-        return self._players_by_game_condition_ordered_by_age(_player_was_captain_in_a_game,
-                                                              PlayerGameMatcher.FIRST_GAME,
-                                                              PlayerAging.YOUNGEST_PLAYERS, players_count)
+        return self._players_by_game_condition_ordered_by_age(
+            _player_was_captain_in_a_game, PlayerGameMatcher.FIRST_GAME, PlayerAging.YOUNGEST_PLAYERS, players_count
+        )
 
     def oldest_players_by_first_time_to_be_captain(self, players_count: int = 500):
-        return self._players_by_game_condition_ordered_by_age(_player_was_captain_in_a_game,
-                                                              PlayerGameMatcher.FIRST_GAME, PlayerAging.OLDEST_PLAYERS,
-                                                              players_count)
+        return self._players_by_game_condition_ordered_by_age(
+            _player_was_captain_in_a_game, PlayerGameMatcher.FIRST_GAME, PlayerAging.OLDEST_PLAYERS, players_count
+        )
 
     def oldest_players_by_last_time_to_be_captain(self, players_count: int = 500):
-        return self._players_by_game_condition_ordered_by_age(_player_was_captain_in_a_game,
-                                                              PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS,
-                                                              players_count)
+        return self._players_by_game_condition_ordered_by_age(
+            _player_was_captain_in_a_game, PlayerGameMatcher.LAST_GAME, PlayerAging.OLDEST_PLAYERS, players_count
+        )
 
 
 def _player_was_captain_in_a_game(game: GameData, player_name: str) -> bool:

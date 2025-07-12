@@ -1,7 +1,7 @@
-from maccabistats import load_from_maccabipedia_source
-from collections import defaultdict, Counter
-
 import logging
+from collections import Counter, defaultdict
+
+from maccabistats import load_from_maccabipedia_source
 
 # Allow to log when running with __name__ == "__main__"
 logger = logging.getLogger("maccabistats")
@@ -12,7 +12,9 @@ def show_players_who_are_top_scorers_by_the_amount_of_teams_they_are_top_scorers
     Calculate the players who are the top scorer against each team,
     For each player count the number of teams he is the top scorer against and show those top players (by the amount of teams desc).
     """
-    logger.info("Starting to calculate the top players with most of teams he is best scorer against (just for league games)")
+    logger.info(
+        "Starting to calculate the top players with most of teams he is best scorer against (just for league games)"
+    )
 
     maccabipedia_league_games = load_from_maccabipedia_source().league_games
     opponents = maccabipedia_league_games.available_opponents

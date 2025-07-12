@@ -11,8 +11,9 @@ from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 logger = logging.getLogger(__name__)
 
 home_folder = Path.home().as_posix()
-serialized_sources_path_pattern = os.path.join(home_folder, "maccabistats", "sources", "{source_name}",
-                                               "{source_name}-{version}-{date}.games")
+serialized_sources_path_pattern = os.path.join(
+    home_folder, "maccabistats", "sources", "{source_name}", "{source_name}-{version}-{date}.games"
+)
 
 """
 This class is responsible to set the api for each maccabistats source, the common usage should be :
@@ -33,8 +34,11 @@ class MaccabiStatsSource(object):
 
     @property
     def _serialized_games_path(self):
-        return serialized_sources_path_pattern.format(source_name=self.name, version=self.maccabi_games_stats.version,
-                                                      date=datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
+        return serialized_sources_path_pattern.format(
+            source_name=self.name,
+            version=self.maccabi_games_stats.version,
+            date=datetime.now().strftime("%Y-%m-%d %H-%M-%S"),
+        )
 
     @property
     def _serialized_games_path_pattern(self):
@@ -47,7 +51,7 @@ class MaccabiStatsSource(object):
 
         logger.info(f"Starting to parse maccabi games from: {self.name}")
         parsed_games = self._rerun_source()
-        self.maccabi_games_stats = MaccabiGamesStats(parsed_games, f'Source: {self.name}')
+        self.maccabi_games_stats = MaccabiGamesStats(parsed_games, f"Source: {self.name}")
 
     def _rerun_source(self):
         """
@@ -81,9 +85,11 @@ class MaccabiStatsSource(object):
         """
         last_created_source_games_file = self.find_last_created_source_maccabi_games_file()
 
-        logger.info(f"Loading source {self.name} as MaccabiGamesStats from: {last_created_source_games_file},"
-                    f" This is the last created serialized maccabi games file on this source folder")
-        with open(last_created_source_games_file, 'rb') as f:
+        logger.info(
+            f"Loading source {self.name} as MaccabiGamesStats from: {last_created_source_games_file},"
+            f" This is the last created serialized maccabi games file on this source folder"
+        )
+        with open(last_created_source_games_file, "rb") as f:
             self.maccabi_games_stats = pickle.load(f)
 
     def find_last_created_source_maccabi_games_file(self) -> str:
@@ -109,5 +115,5 @@ class MaccabiStatsSource(object):
             # old_file_path.stem+= int(time())
             pass
 
-        with open(source_games_file_path, 'wb') as f:
+        with open(source_games_file_path, "wb") as f:
             pickle.dump(self.maccabi_games_stats, f)

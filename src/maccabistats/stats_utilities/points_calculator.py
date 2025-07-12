@@ -36,4 +36,4 @@ def _point_by_result(game: GameData, win_points: int, tie_points: int, lose_poin
     elif game.maccabi_score_diff < 0:
         return lose_points
     else:
-        raise TypeError(f'Could not identify the result of this game: {game}')
+        raise TypeError(f"Could not identify the result of this game: {game}")

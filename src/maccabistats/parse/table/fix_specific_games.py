@@ -1,22 +1,27 @@
-from dateutil.parser import parse as datetime_parser
-
 import logging
+
+from dateutil.parser import parse as datetime_parser
 
 logger = logging.getLogger(__name__)
 
-_games_dates_to_change = [("2017-01-10", "2017-01-11"),  # Against Hapoel Raanana
-                          ("2009-05-22", "2009-05-23"),  # Against Maccabi PT
-                          ]
+_games_dates_to_change = [
+    ("2017-01-10", "2017-01-11"),  # Against Hapoel Raanana
+    ("2009-05-22", "2009-05-23"),  # Against Maccabi PT
+]
 
 
 def __fix_games_date(maccabi_games_stats):
     for game_dates in _games_dates_to_change:
         matching_games = maccabi_games_stats.played_at(game_dates[0])
         if not matching_games:
-            logger.warning(f"Cant find game's original date so it may be changed: {game_dates[0]} (should be {game_dates[1]}), Skipping this game.")
+            logger.warning(
+                f"Cant find game's original date so it may be changed: {game_dates[0]} (should be {game_dates[1]}), Skipping this game."
+            )
             continue
         elif len(matching_games) != 1:
-            logger.warning(f"Found ({len(matching_games)}) games from this date: {game_dates[0]} (should be {game_dates[1]}), Skipping this game.")
+            logger.warning(
+                f"Found ({len(matching_games)}) games from this date: {game_dates[0]} (should be {game_dates[1]}), Skipping this game."
+            )
             continue
 
         game_to_be_changed = matching_games[0]

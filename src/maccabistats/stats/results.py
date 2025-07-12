@@ -87,17 +87,18 @@ class MaccabiGamesResultsStats(object):
         return round(self.clean_sheets_count / len(self.games), 3)
 
     def json_dict(self) -> Dict[str, Any]:
-        return dict(total_games_count=self.total_games_count,
-                    wins_count=self.wins_count,
-                    losses_count=self.losses_count,
-                    ties_count=self.ties_count,
-                    clean_sheets_count=self.clean_sheets_count,
-                    wins_percentage=self.wins_percentage,
-                    losses_percentage=self.losses_percentage,
-                    ties_percentage=self.ties_percentage,
-                    clean_sheets_percentage=self.clean_sheets_percentage,
-                    total_goals_for_maccabi=self.total_goals_for_maccabi,
-                    total_goals_against_maccabi=self.total_goals_against_maccabi,
-                    total_goals_diff_for_maccabi=self.total_goals_diff_for_maccabi,
-                    goals_ratio=self.goals_ratio
-                    )
+        return dict(
+            total_games_count=self.total_games_count,
+            wins_count=self.wins_count,
+            losses_count=self.losses_count,
+            ties_count=self.ties_count,
+            clean_sheets_count=self.clean_sheets_count,
+            wins_percentage=self.wins_percentage,
+            losses_percentage=self.losses_percentage,
+            ties_percentage=self.ties_percentage,
+            clean_sheets_percentage=self.clean_sheets_percentage,
+            total_goals_for_maccabi=self.total_goals_for_maccabi,
+            total_goals_against_maccabi=self.total_goals_against_maccabi,
+            total_goals_diff_for_maccabi=self.total_goals_diff_for_maccabi,
+            goals_ratio=self.goals_ratio,
+        )

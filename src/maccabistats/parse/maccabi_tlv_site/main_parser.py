@@ -7,13 +7,15 @@ from multiprocessing import Pool
 
 import requests
 from bs4 import BeautifulSoup
+
 from maccabistats.config import MaccabiStatsConfigSingleton
 from maccabistats.parse.maccabi_tlv_site.game_squads_parser import MaccabiSiteGameSquadsParser
 
 logger = logging.getLogger(__name__)
 
 folder_to_save_seasons_html_files_pattern = os.path.join(
-    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_seasons_html_files, "season-{season_number}")
+    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_seasons_html_files, "season-{season_number}"
+)
 
 
 def __get_beautifulsoup_parser_name():
@@ -44,16 +46,17 @@ def __get_season_web_page_content_by_season_number(season_number):
     """
 
     season_web_page_link = MaccabiStatsConfigSingleton.maccabi_site.season_page_pattern.format(
-        season_number=season_number)
+        season_number=season_number
+    )
     return requests.get(season_web_page_link).content
 
 
 def __get_parsed_maccabi_games_from_web():
-    """ Parse maccabi games from maccabi site.
+    """Parse maccabi games from maccabi site.
     :rtype: list of maccabistats.models.game_data.GameData
     """
     maccabi_games = []
-    start_to_parse_from_season_number = int(os.environ.get('START_SEASON_TO_CRAWL', 0))
+    start_to_parse_from_season_number = int(os.environ.get("START_SEASON_TO_CRAWL", 0))
     season_to_crawl = MaccabiStatsConfigSingleton.maccabi_site.max_seasons_to_crawl
 
     logging.info(f"Crawling seasons from index: {start_to_parse_from_season_number}, to: {season_to_crawl}")
@@ -83,13 +86,14 @@ def __get_parsed_maccabi_games_from_web_multi_process():
     crawling_processes = MaccabiStatsConfigSingleton.maccabi_site.crawling_process_number
     logger.info("Crawling with {num} processes".format(num=crawling_processes))
 
-    start_to_parse_from_season_number = int(os.environ.get('START_SEASON_TO_CRAWL', 0))
+    start_to_parse_from_season_number = int(os.environ.get("START_SEASON_TO_CRAWL", 0))
     seasons_to_crawl = MaccabiStatsConfigSingleton.maccabi_site.max_seasons_to_crawl
     maccabi_seasons_numbers = range(start_to_parse_from_season_number, seasons_to_crawl)
 
     with Pool(crawling_processes) as pool:
         maccabi_games = list(
-            itertools.chain.from_iterable(pool.map(__parse_games_from_season_number, maccabi_seasons_numbers)))
+            itertools.chain.from_iterable(pool.map(__parse_games_from_season_number, maccabi_seasons_numbers))
+        )
 
     return maccabi_games
 
@@ -100,10 +104,12 @@ def __parse_games_from_season_number(season_number):
     bs_games_elements = __extract_games_bs_elements(maccabi_season_web_page_content)
     season_string = __get_season_string_from_season_page_content(maccabi_season_web_page_content)
     logger.info(
-        "Found {number} games on this season! {season}".format(number=len(bs_games_elements), season=season_string))
+        "Found {number} games on this season! {season}".format(number=len(bs_games_elements), season=season_string)
+    )
 
-    return [MaccabiSiteGameSquadsParser.parse_game(bs_game_element, season_string) for bs_game_element in
-            bs_games_elements]
+    return [
+        MaccabiSiteGameSquadsParser.parse_game(bs_game_element, season_string) for bs_game_element in bs_games_elements
+    ]
 
 
 def get_parsed_maccabi_games_from_maccabi_site():
@@ -131,9 +137,10 @@ def save_maccabi_seasons_web_pages_to_disk(folder_path=folder_to_save_seasons_ht
 
     for season_number in range(max_seasons):
         season_web_page_link = MaccabiStatsConfigSingleton.maccabi_site.season_page_pattern.format(
-            season_number=season_number)
+            season_number=season_number
+        )
         season_web_page_content = requests.get(season_web_page_link).content
 
         logger.info("Writing {file_name} to disk".format(file_name=season_web_page_link))
-        with open(folder_path.format(season_number=season_number), 'wb') as maccabi_site_file:
+        with open(folder_path.format(season_number=season_number), "wb") as maccabi_site_file:
             maccabi_site_file.write(season_web_page_content)

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -20,14 +21,17 @@ class MaccabiGamesAverageStats(object):
     @property
     def goals_for_maccabi(self) -> float:
         return MaccabiGamesAverageStats._prettify_averages(
-            sum(game.maccabi_score for game in self.games) / len(self.games))
+            sum(game.maccabi_score for game in self.games) / len(self.games)
+        )
 
     @property
     def goals_against_maccabi(self) -> float:
         return MaccabiGamesAverageStats._prettify_averages(
-            sum(game.not_maccabi_team.score for game in self.games) / len(self.games))
+            sum(game.not_maccabi_team.score for game in self.games) / len(self.games)
+        )
 
     @property
     def maccabi_diff(self) -> float:
         return MaccabiGamesAverageStats._prettify_averages(
-            sum(game.maccabi_score_diff for game in self.games) / len(self.games))
+            sum(game.maccabi_score_diff for game in self.games) / len(self.games)
+        )

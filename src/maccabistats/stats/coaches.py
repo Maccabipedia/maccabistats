@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from typing import TYPE_CHECKING
-from typing import Tuple, List, Callable
+from typing import TYPE_CHECKING, Callable, List, Tuple
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -59,51 +58,53 @@ class MaccabiGamesCoachesStats(object):
 
     # region Percentage functions
     def most_winner_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_winner_coach, calculate_as_percentage=True,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_winner_coach, calculate_as_percentage=True, minimum_games=minimum_games
+        )
 
     def most_loser_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_loser_coach, calculate_as_percentage=True,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_loser_coach, calculate_as_percentage=True, minimum_games=minimum_games
+        )
 
     def most_clean_sheet_games_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_clean_sheet_games_coach,
-                                                           calculate_as_percentage=True,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_clean_sheet_games_coach, calculate_as_percentage=True, minimum_games=minimum_games
+        )
 
     def most_games_with_goals_from_bench_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_games_with_goals_from_bench_coach,
-                                                           calculate_as_percentage=True,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_games_with_goals_from_bench_coach, calculate_as_percentage=True, minimum_games=minimum_games
+        )
 
     # endregion
 
     # region Per game functions
     def most_goals_for_maccabi_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_goals_for_maccabi_coach,
-                                                           calculate_as_percentage=False,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_goals_for_maccabi_coach, calculate_as_percentage=False, minimum_games=minimum_games
+        )
 
     def most_goals_against_maccabi_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_goals_against_maccabi_coach,
-                                                           calculate_as_percentage=False,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_goals_against_maccabi_coach, calculate_as_percentage=False, minimum_games=minimum_games
+        )
 
     def most_red_cards_to_players_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_red_cards_to_players,
-                                                           calculate_as_percentage=False,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_red_cards_to_players, calculate_as_percentage=False, minimum_games=minimum_games
+        )
 
     def most_yellow_cards_to_players_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
-        return self._calculate_coaches_stat_relate_to_game(self.most_yellow_cards_to_players,
-                                                           calculate_as_percentage=False,
-                                                           minimum_games=minimum_games)
+        return self._calculate_coaches_stat_relate_to_game(
+            self.most_yellow_cards_to_players, calculate_as_percentage=False, minimum_games=minimum_games
+        )
 
     # endregion
 
-    def _calculate_coaches_stat_relate_to_game(self, coaches_stats_dict: List[CoachStats],
-                                               calculate_as_percentage: bool,
-                                               minimum_games: int = 0) -> List[CoachStats]:
+    def _calculate_coaches_stat_relate_to_game(
+        self, coaches_stats_dict: List[CoachStats], calculate_as_percentage: bool, minimum_games: int = 0
+    ) -> List[CoachStats]:
         """
         Calculate a property of coach stat with a ratio to the coach trained games,
         Like:
@@ -114,8 +115,11 @@ class MaccabiGamesCoachesStats(object):
         like is maccabi won? (0 or 1 per game), and not like amount of goals for maccabi.
         """
 
-        trained_games = {coach: coach_games_number for coach, coach_games_number in self.most_trained_coach if
-                         coach_games_number >= minimum_games}
+        trained_games = {
+            coach: coach_games_number
+            for coach, coach_games_number in self.most_trained_coach
+            if coach_games_number >= minimum_games
+        }
         coaches_stats = Counter(dict(coaches_stats_dict))
         games_ratio = 100 if calculate_as_percentage else 1
 

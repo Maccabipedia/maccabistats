@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 
 
-from maccabistats.models.game_data import GameData
-from maccabistats.parse.maccabi_tlv_site.team_parser import MaccabiSiteTeamParser
-from maccabistats.parse.maccabi_tlv_site.game_pages_provider import get_game_squads_bs_by_link, \
-    get_game_events_bs_by_link
-from maccabistats.parse.maccabi_tlv_site.game_events_parser import MaccabiSiteGameEventsParser
 import logging
 from urllib.parse import unquote
+
+from maccabistats.models.game_data import GameData
+from maccabistats.parse.maccabi_tlv_site.game_events_parser import MaccabiSiteGameEventsParser
+from maccabistats.parse.maccabi_tlv_site.game_pages_provider import (
+    get_game_events_bs_by_link,
+    get_game_squads_bs_by_link,
+)
+from maccabistats.parse.maccabi_tlv_site.team_parser import MaccabiSiteTeamParser
 from maccabistats.parse.name_normalization import normalize_name
 
 logger = logging.getLogger(__name__)
 
 
 class MaccabiSiteGameSquadsParser(object):
-
     @staticmethod
     def parse_game(bs_content, season_string):
         """
@@ -37,8 +39,9 @@ class MaccabiSiteGameSquadsParser(object):
 
         maccabi_final_score = int(bs_content.select_one("span.ss.maccabi.h").get_text())
         # Looking for <span class="ss h"> for not maccabi score
-        not_maccabi_final_score = int([span.get_text() for span in bs_content.select("span.ss.h")
-                                       if 'maccabi' not in span.attrs['class']][0])
+        not_maccabi_final_score = int(
+            [span.get_text() for span in bs_content.select("span.ss.h") if "maccabi" not in span.attrs["class"]][0]
+        )
 
         maccabi_team_name = "מכבי תל אביב"
         not_maccabi_team_name = normalize_name(bs_content.select_one("div.holder.notmaccabi.nn").get_text())
@@ -48,26 +51,41 @@ class MaccabiSiteGameSquadsParser(object):
         game_content_web_page = unquote(bs_content.find("a", href=True).get("href"))
         squads_bs_page_content = get_game_squads_bs_by_link(game_content_web_page)
 
-        maccabi_team, not_maccabi_team = MaccabiSiteGameSquadsParser.__get_teams(squads_bs_page_content,
-                                                                                 maccabi_team_name,
-                                                                                 not_maccabi_team_name,
-                                                                                 maccabi_final_score,
-                                                                                 not_maccabi_final_score)
+        maccabi_team, not_maccabi_team = MaccabiSiteGameSquadsParser.__get_teams(
+            squads_bs_page_content,
+            maccabi_team_name,
+            not_maccabi_team_name,
+            maccabi_final_score,
+            not_maccabi_final_score,
+        )
 
         # Parse game events
         events_bs_page_content = get_game_events_bs_by_link(game_content_web_page)
-        game_events_parser = MaccabiSiteGameEventsParser(maccabi_team, not_maccabi_team, events_bs_page_content, game_content_web_page)
+        game_events_parser = MaccabiSiteGameEventsParser(
+            maccabi_team, not_maccabi_team, events_bs_page_content, game_content_web_page
+        )
         maccabi_team, not_maccabi_team = game_events_parser.enrich_teams_with_events()
         halfed_parsed_events = game_events_parser.halfed_parsed_events
 
         referee = normalize_name(MaccabiSiteGameSquadsParser.__get_referee(squads_bs_page_content))
         crowd = MaccabiSiteGameSquadsParser.__get_crowd(squads_bs_page_content)
 
-        home_team, away_team = (maccabi_team, not_maccabi_team) if is_maccabi_home_team else (
-            not_maccabi_team, maccabi_team)
+        home_team, away_team = (
+            (maccabi_team, not_maccabi_team) if is_maccabi_home_team else (not_maccabi_team, maccabi_team)
+        )
 
-        return GameData(competition, fixture, date, stadium, crowd, referee, home_team, away_team, season_string,
-                        halfed_parsed_events)
+        return GameData(
+            competition,
+            fixture,
+            date,
+            stadium,
+            crowd,
+            referee,
+            home_team,
+            away_team,
+            season_string,
+            halfed_parsed_events,
+        )
 
     @staticmethod
     def __get_fixture_if_exists(bs_content):
@@ -104,18 +122,21 @@ class MaccabiSiteGameSquadsParser(object):
         :rtype: MaccabiSiteTeamInGame, MaccabiSiteTeamInGame
         """
 
-        maccabi_team_in_game = MaccabiSiteTeamParser.parse_team(bs_content.select("article div.teams div.p50.yellow"),
-                                                                maccabi_team_name, maccabi_score)
+        maccabi_team_in_game = MaccabiSiteTeamParser.parse_team(
+            bs_content.select("article div.teams div.p50.yellow"), maccabi_team_name, maccabi_score
+        )
 
         not_maccabi_team_in_game = MaccabiSiteTeamParser.parse_team(
             [div for div in bs_content.select("article div.teams div.p50") if "yellow" not in div["class"]],
-            not_maccabi_team_name, not_maccabi_score)
+            not_maccabi_team_name,
+            not_maccabi_score,
+        )
 
         return maccabi_team_in_game, not_maccabi_team_in_game
 
     @staticmethod
     def __get_referee(bs_content):
-        """"
+        """ "
         :type bs_content: bs4.element.Tag
         :rtype: str.
         """
@@ -128,7 +149,7 @@ class MaccabiSiteGameSquadsParser(object):
 
     @staticmethod
     def __get_crowd(bs_content):
-        """"
+        """ "
         :type bs_content: bs4.element.Tag
         :rtype: str.
         """

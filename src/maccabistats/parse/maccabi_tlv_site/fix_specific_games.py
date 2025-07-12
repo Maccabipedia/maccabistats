@@ -1,57 +1,62 @@
-from maccabistats.models.player_game_events import GoalTypes, GameEvent, GameEventTypes, GoalGameEvent
-from datetime import timedelta, datetime
+import logging
+from datetime import datetime, timedelta
+
 from dateutil.parser import parse as datetime_parser
 
-import logging
+from maccabistats.models.player_game_events import GameEvent, GameEventTypes, GoalGameEvent, GoalTypes
 
 logger = logging.getLogger(__name__)
 
-_games_dates_to_change = [("2012-03-23", "2012-03-24"),  # Against Hapoel Tel aviv
-                          ("2012-01-31", "2012-01-30"),  # Against Kiryat Shmona
-                          ("2011-02-17", "2011-02-19"),  # Against Hapoel PT
-                          ("2005-10-12", "2005-12-11"),  # Against Hapoel TA
-                          ("2004-07-03", "2004-03-07"),  # Against Hapoel BS
-                          ("2002-05-01", "2002-01-05"),  # Against Hapoel BS
-                          ("2002-04-07", "2002-04-06"),  # Against Maccabi Kiryat Gat
-                          ("2002-01-04", "2002-04-01"),  # Against Hapoel TA
-                          ("2001-10-11", "2001-11-10"),  # Against Hapoel TA
-                          ("2001-11-04", "2001-11-05"),  # Against Beitar
-                          ("2001-05-06", "2001-05-05"),  # Against Beitar
-                          ("2001-03-02", "2001-02-03"),  # Against Maccabi Haifa
-                          ("2000-09-15", "2000-09-16"),  # Against Tzafririm Holon
-                          ("2000-06-11", "2000-11-06"),  # Against Hapoel TA
-                          ("2005-04-18", "2005-04-17"),  # Against Maccabi Haifa
-                          ("1998-09-19", "1998-09-26"),  # Against Maccabi Haifa
-                          ("1997-11-02", "1997-11-01"),  # Against Hapoel TA
-                          ("1997-10-26", "1997-10-25"),  # Against Maccabi Herzliya
-                          ("1997-09-08", "1997-08-09"),  # Against Beitar
-                          ("1996-09-06", "1996-09-07"),  # Against Hapoel BS
-                          ("1995-04-28", "1995-04-29"),  # Against Hapoel Beit Shean
-                          ("1994-12-25", "1994-12-24"),  # Against Beitar TA
-                          ("1992-01-06", "1992-01-07"),  # Against Beitar TA
-                          ("1991-06-08", "1991-06-07"),  # Against Maccabi Netanya
-                          ("1991-05-25", "1991-05-24"),  # Against Beitar TA
-                          ("1990-11-10", "1990-11-09"),  # Against Zafririm
-                          ("1988-09-17", "1988-09-16"),  # Against Beitar TA
-                          ("1987-12-26", "1987-12-25"),  # Against Hapoel Lod
-                          ("1986-09-20", "1986-09-19"),  # Against Hapoel Lod
-                          ("1983-05-01", "1983-04-30"),  # Against Hapoel Ramat-Gan
-                          ("1981-04-19", "1981-04-18"),  # Against Hapoel TA
-                          ("1980-05-02", "1980-05-03"),  # Against Hapoel Yahud
-                          ("1977-04-03", "1977-04-02"),  # Against Maccabi Netanya
-                          ("1973-04-08", "1973-04-07"),  # Against Hapoel Marmorek
-                          ("1973-01-21", "1973-01-27"),  # Against Maccabi PT
-                          ("1971-05-30", "1971-05-29"),  # Against Hapoel PT
-                          ("1968-06-02", "1968-06-01"),  # Against Hapoel Jerusalem
-                          ("1966-12-30", "1966-12-31"),  # Against Hacoh Ramt-Gan
-                          ("1965-10-16", "1965-10-15"),  # Against Bnei Yehuda
-                          ("1965-06-06", "1965-06-05"),  # Against Hacoh Ramt-Gan
-                          ("1956-04-15", "1956-04-14"),  # Against Maccabi Netanya
-                          ]
+_games_dates_to_change = [
+    ("2012-03-23", "2012-03-24"),  # Against Hapoel Tel aviv
+    ("2012-01-31", "2012-01-30"),  # Against Kiryat Shmona
+    ("2011-02-17", "2011-02-19"),  # Against Hapoel PT
+    ("2005-10-12", "2005-12-11"),  # Against Hapoel TA
+    ("2004-07-03", "2004-03-07"),  # Against Hapoel BS
+    ("2002-05-01", "2002-01-05"),  # Against Hapoel BS
+    ("2002-04-07", "2002-04-06"),  # Against Maccabi Kiryat Gat
+    ("2002-01-04", "2002-04-01"),  # Against Hapoel TA
+    ("2001-10-11", "2001-11-10"),  # Against Hapoel TA
+    ("2001-11-04", "2001-11-05"),  # Against Beitar
+    ("2001-05-06", "2001-05-05"),  # Against Beitar
+    ("2001-03-02", "2001-02-03"),  # Against Maccabi Haifa
+    ("2000-09-15", "2000-09-16"),  # Against Tzafririm Holon
+    ("2000-06-11", "2000-11-06"),  # Against Hapoel TA
+    ("2005-04-18", "2005-04-17"),  # Against Maccabi Haifa
+    ("1998-09-19", "1998-09-26"),  # Against Maccabi Haifa
+    ("1997-11-02", "1997-11-01"),  # Against Hapoel TA
+    ("1997-10-26", "1997-10-25"),  # Against Maccabi Herzliya
+    ("1997-09-08", "1997-08-09"),  # Against Beitar
+    ("1996-09-06", "1996-09-07"),  # Against Hapoel BS
+    ("1995-04-28", "1995-04-29"),  # Against Hapoel Beit Shean
+    ("1994-12-25", "1994-12-24"),  # Against Beitar TA
+    ("1992-01-06", "1992-01-07"),  # Against Beitar TA
+    ("1991-06-08", "1991-06-07"),  # Against Maccabi Netanya
+    ("1991-05-25", "1991-05-24"),  # Against Beitar TA
+    ("1990-11-10", "1990-11-09"),  # Against Zafririm
+    ("1988-09-17", "1988-09-16"),  # Against Beitar TA
+    ("1987-12-26", "1987-12-25"),  # Against Hapoel Lod
+    ("1986-09-20", "1986-09-19"),  # Against Hapoel Lod
+    ("1983-05-01", "1983-04-30"),  # Against Hapoel Ramat-Gan
+    ("1981-04-19", "1981-04-18"),  # Against Hapoel TA
+    ("1980-05-02", "1980-05-03"),  # Against Hapoel Yahud
+    ("1977-04-03", "1977-04-02"),  # Against Maccabi Netanya
+    ("1973-04-08", "1973-04-07"),  # Against Hapoel Marmorek
+    ("1973-01-21", "1973-01-27"),  # Against Maccabi PT
+    ("1971-05-30", "1971-05-29"),  # Against Hapoel PT
+    ("1968-06-02", "1968-06-01"),  # Against Hapoel Jerusalem
+    ("1966-12-30", "1966-12-31"),  # Against Hacoh Ramt-Gan
+    ("1965-10-16", "1965-10-15"),  # Against Bnei Yehuda
+    ("1965-06-06", "1965-06-05"),  # Against Hacoh Ramt-Gan
+    ("1956-04-15", "1956-04-14"),  # Against Maccabi Netanya
+]
 
-_wrong_games_to_remove = [datetime_parser(game_date) for game_date in
-                          ["1972-01-22",  # Against Bnei Yehuda
-                           ]]
+_wrong_games_to_remove = [
+    datetime_parser(game_date)
+    for game_date in [
+        "1972-01-22",  # Against Bnei Yehuda
+    ]
+]
 
 
 def __remove_games(maccabi_games_stats):
@@ -66,10 +71,14 @@ def __fix_games_date(maccabi_games_stats):
     for game_dates in _games_dates_to_change:
         matching_games = maccabi_games_stats.played_at(game_dates[0])
         if not matching_games:
-            logger.warning(f"Cant find game's original date so it may be changed: {game_dates[0]} (should be {game_dates[1]}), Skipping this game.")
+            logger.warning(
+                f"Cant find game's original date so it may be changed: {game_dates[0]} (should be {game_dates[1]}), Skipping this game."
+            )
             continue
         elif len(matching_games) != 1:
-            logger.warning(f"Found ({len(matching_games)}) games from this date: {game_dates[0]} (should be {game_dates[1]}), Skipping this game.")
+            logger.warning(
+                f"Found ({len(matching_games)}) games from this date: {game_dates[0]} (should be {game_dates[1]}), Skipping this game."
+            )
             continue
 
         game_to_be_changed = matching_games[0]
@@ -116,16 +125,24 @@ def __fix_beitar_three_two(games):
     if not david.scored:
         goal = GameEvent(GameEventTypes.GOAL_SCORE, timedelta(minutes=33))
         david.add_event(goal)
-        logger.info("Fixed דוד אמסלם goal - probably does not exists after crawling maccabi-tlv site( appear in events page but not in squads page.")
+        logger.info(
+            "Fixed דוד אמסלם goal - probably does not exists after crawling maccabi-tlv site( appear in events page but not in squads page."
+        )
 
     if against_beitar_three_two_win._half_parsed_events:
-        logger.info("Removing half parsed goals events from this game ({date}".format(date=against_beitar_three_two_win.date))
+        logger.info(
+            "Removing half parsed goals events from this game ({date}".format(date=against_beitar_three_two_win.date)
+        )
         against_beitar_three_two_win._half_parsed_events = list(
-            filter(lambda event: event['event_type'] != GameEventTypes.GOAL_SCORE, against_beitar_three_two_win._half_parsed_events))
+            filter(
+                lambda event: event["event_type"] != GameEventTypes.GOAL_SCORE,
+                against_beitar_three_two_win._half_parsed_events,
+            )
+        )
 
 
 def __fix_kfar_saba_two_one(games):
-    """ Because 1997-08-02 is mismatched with 1997-02-08 we need to identify them by more than date """
+    """Because 1997-08-02 is mismatched with 1997-02-08 we need to identify them by more than date"""
 
     logger.info("Changeing kfar-saba 1992-02-08 to 1997-08-02, just the game ended 2-1")
     against_kfar_saba_to_be_changed = [game for game in games.played_at("1997-02-08") if game.maccabi_team.score == 2]
@@ -151,7 +168,9 @@ def __fix_hapoel_haifa_four_two_date_99_00(games):
     against_hapoel_haifa = against_hapoel_haifa[0]
     against_hapoel_haifa.not_maccabi_team.name = "הפועל חיפה"
     against_hapoel_haifa.date = datetime(year=2000, month=1, day=3)
-    logger.info("Changed the game at data: 2000-03-01 to be at date: 2000-01-03 and replaced the opponent name from הפועל חיפה to מכבי חיפה")
+    logger.info(
+        "Changed the game at data: 2000-03-01 to be at date: 2000-01-03 and replaced the opponent name from הפועל חיפה to מכבי חיפה"
+    )
 
 
 def __fix_kfar_saba_toto_games_at_2000_2001(games):
@@ -161,7 +180,9 @@ def __fix_kfar_saba_toto_games_at_2000_2001(games):
     """
 
     # First Game:
-    logger.info("Changing game against kfar saba from 2000-12-09 to 2000-09-12, and changing the toto games results in 2000-01 against them.")
+    logger.info(
+        "Changing game against kfar saba from 2000-12-09 to 2000-09-12, and changing the toto games results in 2000-01 against them."
+    )
     kfar_saba_toto_games = games.get_games_by_competition("גביע הטוטו").get_games_against_team("הפועל כפר סבא")
     kfar_saba_wrong_date_and_score_game = kfar_saba_toto_games.played_at("2000-12-09")
     if kfar_saba_wrong_date_and_score_game:
@@ -183,7 +204,9 @@ def __add_fixtures_numbers(games):
 
 
 def __fix_half_parsed_goal_events(game):
-    half_parsed_goals = [event for event in game._half_parsed_events if event['event_type'] == GameEventTypes.GOAL_SCORE]
+    half_parsed_goals = [
+        event for event in game._half_parsed_events if event["event_type"] == GameEventTypes.GOAL_SCORE
+    ]
     if not half_parsed_goals:
         return
 
@@ -191,19 +214,29 @@ def __fix_half_parsed_goal_events(game):
     total_goal_events = len(game.goals())
 
     if total_score != total_goal_events:
-        logger.info("Found game (date-{date}) with "
-                    "total score of: {total_score}, total goals events: {total_goal_events} and total half parsed goals: {total_half_parsed_goals}"
-                    .format(date=game.date, total_score=total_score, total_goal_events=total_goal_events,
-                            total_half_parsed_goals=len(half_parsed_goals)))
+        logger.info(
+            "Found game (date-{date}) with "
+            "total score of: {total_score}, total goals events: {total_goal_events} and total half parsed goals: {total_half_parsed_goals}".format(
+                date=game.date,
+                total_score=total_score,
+                total_goal_events=total_goal_events,
+                total_half_parsed_goals=len(half_parsed_goals),
+            )
+        )
     else:
-        logger.warning("Total score & total goals events are equals "
-                       "but game (date-{date}) got {num} half parsed goals.".format(date=game.date, num=len(half_parsed_goals)))
+        logger.warning(
+            "Total score & total goals events are equals but game (date-{date}) got {num} half parsed goals.".format(
+                date=game.date, num=len(half_parsed_goals)
+            )
+        )
 
     if total_goal_events + len(half_parsed_goals) <= total_score:
         logger.info("Half parsed goal events seems to missing goals, Adding them!")
         __add_half_parsed_goals_events_to_game(game, half_parsed_goals)
     else:
-        logger.warning("Half parsed goals + total goals events does not equal to the total score, something wrong, do nothing.")
+        logger.warning(
+            "Half parsed goals + total goals events does not equal to the total score, something wrong, do nothing."
+        )
 
 
 def __get_player_for_half_parsed_goals_events(game, goal_event):
@@ -211,7 +244,7 @@ def __get_player_for_half_parsed_goals_events(game, goal_event):
     Trying to search for exact name, after that for first\last name, after that splitting name by dot (if exist) and search for first\last name.
     """
     # Trying to find player with the exact name.
-    name = goal_event['name']
+    name = goal_event["name"]
     all_players = game.maccabi_team.players + game.not_maccabi_team.players
     players = [player for player in all_players if player.name == name]
     if players:
@@ -242,26 +275,36 @@ def __add_half_parsed_goals_events_to_game(game, half_parsed_goals_events):
     event_to_delete_from_game_half_parsed_event = []
 
     for event in half_parsed_goals_events:
-        if not event['name']:
+        if not event["name"]:
             logger.warning("Found goal (game date - {date}) with empty player name, skipping".format(date=game.date))
             continue
 
         player_for_this_event = __get_player_for_half_parsed_goals_events(game, event)
         if player_for_this_event is None:
-            logger.warning("Could not find any player that match somehow to this name:{name}, skipping this event".format(name=event['name']))
+            logger.warning(
+                "Could not find any player that match somehow to this name:{name}, skipping this event".format(
+                    name=event["name"]
+                )
+            )
             continue
 
-        logger.info("Add goal event: {event} to this player:{name} in this game date: {date}"
-                    .format(event=event, name=player_for_this_event.name, date=game.date))
+        logger.info(
+            "Add goal event: {event} to this player:{name} in this game date: {date}".format(
+                event=event, name=player_for_this_event.name, date=game.date
+            )
+        )
 
-        goal_event = GoalGameEvent(event['time_occur'], event['goal_type'])
+        goal_event = GoalGameEvent(event["time_occur"], event["goal_type"])
         player_for_this_event.add_event(goal_event)
         event_to_delete_from_game_half_parsed_event.append(event)
 
     if event_to_delete_from_game_half_parsed_event:
         logger.info("Removing half parsed goals events from this game")
-        new_half_parsed_events = [not_added_half_parsed_event for not_added_half_parsed_event in half_parsed_goals_events if
-                                  not_added_half_parsed_event not in event_to_delete_from_game_half_parsed_event]
+        new_half_parsed_events = [
+            not_added_half_parsed_event
+            for not_added_half_parsed_event in half_parsed_goals_events
+            if not_added_half_parsed_event not in event_to_delete_from_game_half_parsed_event
+        ]
         game._half_parsed_events = new_half_parsed_events
 
 
@@ -279,7 +322,9 @@ def fix_specific_games(games):
         __fix_kfar_saba_toto_games_at_2000_2001(games)
 
     except IndexError:
-        logger.warning('Probably found no specific games to fix (it might cause because you run with MaccabiGamesStats without these games, Continue')
+        logger.warning(
+            "Probably found no specific games to fix (it might cause because you run with MaccabiGamesStats without these games, Continue"
+        )
 
     # Fix dates & name:
     __fix_hapoel_haifa_four_two_date_99_00(games)

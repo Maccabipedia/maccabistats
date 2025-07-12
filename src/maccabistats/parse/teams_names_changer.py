@@ -1,5 +1,5 @@
-from collections import namedtuple
 import logging
+from collections import namedtuple
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,8 @@ class TeamNameChanger(object):
 
         raise ValueError(
             f"Cant find any better name using the years range: {team_name_by_years.from_year}-{team_name_by_years.to_year},"
-            f" game year: {game.date.year}")
+            f" game year: {game.date.year}"
+        )
 
     @property
     def current_name(self) -> str:
@@ -55,7 +56,6 @@ class TeamNameChanger(object):
 
 _teams_names = [
     # Just replace team name (without years range):
-
     TeamNameChanger("עירוני קש").add_better_name("עירוני קריית שמונה"),
     TeamNameChanger("עירוני קרית שמונה").add_better_name("עירוני קריית שמונה"),
     TeamNameChanger("הפועל כפס").add_better_name("הפועל כפר סבא"),
@@ -113,67 +113,96 @@ _teams_names = [
     TeamNameChanger("פראק מלזיה").add_better_name("פראק"),
     TeamNameChanger("חאזאר לנקאראן").add_better_name("חזאר לנקראן"),
     TeamNameChanger("הפועל אום אל פאחם").add_better_name("הפועל אום אל פחם"),
-
     # Replace teams names by year range:
-
-    TeamNameChanger("מכבי רמת עמידר").add_better_name("מכבי רמת עמידר", 1957, 2005).add_better_name("הכח עמידר רמת גן",
-                                                                                                    from_year=2005),
-    TeamNameChanger("מכבי קרית גת").add_better_name("מכבי קריית גת", 1900, 2013).add_better_name("מכבי עירוני קריית גת",
-                                                                                                 from_year=2013),
-    TeamNameChanger('בית"ר שמשון תל אביב').add_better_name('בית"ר שמשון תל אביב', 2000, 2011).add_better_name(
-        "שמשון תל אביב", from_year=2011),
-    TeamNameChanger("שמשון תא").add_better_name("שמשון תל אביב", 1949, 2000).add_better_name('בית"ר שמשון תל אביב',
-                                                                                             2000, 2011)
-        .add_better_name("שמשון תל אביב", from_year=2011),
-    TeamNameChanger("שמשון תל אביב").add_better_name("שמשון תל אביב", 1949, 2000).add_better_name('בית"ר שמשון תל אביב',
-                                                                                                  2000, 2011)
-        .add_better_name("שמשון תל אביב", from_year=2011),
-    TeamNameChanger("צפרירים חולון").add_better_name("הפועל חולון", 1940, 1985).add_better_name("הפועל צפרירים חולון",
-                                                                                                from_year=1985),
-    TeamNameChanger("עירוני ראשלצ").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name(
-        "הפועל עירוני ראשון לציון", 1992, 2008).add_better_name("הפועל ראשון לציון", from_year=2008),
-    TeamNameChanger("עירוני ראשון לציון").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name(
-        "הפועל עירוני ראשון לציון", 1992, 2008).add_better_name("הפועל ראשון לציון", from_year=2008),
-    TeamNameChanger("הפועל ראשון לציון").add_better_name("הפועל ראשון לציון", 1928, 1992).add_better_name(
-        "הפועל עירוני ראשון לציון", 1992, 2008).add_better_name("הפועל ראשון לציון", from_year=2008),
-    TeamNameChanger("הפועל עירוני ראשון לציון").add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
-        .add_better_name("הפועל ראשון לציון", from_year=2008),
-    TeamNameChanger("הפועל רג").add_better_name("הפועל רמת גן", 1927, 1956).add_better_name("הפועל רמת גן גבעתיים",
-                                                                                            from_year=1956),
-    TeamNameChanger("הפועל רמת גן").add_better_name("הפועל רמת גן", 1927, 1956).add_better_name("הפועל רמת גן גבעתיים",
-                                                                                                from_year=1956),
-    TeamNameChanger("ביתר ירושלים").add_better_name('בית"ר ירושלים', 1936, 1947).add_better_name("נורדיה ירושלים", 1946,
-                                                                                                 1947)
-        .add_better_name('בית"ר ירושלים', from_year=1948),
-    TeamNameChanger("הפועל חולון").add_better_name("הפועל חולון", 1940, 1985).add_better_name("הפועל צפרירים חולון",
-                                                                                              from_year=1985),
-    TeamNameChanger("מכבי חיפה").add_better_name("מכבי הגיבור חיפה", 1900, 1940).add_better_name("מכבי חיפה",
-                                                                                                 from_year=1940),
-    TeamNameChanger("הפועל אשדוד").add_better_name("הפועל אשדוד", 1957, 1999).add_better_name("מ.ס. אשדוד",
-                                                                                              from_year=2000),
-    TeamNameChanger("הכח רג").add_better_name("הכח תל אביב", 1934, 1959).add_better_name("הכח מכבי רמת גן", 1959, 2005)
-        .add_better_name("הכח עמידר רמת גן", from_year=2005),
-    TeamNameChanger("הכח עמידר רג").add_better_name("הכח תל אביב", 1934, 1959).add_better_name("הכח מכבי רמת גן", 1959,
-                                                                                               2005)
-        .add_better_name("הכח עמידר רמת גן", from_year=2005),
-    TeamNameChanger("הכח מכבי עמידר רמת גן").add_better_name("הכח תל אביב", 1934, 1959).add_better_name(
-        "הכח מכבי רמת גן", 1959, 2005)
-        .add_better_name("הכח עמידר רמת גן", from_year=2005),
-    TeamNameChanger("הכח רג").add_better_name("הכח תל אביב", 1934, 1959).add_better_name("הכח מכבי רמת גן", 1959, 2005)
-        .add_better_name("הכח עמידר רמת גן", from_year=2005),
-    TeamNameChanger("הפועל ירוחם").add_better_name("הפועל ירוחם", to_year=2017).add_better_name("מ.ס. הפועל ירוחם",
-                                                                                                from_year=2017),
-    TeamNameChanger("מכבי רמת גן").add_better_name("מכבי רמת גן", to_year=1959).add_better_name("הכח מכבי רמת גן", 1959,
-                                                                                                2005)
-        .add_better_name("הכח עמידר רמת גן", from_year=2005),
-    TeamNameChanger("עירוני אשדוד").add_better_name("מכבי עירוני אשדוד", 1961, 2000).add_better_name("מ.ס. אשדוד",
-                                                                                                     from_year=2000),
-    TeamNameChanger('בית"ר תל אביב/רמלה').add_better_name('בית"ר תל אביב', 1924, 2011).add_better_name(
-        'בית"ר תל אביב רמלה', from_year=2011),
-    TeamNameChanger('ביתר תא').add_better_name('בית"ר תל אביב', 1924, 2011).add_better_name('בית"ר תל אביב רמלה',
-                                                                                            from_year=2011),
-    TeamNameChanger("הכח תל אביב").add_better_name("הכח תל אביב", 1934, 1959).add_better_name("הכח עמידר רמת גן",
-                                                                                              from_year=2005),
+    TeamNameChanger("מכבי רמת עמידר")
+    .add_better_name("מכבי רמת עמידר", 1957, 2005)
+    .add_better_name("הכח עמידר רמת גן", from_year=2005),
+    TeamNameChanger("מכבי קרית גת")
+    .add_better_name("מכבי קריית גת", 1900, 2013)
+    .add_better_name("מכבי עירוני קריית גת", from_year=2013),
+    TeamNameChanger('בית"ר שמשון תל אביב')
+    .add_better_name('בית"ר שמשון תל אביב', 2000, 2011)
+    .add_better_name("שמשון תל אביב", from_year=2011),
+    TeamNameChanger("שמשון תא")
+    .add_better_name("שמשון תל אביב", 1949, 2000)
+    .add_better_name('בית"ר שמשון תל אביב', 2000, 2011)
+    .add_better_name("שמשון תל אביב", from_year=2011),
+    TeamNameChanger("שמשון תל אביב")
+    .add_better_name("שמשון תל אביב", 1949, 2000)
+    .add_better_name('בית"ר שמשון תל אביב', 2000, 2011)
+    .add_better_name("שמשון תל אביב", from_year=2011),
+    TeamNameChanger("צפרירים חולון")
+    .add_better_name("הפועל חולון", 1940, 1985)
+    .add_better_name("הפועל צפרירים חולון", from_year=1985),
+    TeamNameChanger("עירוני ראשלצ")
+    .add_better_name("הפועל ראשון לציון", 1928, 1992)
+    .add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
+    .add_better_name("הפועל ראשון לציון", from_year=2008),
+    TeamNameChanger("עירוני ראשון לציון")
+    .add_better_name("הפועל ראשון לציון", 1928, 1992)
+    .add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
+    .add_better_name("הפועל ראשון לציון", from_year=2008),
+    TeamNameChanger("הפועל ראשון לציון")
+    .add_better_name("הפועל ראשון לציון", 1928, 1992)
+    .add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
+    .add_better_name("הפועל ראשון לציון", from_year=2008),
+    TeamNameChanger("הפועל עירוני ראשון לציון")
+    .add_better_name("הפועל עירוני ראשון לציון", 1992, 2008)
+    .add_better_name("הפועל ראשון לציון", from_year=2008),
+    TeamNameChanger("הפועל רג")
+    .add_better_name("הפועל רמת גן", 1927, 1956)
+    .add_better_name("הפועל רמת גן גבעתיים", from_year=1956),
+    TeamNameChanger("הפועל רמת גן")
+    .add_better_name("הפועל רמת גן", 1927, 1956)
+    .add_better_name("הפועל רמת גן גבעתיים", from_year=1956),
+    TeamNameChanger("ביתר ירושלים")
+    .add_better_name('בית"ר ירושלים', 1936, 1947)
+    .add_better_name("נורדיה ירושלים", 1946, 1947)
+    .add_better_name('בית"ר ירושלים', from_year=1948),
+    TeamNameChanger("הפועל חולון")
+    .add_better_name("הפועל חולון", 1940, 1985)
+    .add_better_name("הפועל צפרירים חולון", from_year=1985),
+    TeamNameChanger("מכבי חיפה")
+    .add_better_name("מכבי הגיבור חיפה", 1900, 1940)
+    .add_better_name("מכבי חיפה", from_year=1940),
+    TeamNameChanger("הפועל אשדוד")
+    .add_better_name("הפועל אשדוד", 1957, 1999)
+    .add_better_name("מ.ס. אשדוד", from_year=2000),
+    TeamNameChanger("הכח רג")
+    .add_better_name("הכח תל אביב", 1934, 1959)
+    .add_better_name("הכח מכבי רמת גן", 1959, 2005)
+    .add_better_name("הכח עמידר רמת גן", from_year=2005),
+    TeamNameChanger("הכח עמידר רג")
+    .add_better_name("הכח תל אביב", 1934, 1959)
+    .add_better_name("הכח מכבי רמת גן", 1959, 2005)
+    .add_better_name("הכח עמידר רמת גן", from_year=2005),
+    TeamNameChanger("הכח מכבי עמידר רמת גן")
+    .add_better_name("הכח תל אביב", 1934, 1959)
+    .add_better_name("הכח מכבי רמת גן", 1959, 2005)
+    .add_better_name("הכח עמידר רמת גן", from_year=2005),
+    TeamNameChanger("הכח רג")
+    .add_better_name("הכח תל אביב", 1934, 1959)
+    .add_better_name("הכח מכבי רמת גן", 1959, 2005)
+    .add_better_name("הכח עמידר רמת גן", from_year=2005),
+    TeamNameChanger("הפועל ירוחם")
+    .add_better_name("הפועל ירוחם", to_year=2017)
+    .add_better_name("מ.ס. הפועל ירוחם", from_year=2017),
+    TeamNameChanger("מכבי רמת גן")
+    .add_better_name("מכבי רמת גן", to_year=1959)
+    .add_better_name("הכח מכבי רמת גן", 1959, 2005)
+    .add_better_name("הכח עמידר רמת גן", from_year=2005),
+    TeamNameChanger("עירוני אשדוד")
+    .add_better_name("מכבי עירוני אשדוד", 1961, 2000)
+    .add_better_name("מ.ס. אשדוד", from_year=2000),
+    TeamNameChanger('בית"ר תל אביב/רמלה')
+    .add_better_name('בית"ר תל אביב', 1924, 2011)
+    .add_better_name('בית"ר תל אביב רמלה', from_year=2011),
+    TeamNameChanger("ביתר תא")
+    .add_better_name('בית"ר תל אביב', 1924, 2011)
+    .add_better_name('בית"ר תל אביב רמלה', from_year=2011),
+    TeamNameChanger("הכח תל אביב")
+    .add_better_name("הכח תל אביב", 1934, 1959)
+    .add_better_name("הכח עמידר רמת גן", from_year=2005),
 ]
 
 # Make that a dictionary:

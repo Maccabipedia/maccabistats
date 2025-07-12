@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from collections import Counter
 from sys import maxsize
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 from maccabistats.maccabipedia.players import MaccabiPediaPlayers
 
@@ -85,7 +85,8 @@ class MaccabiGamesPlayersCategoriesStats(object):
 
     def _home_players_goals_involved_division(self) -> Tuple[int, int]:
         return self._home_players_events(
-            game_events_callable=lambda game: game.maccabi_team.goal_involved_players_with_amount)
+            game_events_callable=lambda game: game.maccabi_team.goal_involved_players_with_amount
+        )
 
     def home_players_goals_involved_count(self) -> int:
         return self._home_players_goals_involved_division()[0]

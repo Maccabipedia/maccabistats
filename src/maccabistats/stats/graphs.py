@@ -5,9 +5,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
 from collections import Counter
+from datetime import datetime, timedelta
+
+import matplotlib.pyplot as plt
 
 
 class MaccabiGamesGraphsStats(object):
@@ -32,19 +33,22 @@ class MaccabiGamesGraphsStats(object):
         plt.show()
 
     def _get_all_goals_minutes_for_player(self, player_name: str):
-        player_goals = [goal for game in self.maccabi_games_stats.games for goal in game.goals() if
-                        goal['name'] == player_name]
+        player_goals = [
+            goal for game in self.maccabi_games_stats.games for goal in game.goals() if goal["name"] == player_name
+        ]
 
         def convert_timedelta_str_to_minutes(t):
             full_datetime = datetime.strptime(t, "%H:%M:%S")
             delta = timedelta(hours=full_datetime.hour, minutes=full_datetime.minute)
             return int(delta.total_seconds() / 60)
 
-        player_goals = [convert_timedelta_str_to_minutes(goal['time_occur']) for goal in player_goals]
+        player_goals = [convert_timedelta_str_to_minutes(goal["time_occur"]) for goal in player_goals]
         if not player_goals:
             raise RuntimeError(
                 "Could not find any goals for this player, are you sure this is the player name : {name}?".format(
-                    name=player_name))
+                    name=player_name
+                )
+            )
 
         return player_goals
 
@@ -65,8 +69,9 @@ class MaccabiGamesGraphsStats(object):
         Show bar charts of player goals by thirds (0-30, 30-60, 60-90, 90-120)
         """
 
-        all_goals_by_thirds = [int(goal_minute / 30) for goal_minute in
-                               self._get_all_goals_minutes_for_player(player_name)]
+        all_goals_by_thirds = [
+            int(goal_minute / 30) for goal_minute in self._get_all_goals_minutes_for_player(player_name)
+        ]
         goals_by_thirds = Counter(all_goals_by_thirds)
 
         self._show_bar_charts_of_this_counter(goals_by_thirds)

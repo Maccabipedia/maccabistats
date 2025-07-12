@@ -45,29 +45,35 @@ def initialize_logging():
     logger.setLevel(logging.DEBUG)
 
     normal_formatter = logging.Formatter(
-        '%(asctime)s %(processName)s(%(process)d)  %(name)s  %(levelname)s --- %(message)s')
+        "%(asctime)s %(processName)s(%(process)d)  %(name)s  %(levelname)s --- %(message)s"
+    )
     advanced_formatter = logging.Formatter(
-        '%(asctime)s %(processName)s(%(process)d) %(name)s %(levelname)s --- %(funcName)s(l.%(lineno)d) :: %(message)s')
+        "%(asctime)s %(processName)s(%(process)d) %(name)s %(levelname)s --- %(funcName)s(l.%(lineno)d) :: %(message)s"
+    )
 
-    debug_handler = RotatingFileHandler(log_file_path_pattern.format(suffix='all'), 'a', encoding="utf-8",
-                                        maxBytes=20 * MB)
+    debug_handler = RotatingFileHandler(
+        log_file_path_pattern.format(suffix="all"), "a", encoding="utf-8", maxBytes=20 * MB
+    )
     debug_handler.setFormatter(advanced_formatter)
     debug_handler.setLevel(logging.DEBUG)
 
-    info_handler = RotatingFileHandler(log_file_path_pattern.format(suffix='info'), 'a', encoding="utf-8",
-                                       maxBytes=10 * MB)
+    info_handler = RotatingFileHandler(
+        log_file_path_pattern.format(suffix="info"), "a", encoding="utf-8", maxBytes=10 * MB
+    )
     info_handler.setFormatter(advanced_formatter)
     info_handler.setLevel(logging.INFO)
     info_handler.addFilter(SpecificLevelFilter(logging.INFO))
 
-    warning_handler = RotatingFileHandler(log_file_path_pattern.format(suffix='warning'), 'a', encoding="utf-8",
-                                          maxBytes=10 * MB)
+    warning_handler = RotatingFileHandler(
+        log_file_path_pattern.format(suffix="warning"), "a", encoding="utf-8", maxBytes=10 * MB
+    )
     warning_handler.setFormatter(normal_formatter)
     warning_handler.setLevel(logging.WARNING)
     warning_handler.addFilter(SpecificLevelFilter(logging.WARNING))
 
-    exception_handler = RotatingFileHandler(log_file_path_pattern.format(suffix='exception'), 'a', encoding="utf-8",
-                                            maxBytes=10 * MB)
+    exception_handler = RotatingFileHandler(
+        log_file_path_pattern.format(suffix="exception"), "a", encoding="utf-8", maxBytes=10 * MB
+    )
     exception_handler.setFormatter(advanced_formatter)
     exception_handler.setLevel(logging.ERROR)
     exception_handler.addFilter(SpecificLevelFilter(logging.ERROR))

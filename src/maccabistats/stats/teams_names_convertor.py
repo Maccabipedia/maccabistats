@@ -20,8 +20,9 @@ class TeamNamesConvertor:
 
     def __init__(self, maccabi_games_stats: MaccabiGamesStats):
         self.maccabi_games_stats = maccabi_games_stats
-        self.historical_name_to_current_name = {game.not_maccabi_team.name: game.not_maccabi_team.current_name for game
-                                                in maccabi_games_stats}
+        self.historical_name_to_current_name = {
+            game.not_maccabi_team.name: game.not_maccabi_team.current_name for game in maccabi_games_stats
+        }
 
     def validate_uniqueness(self) -> None:
         """
@@ -36,13 +37,14 @@ class TeamNamesConvertor:
         for team_name, current_names in historical_to_current_names.items():
             if len(current_names) > 1:
                 logger.warning(
-                    f'Found {len(current_names)} names, which is more than 1 current team name for team: {team_name}')
+                    f"Found {len(current_names)} names, which is more than 1 current team name for team: {team_name}"
+                )
                 too_many_names = True
 
         if not too_many_names:
             return
 
-        raise RuntimeError('Found too many names for several teams')
+        raise RuntimeError("Found too many names for several teams")
 
     def find_team_current_name(self, team_name: str) -> str:
         return self.historical_name_to_current_name[team_name]

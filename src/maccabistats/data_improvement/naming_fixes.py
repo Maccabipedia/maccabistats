@@ -1,6 +1,6 @@
+import logging
 from difflib import SequenceMatcher
 from itertools import combinations
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,9 @@ class NamingErrorsFinder(object):
         return self.__print_couples_naming_similarity(combinations(set(self.games.available_stadiums), 2), "Stadiums")
 
     def __print_players_naming_similarities(self):
-        return self.__print_couples_naming_similarity(combinations(set([p.name for p in self.games.available_players]), 2), "Players")
+        return self.__print_couples_naming_similarity(
+            combinations(set([p.name for p in self.games.available_players]), 2), "Players"
+        )
 
     def __print_couples_naming_similarity(self, couples_combinations, prefix_to_print):
         diff = 0
@@ -61,7 +63,11 @@ class NamingErrorsFinder(object):
             current_ratio = self.__similarity_of_two_names(*couple)
             if current_ratio > self.minimal_ratio:
                 diff += 1
-                logger.info("{prefix}: {} - {}, ratio - {ratio}".format(prefix=prefix_to_print, *couple, ratio=round(current_ratio, 2)))
+                logger.info(
+                    "{prefix}: {} - {}, ratio - {ratio}".format(
+                        prefix=prefix_to_print, *couple, ratio=round(current_ratio, 2)
+                    )
+                )
 
         return diff
 
@@ -89,5 +95,8 @@ class NamingErrorsFinder(object):
         :return: Similar names
         :rtype: list of str
         """
-        return [optional_name for optional_name in optional_similar_names if
-                NamingErrorsFinder.__similarity_of_two_names(name, optional_name) > ratio]
+        return [
+            optional_name
+            for optional_name in optional_similar_names
+            if NamingErrorsFinder.__similarity_of_two_names(name, optional_name) > ratio
+        ]

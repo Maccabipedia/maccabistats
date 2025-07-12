@@ -4,12 +4,12 @@ import pprint
 from maccabistats import load_from_maccabipedia_source
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
 
 FIRST_GAMES_COUNT = 5
 GOALS_TO_SHOW_FROM = 4
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     maccabi_games = load_from_maccabipedia_source().league_games
 
     players_games = maccabi_games.played_games_by_player_name()
@@ -23,5 +23,4 @@ if __name__ == '__main__':
         if player_goals >= GOALS_TO_SHOW_FROM:
             players_to_show.append((player, player_goals, first_games[0].date))
 
-    logging.info(pprint.pformat(
-        sorted(players_to_show, key=lambda i: i[1], reverse=True)))
+    logging.info(pprint.pformat(sorted(players_to_show, key=lambda i: i[1], reverse=True)))

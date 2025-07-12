@@ -4,15 +4,18 @@ import os
 
 import requests
 from bs4 import BeautifulSoup
+
 from maccabistats.config import MaccabiStatsConfigSingleton
 
 logger = logging.getLogger(__name__)
 
 folder_to_save_games_events_html_files_pattern = os.path.join(
-    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_games_html_files, "game+{game_date}+events")
+    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_games_html_files, "game+{game_date}+events"
+)
 
 folder_to_save_games_squads_html_files_pattern = os.path.join(
-    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_games_html_files, "game+{game_date}+squads")
+    MaccabiStatsConfigSingleton.maccabi_site.folder_to_save_games_html_files, "game+{game_date}+squads"
+)
 
 
 def __get_beautifulsoup_parser_name():
@@ -33,11 +36,13 @@ def save_game_web_page_to_disk(web_page):
     game_squads_web_page_content = requests.get(web_page + "teams").content
 
     game_date = __extract_games_date(web_page)
-    with open(folder_to_save_games_events_html_files_pattern.format(game_date=game_date),
-              'wb') as maccabi_game_event_file:
+    with open(
+        folder_to_save_games_events_html_files_pattern.format(game_date=game_date), "wb"
+    ) as maccabi_game_event_file:
         maccabi_game_event_file.write(game_events_web_page_content)
-    with open(folder_to_save_games_squads_html_files_pattern.format(game_date=game_date),
-              'wb') as maccabi_game_squad_file:
+    with open(
+        folder_to_save_games_squads_html_files_pattern.format(game_date=game_date), "wb"
+    ) as maccabi_game_squad_file:
         maccabi_game_squad_file.write(game_squads_web_page_content)
 
 
@@ -49,10 +54,11 @@ def __extract_games_date(link):
 
 # GameEvents #
 
+
 def __get_game_events_bs_from_disk(link):
     game_date = __extract_games_date(link)
 
-    with open(folder_to_save_games_events_html_files_pattern.format(game_date=game_date), 'rb') as game_events_file:
+    with open(folder_to_save_games_events_html_files_pattern.format(game_date=game_date), "rb") as game_events_file:
         return BeautifulSoup(game_events_file.read(), __get_beautifulsoup_parser_name())
 
 
@@ -75,8 +81,9 @@ def __download_game_events_page(link):
 def __save_game_events_bs_to_disk(link, content):
     game_date = __extract_games_date(link)
 
-    with open(folder_to_save_games_events_html_files_pattern.format(game_date=game_date),
-              'wb') as maccabi_game_event_file:
+    with open(
+        folder_to_save_games_events_html_files_pattern.format(game_date=game_date), "wb"
+    ) as maccabi_game_event_file:
         maccabi_game_event_file.write(content)
 
 
@@ -92,10 +99,11 @@ def get_game_events_bs_by_link(link):
 
 # GameSquads #
 
+
 def __get_game_squads_bs_from_disk(link):
     game_date = __extract_games_date(link)
 
-    with open(folder_to_save_games_squads_html_files_pattern.format(game_date=game_date), 'rb') as game_squads_file:
+    with open(folder_to_save_games_squads_html_files_pattern.format(game_date=game_date), "rb") as game_squads_file:
         return BeautifulSoup(game_squads_file.read(), __get_beautifulsoup_parser_name())
 
 
@@ -118,8 +126,9 @@ def __download_game_squads_page(link):
 def __save_game_squads_bs_to_disk(link, content):
     game_date = __extract_games_date(link)
 
-    with open(folder_to_save_games_squads_html_files_pattern.format(game_date=game_date),
-              'wb') as maccabi_game_squad_file:
+    with open(
+        folder_to_save_games_squads_html_files_pattern.format(game_date=game_date), "wb"
+    ) as maccabi_game_squad_file:
         maccabi_game_squad_file.write(content)
 
 

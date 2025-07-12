@@ -54,16 +54,19 @@ class MaccabiGamesComebacksStats(object):
         return len(self.won_from_any_goal_diff())
 
     def won_from_any_goal_diff(self) -> MaccabiGamesStats:
-        all_comebacks = [self.won_from_exactly_x_goal_diff(1),
-                         self.won_from_exactly_x_goal_diff(2),
-                         self.won_from_exactly_x_goal_diff(3),
-                         self.won_from_exactly_x_goal_diff(4),
-                         self.won_from_exactly_x_goal_diff(5)]
+        all_comebacks = [
+            self.won_from_exactly_x_goal_diff(1),
+            self.won_from_exactly_x_goal_diff(2),
+            self.won_from_exactly_x_goal_diff(3),
+            self.won_from_exactly_x_goal_diff(4),
+            self.won_from_exactly_x_goal_diff(5),
+        ]
 
         return self.maccabi_games_stats.create_maccabi_stats_from_games(list(chain.from_iterable(all_comebacks)))
 
-    def _conditions_for_winning_comeback_occur(self, game: GameData,
-                                               winning_comeback_from_x_goals_disadvantage: int) -> bool:
+    def _conditions_for_winning_comeback_occur(
+        self, game: GameData, winning_comeback_from_x_goals_disadvantage: int
+    ) -> bool:
         """
         Check whether the conditions for winning comeback exists in this game:
             * The total score should be at least as twice as the diff, +1 (for winning).
@@ -115,14 +118,16 @@ class MaccabiGamesComebacksStats(object):
         Return a list of games that Maccabi could have comebacks at
         """
         return self.maccabi_games_stats.create_maccabi_stats_from_games(
-            [game for game in self.games if self._max_opponent_goals_advantage(game) < -1])
+            [game for game in self.games if self._max_opponent_goals_advantage(game) < -1]
+        )
 
     def games_with_potential_comebacks_that_maccabi_didnt_win(self) -> MaccabiGamesStats:
         """
         Return a list of games that Maccabi could have comebacks at
         """
         return self.maccabi_games_stats.create_maccabi_stats_from_games(
-            [game for game in self.games if self._max_opponent_goals_advantage(game) < -1 and not game.is_maccabi_win])
+            [game for game in self.games if self._max_opponent_goals_advantage(game) < -1 and not game.is_maccabi_win]
+        )
 
     def _conditions_for_tie_comeback_occur(self, game: GameData, tie_comeback_from_x_goals_disadvantage: int) -> bool:
         """
@@ -161,9 +166,9 @@ class MaccabiGamesComebacksStats(object):
         # We save list of all goals timeline and find the minimum (max advantage for opponent).
         goals_diff = [0]
         for goal in game_goals:
-            next_goal_status = 1 if goal['team'] == 'מכבי תל אביב' else -1
+            next_goal_status = 1 if goal["team"] == "מכבי תל אביב" else -1
 
-            if 'goal_type' in goal and goal['goal_type'] == GoalTypes.OWN_GOAL.value:
+            if "goal_type" in goal and goal["goal_type"] == GoalTypes.OWN_GOAL.value:
                 next_goal_status *= -1
 
             # We add the last status + new goal (1 for maccabi, -1 for opponent).

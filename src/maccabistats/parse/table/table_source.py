@@ -1,8 +1,9 @@
 import logging
-from maccabistats.parse.table.fix_specific_games import fix_specific_games
+
 from maccabistats.parse.maccabistats_source import MaccabiStatsSource
-from maccabistats.parse.table.main_parser import get_parsed_maccabi_games_from_json
 from maccabistats.parse.sources import SourcesNames
+from maccabistats.parse.table.fix_specific_games import fix_specific_games
+from maccabistats.parse.table.main_parser import get_parsed_maccabi_games_from_json
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,6 @@ Table is external source which saves maccabi games as json
 
 
 class TableSource(MaccabiStatsSource):
-
     def __init__(self):
         super().__init__(name=SourcesNames.Table.value)
 

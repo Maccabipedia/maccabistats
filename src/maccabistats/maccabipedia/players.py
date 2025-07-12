@@ -27,29 +27,35 @@ class MaccabiPediaPlayers(object):
         # Using defaultdict in order for each player that does not have a date of birth in maccabipedia
         # will set to year 1000 (to notice visually in stats)
         self._players_data = self._crawl_players_data()
-        self.players_dates = defaultdict(MaccabiPediaPlayers.default_birth_day_value,
-                                         {player_name: player_data.birth_date for player_name, player_data in
-                                          self._players_data.items()})
-        self.home_players = {player_data.name for player_data in self._players_data.values() if
-                             player_data.is_home_player}
+        self.players_dates = defaultdict(
+            MaccabiPediaPlayers.default_birth_day_value,
+            {player_name: player_data.birth_date for player_name, player_data in self._players_data.items()},
+        )
+        self.home_players = {
+            player_data.name for player_data in self._players_data.values() if player_data.is_home_player
+        }
 
     @staticmethod
     def _crawl_players_data() -> Dict[str, MaccabiPediaPlayerData]:
         players_data_iterator = MaccabiPediaCargoChunksCrawler(
-            tables_name="Profiles",
-            tables_fields="Profiles._pageName, Profiles.DoB, Profiles.HomePlayer")
+            tables_name="Profiles", tables_fields="Profiles._pageName, Profiles.DoB, Profiles.HomePlayer"
+        )
 
         players_data = dict()
         for player_raw_data in players_data_iterator:
             # Player Date of birth is missing for some players, we just take the default value for those
             # Birth date format is YYYY_MM_DD:
-            birth_date = datetime_parser(player_raw_data['DoB']) if player_raw_data[
-                'DoB'] else MaccabiPediaPlayers.missing_birth_date_value
-            player_name = player_raw_data['_pageName']
-            is_home_player = bool(player_raw_data['HomePlayer'])  # Should be 0 or 1
+            birth_date = (
+                datetime_parser(player_raw_data["DoB"])
+                if player_raw_data["DoB"]
+                else MaccabiPediaPlayers.missing_birth_date_value
+            )
+            player_name = player_raw_data["_pageName"]
+            is_home_player = bool(player_raw_data["HomePlayer"])  # Should be 0 or 1
 
-            players_data[player_name] = MaccabiPediaPlayerData(name=player_name, birth_date=birth_date,
-                                                               is_home_player=is_home_player)
+            players_data[player_name] = MaccabiPediaPlayerData(
+                name=player_name, birth_date=birth_date, is_home_player=is_home_player
+            )
 
         return players_data
 

@@ -4,7 +4,7 @@ import json
 import logging
 import typing
 from collections import Counter
-from typing import List, Callable, Dict, Any, Optional
+from typing import Any, Callable, Dict, List
 
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 from maccabistats.models.player_in_game import PlayerInGame
@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class TeamInGame(Team):
-    def __init__(self, name: str, coach: str, score: int, players: List[PlayerInGame],
-                 current_name: Optional[str] = None):
+    def __init__(
+        self, name: str, coach: str, score: int, players: List[PlayerInGame], current_name: str | None = None
+    ):
         super(TeamInGame, self).__init__(name)
 
         self.coach = coach
@@ -32,14 +33,21 @@ class TeamInGame(Team):
 
     @property
     def players_from_bench(self) -> List[PlayerInGame]:
-        return [player for player in self.players if not player.has_event_type(GameEventTypes.LINE_UP) and
-                player.has_event_type(GameEventTypes.SUBSTITUTION_IN)]
+        return [
+            player
+            for player in self.players
+            if not player.has_event_type(GameEventTypes.LINE_UP)
+            and player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
+        ]
 
     @property
     def not_played_players(self) -> List[PlayerInGame]:
-        return [player for player in self.players if
-                not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(
-                    GameEventTypes.SUBSTITUTION_IN)]
+        return [
+            player
+            for player in self.players
+            if not player.has_event_type(GameEventTypes.LINE_UP)
+            and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
+        ]
 
     @property
     def scored_players(self) -> List[PlayerInGame]:
@@ -55,9 +63,12 @@ class TeamInGame(Team):
 
     @property
     def red_carded_players(self) -> List[PlayerInGame]:
-        return [player for player in self.players if
-                player.has_event_type(GameEventTypes.RED_CARD) or
-                player.has_event_type(GameEventTypes.SECOND_YELLOW_CARD)]
+        return [
+            player
+            for player in self.players
+            if player.has_event_type(GameEventTypes.RED_CARD)
+            or player.has_event_type(GameEventTypes.SECOND_YELLOW_CARD)
+        ]
 
     @property
     def played_players(self) -> List[PlayerInGame]:
@@ -76,19 +87,16 @@ class TeamInGame(Team):
             logger.warning("Cant find any captain for this game :(")
             return PlayerInGame("Not a captain", 0, [])
 
-    def get_players_with_most_of_this_condition(self, condition: Callable[[PlayerInGame], int]) \
-            -> typing.Counter[str]:
+    def get_players_with_most_of_this_condition(self, condition: Callable[[PlayerInGame], int]) -> typing.Counter[str]:
         """
         :param condition: this function should get PlayerInGame as param, and return int.
                           0 wont count this player in the final summary.
         """
-        return Counter({player.name: condition(player) for player in self.players if
-                        condition(player) > 0})
+        return Counter({player.name: condition(player) for player in self.players if condition(player) > 0})
 
     @property
     def scored_players_with_amount(self) -> typing.Counter[str]:
-        return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE))
+        return self.get_players_with_most_of_this_condition(lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE))
 
     @property
     def scored_for_maccabi_players_with_amount(self) -> typing.Counter[str]:
@@ -99,13 +107,11 @@ class TeamInGame(Team):
 
     @property
     def lineup_players_with_amount(self) -> typing.Counter[str]:
-        return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.LINE_UP))
+        return self.get_players_with_most_of_this_condition(lambda p: p.event_count_by_type(GameEventTypes.LINE_UP))
 
     @property
     def assist_players_with_amount(self) -> typing.Counter[str]:
-        return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST))
+        return self.get_players_with_most_of_this_condition(lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST))
 
     @property
     def goal_involved_players_with_amount(self) -> typing.Counter[str]:
@@ -114,33 +120,35 @@ class TeamInGame(Team):
     @property
     def substitute_off_players_with_amount(self) -> typing.Counter[str]:
         return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_OUT))
+            lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_OUT)
+        )
 
     @property
     def substitute_in_players_with_amount(self) -> typing.Counter[str]:
         return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_IN))
+            lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_IN)
+        )
 
     @property
     def yellow_carded_players_with_amount(self) -> typing.Counter[str]:
-        return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.YELLOW_CARD))
+        return self.get_players_with_most_of_this_condition(lambda p: p.event_count_by_type(GameEventTypes.YELLOW_CARD))
 
     @property
     def red_carded_players_with_amount(self) -> typing.Counter[str]:
         return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.RED_CARD) + p.event_count_by_type(
-                GameEventTypes.SECOND_YELLOW_CARD))
+            lambda p: p.event_count_by_type(GameEventTypes.RED_CARD)
+            + p.event_count_by_type(GameEventTypes.SECOND_YELLOW_CARD)
+        )
 
     @property
     def captains_players_with_amount(self) -> typing.Counter[str]:
-        return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.CAPTAIN))
+        return self.get_players_with_most_of_this_condition(lambda p: p.event_count_by_type(GameEventTypes.CAPTAIN))
 
     @property
     def penalty_missed_players_with_amount(self) -> typing.Counter[str]:
         return self.get_players_with_most_of_this_condition(
-            lambda p: p.event_count_by_type(GameEventTypes.PENALTY_MISSED))
+            lambda p: p.event_count_by_type(GameEventTypes.PENALTY_MISSED)
+        )
 
     @property
     def played_players_with_amount(self) -> typing.Counter[str]:
@@ -163,23 +171,21 @@ class TeamInGame(Team):
             GameEventTypes.YELLOW_CARD: self.yellow_carded_players_with_amount,
             GameEventTypes.RED_CARD: self.red_carded_players_with_amount,
             GameEventTypes.CAPTAIN: self.captains_players_with_amount,
-            GameEventTypes.PENALTY_MISSED: self.penalty_missed_players_with_amount}
+            GameEventTypes.PENALTY_MISSED: self.penalty_missed_players_with_amount,
+        }
 
         return event_type_to_property_of_most_common_players[event_type]
 
     def json_dict(self) -> Dict:
-        return dict(name=self.name,
-                    score=self.score,
-                    coach=self.coach)
+        return dict(name=self.name, score=self.score, coach=self.coach)
 
     def to_json(self) -> str:
         return json.dumps(self.json_dict())
 
     def __str__(self) -> str:
-        return "{team_repr}" \
-               "Scored: {self.score}\n" \
-               "Coach: {self.coach}\n".format(team_repr=super(TeamInGame, self).__repr__(), self=self)
+        return "{team_repr}Scored: {self.score}\nCoach: {self.coach}\n".format(
+            team_repr=super(TeamInGame, self).__repr__(), self=self
+        )
 
     def __repr__(self) -> str:
-        return "{my_str}\n" \
-               "Players: {self.players}\n\n".format(my_str=self.__str__(), self=self)
+        return "{my_str}\nPlayers: {self.players}\n\n".format(my_str=self.__str__(), self=self)

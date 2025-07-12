@@ -12,7 +12,6 @@ Implement MaccabiStatsSource that crawl maccabipedia.
 
 
 class MaccabiPediaSource(MaccabiStatsSource):
-
     def __init__(self):
         super().__init__(name=SourcesNames.MaccabiPedia.value)
 

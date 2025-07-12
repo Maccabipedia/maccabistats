@@ -9,7 +9,7 @@ from maccabistats.models.player_game_events import GameEventTypes
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
-""" 
+"""
 This class is responsible to find errors in MaccabiGamesStats object, 
 such as games that the amount of goals does not match to the final score sum,
 empty events and so on.
@@ -19,17 +19,20 @@ This should be run manually.
 
 
 class ErrorsFinder:
-    """ Each public function on this class wil lbe run automatically by 'get_all_errors_numbers'. """
+    """Each public function on this class wil lbe run automatically by 'get_all_errors_numbers'."""
 
     def __init__(self, maccabi_games_stats: MaccabiGamesStats) -> None:
         self.maccabi_games_stats = maccabi_games_stats
 
     def get_games_without_11_maccabi_players_on_lineup(self):
-        """ Each team should have 11 players with lineup event! but we care more about maccabi, skip technical games """
+        """Each team should have 11 players with lineup event! but we care more about maccabi, skip technical games"""
 
-        missing_lineup_games = [game for game in self.maccabi_games_stats
-                                if not game.technical_result
-                                if 11 != len(game.maccabi_team.lineup_players)]
+        missing_lineup_games = [
+            game
+            for game in self.maccabi_games_stats
+            if not game.technical_result
+            if 11 != len(game.maccabi_team.lineup_players)
+        ]
 
         return MaccabiGamesStats(missing_lineup_games)
 
@@ -46,28 +49,33 @@ class ErrorsFinder:
         return problematic_dates
 
     def get_lineup_players_with_substitution_in(self):
-        """ Players that opened on lineup, should'nt has substitution in event. """
+        """Players that opened on lineup, should'nt has substitution in event."""
 
-        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
-                              game.maccabi_team.players
-                              if player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(
-                GameEventTypes.SUBSTITUTION_IN)]
+        players_with_games = [
+            (player, game)
+            for game in self.maccabi_games_stats
+            for player in game.maccabi_team.players
+            if player.has_event_type(GameEventTypes.LINE_UP) and player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
+        ]
 
         return players_with_games
 
     def get_games_with_missing_goals_events(self):
-        """ Total score should be equals to the total goals event, excluding games that were finished by technical result """
+        """Total score should be equals to the total goals event, excluding games that were finished by technical result"""
 
-        games = [game for game in self.maccabi_games_stats
-                 if (game.maccabi_team.score + game.not_maccabi_team.score != len(
-                game.goals())) and not game.technical_result]
+        games = [
+            game
+            for game in self.maccabi_games_stats
+            if (game.maccabi_team.score + game.not_maccabi_team.score != len(game.goals()))
+            and not game.technical_result
+        ]
 
         return MaccabiGamesStats(games)
 
     def get_games_with_wrong_goals_team_belonging(self):
-        """ Maccabi score in the game should be equal to the maccabi score that written in the last goal event
-            We exclude technical games and the games that has some missing goals events which is counter by
-            get_games_with_missing_goals_events """
+        """Maccabi score in the game should be equal to the maccabi score that written in the last goal event
+        We exclude technical games and the games that has some missing goals events which is counter by
+        get_games_with_missing_goals_events"""
 
         games_with_wrong_goals_count = self.get_games_with_missing_goals_events()
 
@@ -81,7 +89,7 @@ class ErrorsFinder:
             maccabi_score, not_maccabi_score = 0, 0
             if game_to_check.goals():
                 last_goal = game_to_check.goals()[-1]
-                maccabi_score, not_maccabi_score = last_goal['maccabi_score'], last_goal['not_maccabi_score']
+                maccabi_score, not_maccabi_score = last_goal["maccabi_score"], last_goal["not_maccabi_score"]
 
             return maccabi_score != game_to_check.maccabi_score or not_maccabi_score != not_maccabi_score
 
@@ -90,24 +98,28 @@ class ErrorsFinder:
         return MaccabiGamesStats(games)
 
     def get_players_with_event_but_without_lineup_or_substitution(self):
-        """ Every player that has any event should has atleast lineup or substitution or bench in event """
+        """Every player that has any event should has atleast lineup or substitution or bench in event"""
 
-        players_with_games = [(player, game) for game in self.maccabi_games_stats for player in
-                              game.maccabi_team.players
-                              if len(player.events) > 0 and  # Got any event but no lineup or subs in
-                              not player.has_event_type(GameEventTypes.LINE_UP) and not player.has_event_type(
-                GameEventTypes.SUBSTITUTION_IN)
-                              and not player.has_event_type(GameEventTypes.BENCHED)]
+        players_with_games = [
+            (player, game)
+            for game in self.maccabi_games_stats
+            for player in game.maccabi_team.players
+            if len(player.events) > 0  # Got any event but no lineup or subs in
+            and not player.has_event_type(GameEventTypes.LINE_UP)
+            and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)
+            and not player.has_event_type(GameEventTypes.BENCHED)
+        ]
         return players_with_games
 
     def get_goals_scored_at_minute_zero(self):
         zero_time = str(timedelta(0))
         all_goals_and_games = list(
-            chain.from_iterable([zip(game.goals(), repeat(game)) for game in self.maccabi_games_stats]))
-        return list(filter(lambda item: item[0]['time_occur'] == zero_time, all_goals_and_games))
+            chain.from_iterable([zip(game.goals(), repeat(game)) for game in self.maccabi_games_stats])
+        )
+        return list(filter(lambda item: item[0]["time_occur"] == zero_time, all_goals_and_games))
 
     def get_games_with_incorrect_season(self):
-        """ Finds games which their date does not match the seasons (date between seasons). """
+        """Finds games which their date does not match the seasons (date between seasons)."""
 
         def validate_season(game):
             if game.season[-2:] == "00":  # We should add 100 year to the max season in this counting system:
@@ -115,15 +127,19 @@ class ErrorsFinder:
             else:
                 return int(game.season[:4]) <= game.date.year <= int(game.season[:2] + game.season[-2:])
 
-        games_with_incorrect_season = [(game.season, str(game.date.date()), game) for game in self.maccabi_games_stats
-                                       if not validate_season(game)]
+        games_with_incorrect_season = [
+            (game.season, str(game.date.date()), game) for game in self.maccabi_games_stats if not validate_season(game)
+        ]
 
         return games_with_incorrect_season
 
     def get_players_with_unknown_events(self):
-        players_with_unknown_events = [(player, game) for game in self.maccabi_games_stats for player in
-                                       game.maccabi_team.players if
-                                       player.has_event_type(GameEventTypes.UNKNOWN)]
+        players_with_unknown_events = [
+            (player, game)
+            for game in self.maccabi_games_stats
+            for player in game.maccabi_team.players
+            if player.has_event_type(GameEventTypes.UNKNOWN)
+        ]
         return players_with_unknown_events
 
     def get_missing_league_games_fixtures(self):
@@ -143,8 +159,10 @@ class ErrorsFinder:
             missing_fixtures = should_be_fixtures.difference(current_season_fixtures)
 
             if missing_fixtures:
-                [missing_fixtures_from_all_seasons.append((season[0].season, missing_fixture)) for missing_fixture in
-                 missing_fixtures]
+                [
+                    missing_fixtures_from_all_seasons.append((season[0].season, missing_fixture))
+                    for missing_fixture in missing_fixtures
+                ]
 
         return missing_fixtures_from_all_seasons
 
@@ -164,9 +182,11 @@ class ErrorsFinder:
             for game in season:
                 fixtures_from_all_seasons[f"Season {season[0].season} Fixture {game.league_fixture}"].append(game)
 
-        double_fixtures = [(season_and_fixture, MaccabiGamesStats(games)) for season_and_fixture, games in
-                           fixtures_from_all_seasons.items() if
-                           len(games) > 1]
+        double_fixtures = [
+            (season_and_fixture, MaccabiGamesStats(games))
+            for season_and_fixture, games in fixtures_from_all_seasons.items()
+            if len(games) > 1
+        ]
 
         return double_fixtures
 
@@ -184,8 +204,9 @@ class ErrorsFinder:
 
         return [game for game in self.maccabi_games_stats.games if not game.referee]
 
-    def get_players_which_play_more_than_x_years(self, number_of_years: int = 20) -> \
-            List[Tuple[str, MaccabiGamesStats]]:
+    def get_players_which_play_more_than_x_years(
+        self, number_of_years: int = 20
+    ) -> List[Tuple[str, MaccabiGamesStats]]:
         """
         Returns the players who play more than the given years.
         This may indicate on naming errors
@@ -213,8 +234,9 @@ class ErrorsFinder:
                     continue
 
                 # If player did not played and has any other events besides it
-                if not player_events.intersection(played_player_events) and \
-                        player_events.difference(played_player_events):
+                if not player_events.intersection(played_player_events) and player_events.difference(
+                    played_player_events
+                ):
                     players_with_events_that_did_not_play.append((player.name, game))
 
         return players_with_events_that_did_not_play
@@ -249,17 +271,17 @@ class ErrorsFinder:
         bad_items_category = []
 
         if any(True for name in self.maccabi_games_stats.available_players_names if not name.strip()):
-            bad_items_category.append('players_names')
+            bad_items_category.append("players_names")
         if any(True for name in self.maccabi_games_stats.available_competitions if not name.strip()):
-            bad_items_category.append('competition')
+            bad_items_category.append("competition")
         if any(True for name in self.maccabi_games_stats.available_stadiums if not name.strip()):
-            bad_items_category.append('stadiums')
+            bad_items_category.append("stadiums")
         if any(True for name in self.maccabi_games_stats.available_coaches if not name.strip()):
-            bad_items_category.append('coaches')
+            bad_items_category.append("coaches")
         if any(True for name in self.maccabi_games_stats.available_referees if not name.strip()):
-            bad_items_category.append('referees')
+            bad_items_category.append("referees")
         if any(True for name in self.maccabi_games_stats.available_opponents if not name.strip()):
-            bad_items_category.append('opponents')
+            bad_items_category.append("opponents")
 
         return bad_items_category
 
@@ -268,26 +290,32 @@ class ErrorsFinder:
 
         for game in self.maccabi_games_stats:
             # YELLOW_CARD event indicates a yellow which is not first/yellow (which is part of red card)
-            players_with_two_yellows = [player_name for player_name, count in
-                                        game.maccabi_team.yellow_carded_players_with_amount.items() if count > 1]
+            players_with_two_yellows = [
+                player_name
+                for player_name, count in game.maccabi_team.yellow_carded_players_with_amount.items()
+                if count > 1
+            ]
             for player_name in players_with_two_yellows:
                 players_and_games.append((player_name, game))
 
         return players_and_games
 
     def get_all_errors_numbers(self):
-        """ Iterate over all this class functions without this one, and summarize the results. """
-        errors_finders = [func for func in dir(self) if
-                          callable(getattr(self, func)) and func != "get_all_errors_numbers" and not func.startswith(
-                              "_")]
+        """Iterate over all this class functions without this one, and summarize the results."""
+        errors_finders = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and func != "get_all_errors_numbers" and not func.startswith("_")
+        ]
 
         for func_name in errors_finders:
             error_finder_func = getattr(self, func_name)
-            logger.info("{func_name}: returned {count} items".format(func_name=func_name,
-                                                                     count=len(error_finder_func())))
+            logger.info(
+                "{func_name}: returned {count} items".format(func_name=func_name, count=len(error_finder_func()))
+            )
 
     def __str__(self) -> str:
-        return f'ErrorsFinder: [{self.maccabi_games_stats}]'
+        return f"ErrorsFinder: [{self.maccabi_games_stats}]"
 
     def __repr__(self) -> str:
         return str(self)

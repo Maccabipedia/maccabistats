@@ -5,7 +5,7 @@ import json
 import logging
 from collections import defaultdict
 from tempfile import NamedTemporaryFile
-from typing import List, Union, Dict, Any, DefaultDict
+from typing import Any, DefaultDict, Dict, List
 
 from dateutil.parser import parse as datetime_parser
 
@@ -14,8 +14,12 @@ from maccabistats.models.player import Player
 from maccabistats.stats.averages import MaccabiGamesAverageStats
 from maccabistats.stats.coaches import MaccabiGamesCoachesStats
 from maccabistats.stats.comebacks import MaccabiGamesComebacksStats
-from maccabistats.stats.consts import TROPHY_COMPETITIONS, EUROPE_COMPETITIONS, LEAGUE_COMPETITIONS, \
-    NON_OFFICIAL_COMPETITIONS
+from maccabistats.stats.consts import (
+    EUROPE_COMPETITIONS,
+    LEAGUE_COMPETITIONS,
+    NON_OFFICIAL_COMPETITIONS,
+    TROPHY_COMPETITIONS,
+)
 from maccabistats.stats.export import ExportMaccabiGamesStats
 from maccabistats.stats.goals_timing import MaccabiGamesGoalsTiming
 from maccabistats.stats.graphs import MaccabiGamesGraphsStats
@@ -35,17 +39,19 @@ from maccabistats.stats.summary import MaccabiGamesSummary
 from maccabistats.stats.teams import MaccabiGamesTeamsStats
 from maccabistats.stats.teams_names_convertor import TeamNamesConvertor
 from maccabistats.stats.teams_streaks import MaccabiGamesTeamsStreaksStats
-from maccabistats.stats_utilities.points_calculator import calculate_points_for_games, \
-    calculate_possible_points_for_games
+from maccabistats.stats_utilities.points_calculator import (
+    calculate_points_for_games,
+    calculate_possible_points_for_games,
+)
 from maccabistats.version import version as maccabistats_version
 
 logger = logging.getLogger(__name__)
 
 
 class MaccabiGamesStats:
-    _DEFAULT_DESCRIPTION = 'All games'
+    _DEFAULT_DESCRIPTION = "All games"
 
-    def __init__(self, games: List[GameData], description: str = None) -> None:
+    def __init__(self, games: List[GameData], description: str | None = None) -> None:
         self.games: List[GameData] = sorted(games, key=lambda g: g.date)  # Sort the games by date
         self.description = description or self._DEFAULT_DESCRIPTION
 
@@ -79,13 +85,15 @@ class MaccabiGamesStats:
 
     @property
     def home_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.is_maccabi_home_team],
-                                 self._new_description('Home games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.is_maccabi_home_team], self._new_description("Home games")
+        )
 
     @property
     def away_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if not game.is_maccabi_home_team],
-                                 self._new_description('Away games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if not game.is_maccabi_home_team], self._new_description("Away games")
+        )
 
     # endregion
 
@@ -93,28 +101,38 @@ class MaccabiGamesStats:
 
     @property
     def trophy_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.competition in TROPHY_COMPETITIONS],
-                                 self._new_description('Trophy games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in TROPHY_COMPETITIONS],
+            self._new_description("Trophy games"),
+        )
 
     @property
     def europe_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.competition in EUROPE_COMPETITIONS],
-                                 self._new_description('Europe games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in EUROPE_COMPETITIONS],
+            self._new_description("Europe games"),
+        )
 
     @property
     def league_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.competition in LEAGUE_COMPETITIONS],
-                                 self._new_description('League games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in LEAGUE_COMPETITIONS],
+            self._new_description("League games"),
+        )
 
     @property
     def official_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.competition not in NON_OFFICIAL_COMPETITIONS],
-                                 self._new_description('Official games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition not in NON_OFFICIAL_COMPETITIONS],
+            self._new_description("Official games"),
+        )
 
     @property
     def non_official_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.competition in NON_OFFICIAL_COMPETITIONS],
-                                 self._new_description(f'Non-official games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in NON_OFFICIAL_COMPETITIONS],
+            self._new_description(f"Non-official games"),
+        )
 
     # endregion
 
@@ -162,114 +180,134 @@ class MaccabiGamesStats:
 
     @property
     def maccabi_wins(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.is_maccabi_win],
-                                 self._new_description('Wins only'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.is_maccabi_win], self._new_description("Wins only")
+        )
 
     @property
     def maccabi_ties(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.maccabi_score_diff == 0],
-                                 self._new_description('Ties only'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.maccabi_score_diff == 0], self._new_description("Ties only")
+        )
 
     @property
     def maccabi_losses(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.maccabi_score_diff < 0],
-                                 self._new_description('Losses only'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.maccabi_score_diff < 0], self._new_description("Losses only")
+        )
 
     @property
     def technical_result_games(self) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.technical_result],
-                                 self._new_description('Technical games'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.technical_result], self._new_description("Technical games")
+        )
 
     # endregion
 
     # region date based
 
-    def played_before(self, date: Union[datetime.datetime, datetime.date, str]) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.played_before(date)],
-                                 self._new_description(f'Played before: {date}'))
+    def played_before(self, date: datetime.datetime | datetime.date | str) -> MaccabiGamesStats:
+        return MaccabiGamesStats(
+            [game for game in self.games if game.played_before(date)], self._new_description(f"Played before: {date}")
+        )
 
-    def played_after(self, date: Union[datetime.datetime, datetime.date, str]) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if game.played_after(date)],
-                                 self._new_description(f'Player after: {date}'))
+    def played_after(self, date: datetime.datetime | datetime.date | str) -> MaccabiGamesStats:
+        return MaccabiGamesStats(
+            [game for game in self.games if game.played_after(date)], self._new_description(f"Player after: {date}")
+        )
 
-    def played_at(self, date: Union[datetime.datetime, datetime.date, str]) -> MaccabiGamesStats:
+    def played_at(self, date: datetime.datetime | datetime.date | str) -> MaccabiGamesStats:
         if isinstance(date, str):
             date = datetime_parser(date, dayfirst=True).date()
         elif isinstance(date, datetime.datetime):
             date = date.date()  # Leave only year & month & day
 
-        return MaccabiGamesStats([game for game in self.games if game.date.date() == date],
-                                 self._new_description(f'Played at: {date}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.date.date() == date], self._new_description(f"Played at: {date}")
+        )
 
     @property
     def first_game_date(self) -> str:
-        return self[0].date.strftime('%d-%m-%Y')
+        return self[0].date.strftime("%d-%m-%Y")
 
     @property
     def last_game_date(self) -> str:
-        return self[-1].date.strftime('%d-%m-%Y')
+        return self[-1].date.strftime("%d-%m-%Y")
 
     # endregion
 
     # region free-style filters
 
-    def get_games_by_competition(self, competition_types: Union[List[str], str]) -> MaccabiGamesStats:
+    def get_games_by_competition(self, competition_types: List[str] | str) -> MaccabiGamesStats:
         if isinstance(competition_types, str):
             competition_types = [competition_types]
 
-        return MaccabiGamesStats([game for game in self.games if game.competition in competition_types],
-                                 self._new_description(f'Competitions: {competition_types}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.competition in competition_types],
+            self._new_description(f"Competitions: {competition_types}"),
+        )
 
     def get_games_by_stadium(self, stadium_name: str) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if stadium_name == game.stadium],
-                                 self._new_description(f'Stadium: {stadium_name}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if stadium_name == game.stadium],
+            self._new_description(f"Stadium: {stadium_name}"),
+        )
 
     def get_games_against_team(self, team_name: str) -> MaccabiGamesStats:
         # We count the team name as the name when they appear to the game or the name as they have these days
         current_team_name = self._team_names_convertor.find_team_current_name(team_name)
 
-        return MaccabiGamesStats([game for game in self.games if
-                                  current_team_name == game.not_maccabi_team.current_name],
-                                 self._new_description(f'Against team: {team_name}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if current_team_name == game.not_maccabi_team.current_name],
+            self._new_description(f"Against team: {team_name}"),
+        )
 
     def get_games_by_coach(self, coach_name: str) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if coach_name == game.maccabi_team.coach],
-                                 self._new_description(f'Coach: {coach_name}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if coach_name == game.maccabi_team.coach],
+            self._new_description(f"Coach: {coach_name}"),
+        )
 
     def get_games_by_referee(self, referee_name: str) -> MaccabiGamesStats:
-        return MaccabiGamesStats([game for game in self.games if referee_name == game.referee],
-                                 self._new_description(f'Referee: {referee_name}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if referee_name == game.referee],
+            self._new_description(f"Referee: {referee_name}"),
+        )
 
     def get_games_by_player_name(self, player_name: str) -> MaccabiGamesStats:
         """
         Returns all the games that this player have any event in, played or at the bench.
         """
-        return MaccabiGamesStats([game for game in self.games
-                                  if player_name in [p.name.strip() for p in game.maccabi_team.players]],
-                                 self._new_description(f'Player in squad: {player_name}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if player_name in [p.name.strip() for p in game.maccabi_team.players]],
+            self._new_description(f"Player in squad: {player_name}"),
+        )
 
     def get_games_by_played_player_name(self, player_name: str) -> MaccabiGamesStats:
         """
         Returns all the games that the given players played at.
         """
-        return MaccabiGamesStats([game for game in self.games
-                                  if player_name in [p.name.strip() for p in game.maccabi_team.played_players]],
-                                 self._new_description(f'Played player: {player_name}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if player_name in [p.name.strip() for p in game.maccabi_team.played_players]],
+            self._new_description(f"Played player: {player_name}"),
+        )
 
     def get_games_by_season(self, season: str) -> MaccabiGamesStats:
         """
         Return Maccabi games stats object with season games, season may be entered as "1900/01".
         """
-        return MaccabiGamesStats([game for game in self.games if game.season == season],
-                                 self._new_description(f'Season {season}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.season == season], self._new_description(f"Season {season}")
+        )
 
     def get_games_by_day_at_month(self, day: int, month: int) -> MaccabiGamesStats:
         """
         Filter the maccabi games that played at the given day and month
         """
-        return MaccabiGamesStats([game for game in self.games if
-                                  game.date.day == day and game.date.month == month],
-                                 self._new_description(f'Played at DD/MM: {day}/{month}'))
+        return MaccabiGamesStats(
+            [game for game in self.games if game.date.day == day and game.date.month == month],
+            self._new_description(f"Played at DD/MM: {day}/{month}"),
+        )
 
     # endregion
 
@@ -283,9 +321,12 @@ class MaccabiGamesStats:
             for player in game.maccabi_team.played_players:
                 players_games[player.name].append(game)
 
-        games_by_player = {player_name: MaccabiGamesStats(players_games[player_name],
-                                                          self._new_description(f'Player games: {player_name}'))
-                           for player_name in players_games.keys()}
+        games_by_player = {
+            player_name: MaccabiGamesStats(
+                players_games[player_name], self._new_description(f"Player games: {player_name}")
+            )
+            for player_name in players_games.keys()
+        }
 
         # Allow to return an empty list for unknown players
         return defaultdict(lambda: MaccabiGamesStats([]), games_by_player)
@@ -309,8 +350,9 @@ class MaccabiGamesStats:
         games_by_player_and_team = defaultdict(lambda: defaultdict(lambda: MaccabiGamesStats([])))
         for player_name, teams_mapping in players_to_teams_to_games_mapping.items():
             for team_name, specific_player_and_team_games in teams_mapping.items():
-                current_combination_games = MaccabiGamesStats(specific_player_and_team_games,
-                                                              f'Players {player_name} and Team: {team_name} games')
+                current_combination_games = MaccabiGamesStats(
+                    specific_player_and_team_games, f"Players {player_name} and Team: {team_name} games"
+                )
                 games_by_player_and_team[player_name][team_name] = current_combination_games
 
         # Allow to return an empty list for unknown players, same default dict as above but with MaccabiGamesStats
@@ -327,8 +369,9 @@ class MaccabiGamesStats:
         current_competitions = self.available_competitions
 
         if not set(current_competitions) <= set(LEAGUE_COMPETITIONS):
-            raise TypeError(f'Calculating points is supported only for league games, '
-                            f'current competitions: {current_competitions}')
+            raise TypeError(
+                f"Calculating points is supported only for league games, current competitions: {current_competitions}"
+            )
 
         return calculate_points_for_games(self)
 
@@ -340,38 +383,43 @@ class MaccabiGamesStats:
         current_competitions = self.available_competitions
 
         if not set(current_competitions) <= set(LEAGUE_COMPETITIONS):
-            raise TypeError(f'Calculating success rate supported only for league games, '
-                            f'current competitions: {current_competitions}')
+            raise TypeError(
+                f"Calculating success rate supported only for league games, "
+                f"current competitions: {current_competitions}"
+            )
 
         return round(calculate_points_for_games(self) / calculate_possible_points_for_games(self), 3)
 
     def get_summary(self) -> Dict[str, Any]:
-        summary = {'games': len(self),
-                   "wins": self.results.wins_count,
-                   "wins_by_percentage": self.results.wins_percentage,
-                   "losses": self.results.losses_count,
-                   "losses_by_percentage": self.results.losses_percentage,
-                   "ties": self.results.ties_count,
-                   "ties_by_percentage": self.results.ties_percentage,
-                   "goals_for_maccabi": self.results.total_goals_for_maccabi,
-                   "goals_for_maccabi_avg": self.averages.goals_for_maccabi,
-                   "goals_against_maccabi": self.results.total_goals_against_maccabi,
-                   "goals_against_maccabi_avg": self.averages.goals_against_maccabi,
-                   "goals_diff_for_maccabi": self.results.total_goals_diff_for_maccabi,
-                   "goals_diff_for_maccabi_avg": self.averages.maccabi_diff}
+        summary = {
+            "games": len(self),
+            "wins": self.results.wins_count,
+            "wins_by_percentage": self.results.wins_percentage,
+            "losses": self.results.losses_count,
+            "losses_by_percentage": self.results.losses_percentage,
+            "ties": self.results.ties_count,
+            "ties_by_percentage": self.results.ties_percentage,
+            "goals_for_maccabi": self.results.total_goals_for_maccabi,
+            "goals_for_maccabi_avg": self.averages.goals_for_maccabi,
+            "goals_against_maccabi": self.results.total_goals_against_maccabi,
+            "goals_against_maccabi_avg": self.averages.goals_against_maccabi,
+            "goals_diff_for_maccabi": self.results.total_goals_diff_for_maccabi,
+            "goals_diff_for_maccabi_avg": self.averages.maccabi_diff,
+        }
 
         return summary
 
     def show_summary(self) -> None:
-        summary = ("Maccabi games stats object:"
-                   "\n\nGames count: {games}"
-                   "\nWins : {wins} ({wins_by_percentage}%)"
-                   "\nLosses : {losses} ({losses_by_percentage}%)"
-                   "\nTies : {ties} ({ties_by_percentage}%)"
-                   "\n\nGoals for maccabi : {goals_for_maccabi}, {goals_for_maccabi_avg} per game"
-                   "\nGoals against maccabi : {goals_against_maccabi}, {goals_against_maccabi_avg} per game"
-                   "\nGoals diff for maccabi: {goals_diff_for_maccabi}, {goals_diff_for_maccabi} per game").format(
-            **self.get_summary())
+        summary = (
+            "Maccabi games stats object:"
+            "\n\nGames count: {games}"
+            "\nWins : {wins} ({wins_by_percentage}%)"
+            "\nLosses : {losses} ({losses_by_percentage}%)"
+            "\nTies : {ties} ({ties_by_percentage}%)"
+            "\n\nGoals for maccabi : {goals_for_maccabi}, {goals_for_maccabi_avg} per game"
+            "\nGoals against maccabi : {goals_against_maccabi}, {goals_against_maccabi_avg} per game"
+            "\nGoals diff for maccabi: {goals_diff_for_maccabi}, {goals_diff_for_maccabi} per game"
+        ).format(**self.get_summary())
 
         print(summary)
 
@@ -384,7 +432,7 @@ class MaccabiGamesStats:
 
     def serialize_to_json(self) -> None:
         # TODO, there is too much escaped stuff in this function output
-        with NamedTemporaryFile(delete=False, mode='w') as temp_json:
+        with NamedTemporaryFile(delete=False, mode="w") as temp_json:
             logger.info(f"Serializing current maccabi games stats to temporary json file at: {temp_json.name}")
             temp_json.file.write(self.to_json())
 
@@ -400,9 +448,9 @@ class MaccabiGamesStats:
 
     def __repr__(self) -> str:
         if not self.games:
-            return f'{self.description} | {len(self.games)} games'
+            return f"{self.description} | {len(self.games)} games"
 
-        return f'{self.description} | {len(self.games)} games | (from {self.first_game_date} to {self.last_game_date})'
+        return f"{self.description} | {len(self.games)} games | (from {self.first_game_date} to {self.last_game_date})"
 
     def _new_description(self, new_description) -> str:
         """
@@ -412,7 +460,7 @@ class MaccabiGamesStats:
         if self.description == self._DEFAULT_DESCRIPTION:
             return new_description
 
-        return f'{self.description} + {new_description}'
+        return f"{self.description} + {new_description}"
 
     @property
     def hebrew_representation(self) -> str:

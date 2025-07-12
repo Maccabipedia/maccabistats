@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-import logging
-from collections.abc import Iterator
-from collections import deque
-from typing import Dict
 import html
+import logging
+from collections import deque
+from collections.abc import Iterator
+from typing import Dict
 
 import requests
+
 from maccabistats.config import MaccabiStatsConfigSingleton
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,9 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
         self.base_crawling_address = MaccabiStatsConfigSingleton.maccabipedia.base_crawling_address
 
         self.tables_name = tables_name
-        assert _MUST_HAVE_FIELDS in tables_fields, f"This class is depends on those fields to be queried: {_MUST_HAVE_FIELDS}"
+        assert _MUST_HAVE_FIELDS in tables_fields, (
+            f"This class is depends on those fields to be queried: {_MUST_HAVE_FIELDS}"
+        )
         self.tables_fields = tables_fields
         self.join_tables_on = join_tables_on
         self.where_condition = where_condition
@@ -43,16 +46,18 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
     @property
     def full_crawl_address(self):
         # Cargo for mediawiki 1.35 has a bug that enforce us to send some params with empty values
-        return f"{self.base_crawling_address}" \
-               f"&tables={self.tables_name}" \
-               f"&fields={self.tables_fields}" \
-               f"&join_on={self.join_tables_on}" \
-               f"&limit={_MAX_LIMIT_PER_REQUEST}" \
-               f"&offset={self._current_offset}" \
-               f"&where={self.where_condition}" \
-               f"&group_by=" \
-               f"&order_by=" \
-               f"&having="
+        return (
+            f"{self.base_crawling_address}"
+            f"&tables={self.tables_name}"
+            f"&fields={self.tables_fields}"
+            f"&join_on={self.join_tables_on}"
+            f"&limit={_MAX_LIMIT_PER_REQUEST}"
+            f"&offset={self._current_offset}"
+            f"&where={self.where_condition}"
+            f"&group_by="
+            f"&order_by="
+            f"&having="
+        )
 
     def _request_more_data(self):
         """
@@ -62,8 +67,10 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
         # Get data
         request_result = requests.get(self.full_crawl_address)
         if request_result.status_code != 200:
-            logging.exception(f"Error while fetching data from address: {self.full_crawl_address}, "
-                              f"status code: {request_result.status_code}, text: {request_result.text}")
+            logging.exception(
+                f"Error while fetching data from address: {self.full_crawl_address}, "
+                f"status code: {request_result.status_code}, text: {request_result.text}"
+            )
             raise ValueError(f"status code {request_result.status_code} while fetching data from maccabipedia")
 
         current_request_as_json = request_result.json()
@@ -74,15 +81,17 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
             self._finished_to_crawl = True
 
         # Add to queue for iteration
-        [self._already_fetched_data_queue.append(self._decode_maccabipedia_data(data)) for data in
-         current_request_as_json]
+        [
+            self._already_fetched_data_queue.append(self._decode_maccabipedia_data(data))
+            for data in current_request_as_json
+        ]
 
     @staticmethod
     def _decode_maccabipedia_data(maccabipedia_data) -> Dict:
-        if 'Opponent' in maccabipedia_data:
-            maccabipedia_data['Opponent'] = html.unescape(maccabipedia_data['Opponent'])
-        if 'Stadium' in maccabipedia_data:
-            maccabipedia_data['Stadium'] = html.unescape(maccabipedia_data['Stadium'])
+        if "Opponent" in maccabipedia_data:
+            maccabipedia_data["Opponent"] = html.unescape(maccabipedia_data["Opponent"])
+        if "Stadium" in maccabipedia_data:
+            maccabipedia_data["Stadium"] = html.unescape(maccabipedia_data["Stadium"])
 
         return maccabipedia_data
 
@@ -101,11 +110,15 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
 
     @classmethod
     def create_games_crawler(cls):
-        return cls(tables_name=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.tables_names,
-                   tables_fields=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.fields_names,
-                   join_tables_on=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.join_on)
+        return cls(
+            tables_name=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.tables_names,
+            tables_fields=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.fields_names,
+            join_tables_on=MaccabiStatsConfigSingleton.maccabipedia.games_data_query.join_on,
+        )
 
     @classmethod
     def create_games_events_crawler(cls):
-        return cls(tables_name=MaccabiStatsConfigSingleton.maccabipedia.games_events_query.tables_names,
-                   tables_fields=MaccabiStatsConfigSingleton.maccabipedia.games_events_query.fields_names)
+        return cls(
+            tables_name=MaccabiStatsConfigSingleton.maccabipedia.games_events_query.tables_names,
+            tables_fields=MaccabiStatsConfigSingleton.maccabipedia.games_events_query.fields_names,
+        )

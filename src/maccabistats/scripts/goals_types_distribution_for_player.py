@@ -1,7 +1,8 @@
+import logging
+from collections import Counter
+
 from maccabistats import load_from_maccabipedia_source
 from maccabistats.models.player_game_events import GoalGameEvent
-from collections import Counter
-import logging
 
 # Allow to log when running with __name__ == "__main__"
 logger = logging.getLogger("maccabistats")
@@ -37,7 +38,7 @@ def show_goals_types_distribution_for_player(player_name):
     logger.info(f"Goals types distribution for {player_name} is:")
 
     for goal_type in player_goals_types.items():
-        logger.info(f"{goal_type}, {goal_type[1]/len(player_goals):.2}%")
+        logger.info(f"{goal_type}, {goal_type[1] / len(player_goals):.2}%")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing
-from typing import TYPE_CHECKING, Tuple, List
+from typing import TYPE_CHECKING, List, Tuple
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
