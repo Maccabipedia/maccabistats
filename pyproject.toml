@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "maccabistats"
-version = "2.6.0"
+version = "3.0.1"
 description = "Maccabi Tel Aviv football team statistics manipulation and analysis tool"
 requires-python = ">=3.13.5"
 readme = "README.md"

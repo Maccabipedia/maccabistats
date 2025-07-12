@@ -30,7 +30,7 @@ def normalize_name(name):
         )
 
     # Remove duplicated spaces
-    normalized_name = re.sub("\s+", " ", name_without_special_chars)
+    normalized_name = re.sub(r"\s+", " ", name_without_special_chars)
     if normalized_name != name_without_special_chars:
         logger.debug("normalized_name: {new_name}--->{old_name}".format(new_name=normalized_name, old_name=name))
 

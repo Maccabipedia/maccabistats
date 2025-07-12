@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-GameInformation: dict[str, Any] = dict()
+GameInformation = dict[str, Any]
 PlayersEventsInformation = list[dict[str, Any]]
 
 _BASE_EXPORT_FOLDER = Path.home() / "maccabistats" / "export"

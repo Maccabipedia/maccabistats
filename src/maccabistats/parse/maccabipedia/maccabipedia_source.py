@@ -27,5 +27,3 @@ class MaccabiPediaSource(MaccabiStatsSource):
         """
         Run any specific fixes for this source (such as error within the raw data).
         """
-
-        pass

@@ -91,6 +91,7 @@ class ErrorsFinder:
                 last_goal = game_to_check.goals()[-1]
                 maccabi_score, not_maccabi_score = last_goal["maccabi_score"], last_goal["not_maccabi_score"]
 
+            # TODO: Is it bug? Should we check the last goal only?
             return maccabi_score != game_to_check.maccabi_score or not_maccabi_score != not_maccabi_score
 
         games = list(filter(game_has_wrong_goals_belonging, self.maccabi_games_stats))

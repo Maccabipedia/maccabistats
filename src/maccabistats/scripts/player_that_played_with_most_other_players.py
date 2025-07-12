@@ -9,6 +9,9 @@ from bidi import algorithm as bidialg
 
 from maccabistats import *
 
+# TODO: Fix the inport of maccabistats
+# TODO: What is bidi? Why its not in requirements.txt \ pyproject.toml?
+
 
 def squarify_show_chart(best_players: list[Tuple]):
     sizes = [players_amount * players_amount for player_name, players_amount in top_players]
