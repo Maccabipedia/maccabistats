@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, Tuple
 
 from maccabistats.models.game_data import GameData
 
@@ -23,16 +23,16 @@ class MaccabiGamesGoalsTiming(object):
         self.maccabi_games_stats = maccabi_games_stats
         self.games = maccabi_games_stats.games
 
-    def fastest_two_goals(self, top_games_number=_TOP_GAMES_NUMBER) -> List[GameGoalTiming]:
+    def fastest_two_goals(self, top_games_number=_TOP_GAMES_NUMBER) -> list[GameGoalTiming]:
         return self._top_games_with_minimum_goals_time_frame(2)[:top_games_number]
 
-    def fastest_three_goals(self, top_games_number=_TOP_GAMES_NUMBER) -> List[GameGoalTiming]:
+    def fastest_three_goals(self, top_games_number=_TOP_GAMES_NUMBER) -> list[GameGoalTiming]:
         return self._top_games_with_minimum_goals_time_frame(3)[:top_games_number]
 
-    def fastest_four_goals(self, top_games_number=_TOP_GAMES_NUMBER) -> List[GameGoalTiming]:
+    def fastest_four_goals(self, top_games_number=_TOP_GAMES_NUMBER) -> list[GameGoalTiming]:
         return self._top_games_with_minimum_goals_time_frame(4)[:top_games_number]
 
-    def _top_games_with_minimum_goals_time_frame(self, goals_number: int) -> List[GameGoalTiming]:
+    def _top_games_with_minimum_goals_time_frame(self, goals_number: int) -> list[GameGoalTiming]:
         games_with_enough_goals = [game for game in self.maccabi_games_stats if game.maccabi_score >= goals_number]
 
         games_goals_timings = [

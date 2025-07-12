@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from datetime import timedelta
 from pprint import pformat
-from typing import List, cast
+from typing import cast
 
 from maccabistats.models.player import Player
 from maccabistats.models.player_game_events import AssistTypes, GameEvent, GameEventTypes, GoalGameEvent, GoalTypes
 
 
 class PlayerInGame(Player):
-    def __init__(self, name: str, number: int, game_events: List[GameEvent]):
+    def __init__(self, name: str, number: int, game_events: list[GameEvent]):
         super(PlayerInGame, self).__init__(name, number)
 
         self.events = game_events
@@ -21,7 +21,7 @@ class PlayerInGame(Player):
         # TODO: might use any
         return event_type in [event.event_type for event in self.events]
 
-    def get_events_by_type(self, event_type: GameEventTypes) -> List[GameEvent]:
+    def get_events_by_type(self, event_type: GameEventTypes) -> list[GameEvent]:
         return [event for event in self.events if event.event_type == event_type]
 
     def event_count_by_type(self, event_type: GameEventTypes) -> int:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 from enum import Enum
-from typing import Dict
+from typing import Any
 
 
 class AssistTypes(Enum):
@@ -105,7 +105,7 @@ class GameEvent(object):
 
         return self.event_type == other.event_type and self.time_occur == other.time_occur
 
-    def json_dict(self) -> Dict:
+    def json_dict(self) -> dict[str, Any]:
         return dict(event_type=self.event_type.value, time_occur=str(self.time_occur))
 
 
@@ -119,7 +119,7 @@ class GoalGameEvent(GameEvent):
             game_event=super(GoalGameEvent, self).__repr__(), self=self
         )
 
-    def json_dict(self) -> Dict:
+    def json_dict(self) -> dict[str, Any]:
         base_class_json_dict = super(GoalGameEvent, self).json_dict()
 
         base_class_json_dict["goal_type"] = self.goal_type.value
@@ -136,7 +136,7 @@ class AssistGameEvent(GameEvent):
             game_event=super(AssistGameEvent, self).__repr__(), self=self
         )
 
-    def json_dict(self) -> Dict:
+    def json_dict(self) -> dict[str, Any]:
         base_class_json_dict = super(AssistGameEvent, self).json_dict()
 
         base_class_json_dict["assist_type"] = self.assist_type.value

@@ -18,7 +18,7 @@ class TransfermarktComparator:
         self.data_storage_folder = data_storage_folder
 
     def compare_games_date(self) -> None:
-        _logger.info(f"Starting to compare player by player, starting from these with the most appearances")
+        _logger.info("Starting to compare player by player, starting from these with the most appearances")
 
         for player_html_file in self.data_storage_folder.glob("*.html"):
             _logger.info(f"Handling file: {player_html_file}")

@@ -7,8 +7,9 @@ class MaccabiSiteConfig:
     season_page_pattern: str = (
         "https://www.maccabi-tlv.co.il/משחקים-ותוצאות/הקבוצה-הבוגרת/תוצאות/?season={season_number}#content"
     )
-    folder_to_save_seasons_html_files = "c:\maccabi\seasons"
-    folder_to_save_games_html_files = "c:\maccabi\games"
+    # TODO: Check the new paths
+    folder_to_save_seasons_html_files = r"c:\\maccabi\\seasons"
+    folder_to_save_games_html_files = r"c:\\maccabi\\games"
     use_disk_as_cache_when_crawling = True
     use_lxml_parser = True
     use_multiprocess_crawling = True

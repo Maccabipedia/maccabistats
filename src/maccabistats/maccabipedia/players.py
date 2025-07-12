@@ -1,7 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict
 
 from dateutil.parser import parse as datetime_parser
 
@@ -36,12 +35,12 @@ class MaccabiPediaPlayers(object):
         }
 
     @staticmethod
-    def _crawl_players_data() -> Dict[str, MaccabiPediaPlayerData]:
+    def _crawl_players_data() -> dict[str, MaccabiPediaPlayerData]:
         players_data_iterator = MaccabiPediaCargoChunksCrawler(
             tables_name="Profiles", tables_fields="Profiles._pageName, Profiles.DoB, Profiles.HomePlayer"
         )
 
-        players_data = dict()
+        players_data: dict[str, MaccabiPediaPlayerData] = dict()
         for player_raw_data in players_data_iterator:
             # Player Date of birth is missing for some players, we just take the default value for those
             # Birth date format is YYYY_MM_DD:
@@ -50,8 +49,8 @@ class MaccabiPediaPlayers(object):
                 if player_raw_data["DoB"]
                 else MaccabiPediaPlayers.missing_birth_date_value
             )
-            player_name = player_raw_data["_pageName"]
-            is_home_player = bool(player_raw_data["HomePlayer"])  # Should be 0 or 1
+            player_name: str = player_raw_data["_pageName"]
+            is_home_player: bool = bool(player_raw_data["HomePlayer"])  # Should be 0 or 1
 
             players_data[player_name] = MaccabiPediaPlayerData(
                 name=player_name, birth_date=birth_date, is_home_player=is_home_player

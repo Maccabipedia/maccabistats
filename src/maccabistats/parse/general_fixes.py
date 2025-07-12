@@ -229,8 +229,8 @@ def __remove_youth_games(maccabi_games_stats):
 
 
 def run_general_fixes(maccabi_games_stats):
-    """
-    General fixes meant to be stuff like renaming of referees\players names and so on, they are does not depend on the source of maccabi games.
+    r"""
+    General fixes meant to be stuff like renaming of referees \ players names and so on, they are does not depend on the source of maccabi games.
     :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
     :rtype: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
     """

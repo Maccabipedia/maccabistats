@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import logging
 from datetime import timedelta
-from typing import TYPE_CHECKING, Callable, List
+from typing import TYPE_CHECKING, Callable
 
 from maccabistats.maccabipedia.players import MaccabiPediaPlayers
 from maccabistats.models.game_data import GameData
@@ -47,7 +47,7 @@ class MaccabiGamesPlayersSpecialGamesStats(object):
         player_game_to_search_for: PlayerGameMatcher,
         order_by_age_option: PlayerAging,
         players_count: int,
-    ) -> List[PlayerAgeAtSpecialGame]:
+    ) -> list[PlayerAgeAtSpecialGame]:
         """
         :param player_game_condition: A function that will check whether the given player satisfy a condition in a game
         :param player_game_to_search_for: Search for first/last game of this player (to satisfy the condition)

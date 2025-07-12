@@ -241,7 +241,7 @@ def __fix_half_parsed_goal_events(game):
 
 def __get_player_for_half_parsed_goals_events(game, goal_event):
     """
-    Trying to search for exact name, after that for first\last name, after that splitting name by dot (if exist) and search for first\last name.
+    Trying to search for exact name, after that for first \ last name, after that splitting name by dot (if exist) and search for first \ last name.
     """
     # Trying to find player with the exact name.
     name = goal_event["name"]
@@ -251,13 +251,13 @@ def __get_player_for_half_parsed_goals_events(game, goal_event):
         return players[0]
 
     # Trying to find player with the same first\last name.
-    logger.info("Cant find full player name, trying first\last name:{name}".format(name=name))
+    logger.info("Cant find full player name, trying first \ last name:{name}".format(name=name))
     players = [player for player in all_players if name in player.name.split()]
     if players:
         return players[0]
 
     # Trying dot pattern, like : א.זוהר which might be איציק זוהר
-    logger.info("Cant find first\last player name, trying check for dot pattern name:{name}".format(name=name))
+    logger.info("Cant find first \ last player name, trying check for dot pattern name:{name}".format(name=name))
     if "." in name:
         first, last = [part.strip() for part in name.split(".")]
         players = [player for player in all_players if last in player.name.split()]

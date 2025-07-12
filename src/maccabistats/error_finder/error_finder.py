@@ -2,7 +2,7 @@ import logging
 from collections import defaultdict
 from datetime import timedelta
 from itertools import chain, repeat
-from typing import List, Tuple
+from typing import Tuple
 
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEventTypes
@@ -10,7 +10,7 @@ from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
 
 logger = logging.getLogger(__name__)
 """
-This class is responsible to find errors in MaccabiGamesStats object, 
+This class is responsible to find errors in MaccabiGamesStats object,
 such as games that the amount of goals does not match to the final score sum,
 empty events and so on.
 
@@ -40,7 +40,7 @@ class ErrorsFinder:
         """
         Each game should be played in a unique date (that how our MaccabiPedia football modeling system works atm)
         """
-        games_by_date = defaultdict(list)
+        games_by_date: dict[str, list] = defaultdict(list)
 
         for game in self.maccabi_games_stats:
             games_by_date[game.date.date()].append(game)
@@ -206,7 +206,7 @@ class ErrorsFinder:
 
     def get_players_which_play_more_than_x_years(
         self, number_of_years: int = 20
-    ) -> List[Tuple[str, MaccabiGamesStats]]:
+    ) -> list[Tuple[str, MaccabiGamesStats]]:
         """
         Returns the players who play more than the given years.
         This may indicate on naming errors
@@ -221,7 +221,7 @@ class ErrorsFinder:
         players_who_played_too_much.sort(key=lambda item: item[1][-1].date - item[1][0].date)
         return players_who_played_too_much
 
-    def get_players_with_any_event_that_did_not_count_as_played(self) -> List[Tuple[str, GameData]]:
+    def get_players_with_any_event_that_did_not_count_as_played(self) -> list[Tuple[str, GameData]]:
         players_with_events_that_did_not_play = []
         played_player_events = {GameEventTypes.SUBSTITUTION_IN, GameEventTypes.LINE_UP}
 
@@ -241,7 +241,7 @@ class ErrorsFinder:
 
         return players_with_events_that_did_not_play
 
-    def get_benched_players_that_has_events_without_sub_in(self) -> List[Tuple[str, GameData]]:
+    def get_benched_players_that_has_events_without_sub_in(self) -> list[Tuple[str, GameData]]:
         benched_players_with_weird_events = []
 
         for game in self.maccabi_games_stats:
@@ -263,7 +263,7 @@ class ErrorsFinder:
 
         return benched_players_with_weird_events
 
-    def get_items_category_with_empty_names(self) -> List[str]:
+    def get_items_category_with_empty_names(self) -> list[str]:
         """
         return the category name that may contain invalid item name (coaches, opponents, players and so on),
         it may happen due to exception while we extract the data from maccabipedia
@@ -285,7 +285,7 @@ class ErrorsFinder:
 
         return bad_items_category
 
-    def get_players_with_two_yellows_without_red_card_in_the_same_game(self) -> List[Tuple[str, GameData]]:
+    def get_players_with_two_yellows_without_red_card_in_the_same_game(self) -> list[Tuple[str, GameData]]:
         players_and_games = []
 
         for game in self.maccabi_games_stats:

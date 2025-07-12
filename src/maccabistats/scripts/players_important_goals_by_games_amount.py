@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Tuple
+from typing import Any, Tuple
 
 from bidi import algorithm as bidialg
 from matplotlib import pyplot as plt
@@ -12,45 +12,45 @@ _PLAYERS_TO_SHOW_IN_GRAPH = 50
 
 @dataclass
 class PlayersImportantGoals:
-    player_to_played_games: Dict[str, int]
+    player_to_played_games: dict[str, int]
 
-    player_to_important_goals: Dict[str, int]
-    player_to_important_goals_per_game: Dict[str, float]
+    player_to_important_goals: dict[str, int]
+    player_to_important_goals_per_game: dict[str, float]
 
-    player_to_important_goals_last_minutes: Dict[str, int]
-    player_to_important_goals_last_minutes_per_game: Dict[str, float]
+    player_to_important_goals_last_minutes: dict[str, int]
+    player_to_important_goals_last_minutes_per_game: dict[str, float]
 
-    player_to_important_goals_advantage_only: Dict[str, int]
+    player_to_important_goals_advantage_only: dict[str, int]
 
-    player_to_important_goals_percentage_from_total_goals: Dict[str, int]
+    player_to_important_goals_percentage_from_total_goals: dict[str, int]
 
     @staticmethod
     def _remove_per_game_text(player_name: str) -> str:
         return player_name.split("-")[0].strip()
 
     @property
-    def players_important_goals_and_games(self) -> Dict[str, Tuple[int, int]]:
+    def players_important_goals_and_games(self) -> dict[str, Tuple[int, int]]:
         return {
             player_name: (player_goals, self.player_to_played_games.get(player_name, 1))
             for player_name, player_goals in self.player_to_important_goals.items()
         }
 
     @property
-    def players_important_goals_last_minutes_and_games(self) -> Dict[str, Tuple[int, int]]:
+    def players_important_goals_last_minutes_and_games(self) -> dict[str, Tuple[int, int]]:
         return {
             player_name: (player_goals, self.player_to_played_games.get(player_name, 1))
             for player_name, player_goals in self.player_to_important_goals_last_minutes.items()
         }
 
     @property
-    def players_important_goals_advantage_only_and_games(self) -> Dict[str, Tuple[int, int]]:
+    def players_important_goals_advantage_only_and_games(self) -> dict[str, Tuple[int, int]]:
         return {
             player_name: (player_goals, self.player_to_played_games.get(player_name, 1))
             for player_name, player_goals in self.player_to_important_goals_advantage_only.items()
         }
 
     @property
-    def players_important_goals_per_game_and_games(self) -> Dict[str, Tuple[int, int]]:
+    def players_important_goals_per_game_and_games(self) -> dict[str, Tuple[int, int]]:
         return {
             self._remove_per_game_text(player_name): (
                 player_goals_per_game,
@@ -60,7 +60,7 @@ class PlayersImportantGoals:
         }
 
     @property
-    def players_important_goals_last_minutes_per_game_and_games(self) -> Dict[str, Tuple[int, int]]:
+    def players_important_goals_last_minutes_per_game_and_games(self) -> dict[str, Tuple[int, int]]:
         return {
             self._remove_per_game_text(player_name): (
                 player_goals_per_game,
@@ -70,7 +70,7 @@ class PlayersImportantGoals:
         }
 
     @property
-    def players_important_goals_percentage_from_games_and_games(self) -> Dict[str, Tuple[int, int]]:
+    def players_important_goals_percentage_from_games_and_games(self) -> dict[str, Tuple[int, int]]:
         return {
             self._remove_per_game_text(player_name): (
                 player_goals_per_game,
@@ -196,7 +196,7 @@ def show_player_important_goals_percentage_from_goals_to_games_graph(players_sta
 
 
 def show_graph_from_player_stat_to_games(
-    player_stats_to_games: Dict[str, Tuple[Any, int]], names_to_positions: Dict[str, Tuple] | None = None
+    player_stats_to_games: dict[str, Tuple[Any, int]], names_to_positions: dict[str, Tuple[int, int]] | None = None
 ) -> None:
     # we get too much overlaps, there seems to not be an easy solution for that in matplotlib
     names_to_positions = names_to_positions or {}

@@ -8,7 +8,7 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 from maccabistats.models.game_data import GameData
 from maccabistats.version import version
@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-GameInformation = Dict[str, Any]
-PlayersEventsInformation = List[Dict[str, Any]]
+GameInformation: dict[str, Any] = dict()
+PlayersEventsInformation = list[dict[str, Any]]
 
 _BASE_EXPORT_FOLDER = Path.home() / "maccabistats" / "export"
 
@@ -69,7 +69,7 @@ class ExportMaccabiGamesStats(object):
 
         return game_events
 
-    def _players_events_dict(self) -> List[PlayersEventsInformation]:
+    def _players_events_dict(self) -> list[PlayersEventsInformation]:
         logger.info("Starting to create a dict with all player events data")
         all_games = []
 
@@ -85,7 +85,7 @@ class ExportMaccabiGamesStats(object):
         logger.info("Finished to create a dict with all players events data")
         return all_games
 
-    def _create_all_games_data(self) -> List[GameInformation]:
+    def _create_all_games_data(self) -> list[GameInformation]:
         logger.info("Starting to create a dict with all games data")
         all_games = []
 

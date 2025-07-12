@@ -5,7 +5,7 @@ import json
 import logging
 from collections import defaultdict
 from tempfile import NamedTemporaryFile
-from typing import Any, DefaultDict, Dict, List
+from typing import Any, DefaultDict
 
 from dateutil.parser import parse as datetime_parser
 
@@ -51,8 +51,8 @@ logger = logging.getLogger(__name__)
 class MaccabiGamesStats:
     _DEFAULT_DESCRIPTION = "All games"
 
-    def __init__(self, games: List[GameData], description: str | None = None) -> None:
-        self.games: List[GameData] = sorted(games, key=lambda g: g.date)  # Sort the games by date
+    def __init__(self, games: list[GameData], description: str | None = None) -> None:
+        self.games: list[GameData] = sorted(games, key=lambda g: g.date)  # Sort the games by date
         self.description = description or self._DEFAULT_DESCRIPTION
 
         self.coaches = MaccabiGamesCoachesStats(self)
@@ -131,7 +131,7 @@ class MaccabiGamesStats:
     def non_official_games(self) -> MaccabiGamesStats:
         return MaccabiGamesStats(
             [game for game in self.games if game.competition in NON_OFFICIAL_COMPETITIONS],
-            self._new_description(f"Non-official games"),
+            self._new_description("Non-official games"),
         )
 
     # endregion
@@ -139,19 +139,19 @@ class MaccabiGamesStats:
     # region available properties
 
     @property
-    def available_competitions(self) -> List[str]:
+    def available_competitions(self) -> list[str]:
         return list(set(game.competition for game in self.games))
 
     @property
-    def available_opponents(self) -> List[str]:
+    def available_opponents(self) -> list[str]:
         return list(set(game.not_maccabi_team.name for game in self.games))
 
     @property
-    def available_stadiums(self) -> List[str]:
+    def available_stadiums(self) -> list[str]:
         return list(set(game.stadium for game in self.games))
 
     @property
-    def available_players(self) -> List[Player]:
+    def available_players(self) -> list[Player]:
         """
         Returns players objects (name + number), Which means a player name can appear more than once.
         """
@@ -159,19 +159,19 @@ class MaccabiGamesStats:
         return list(set([player.get_as_normal_player() for player in players]))
 
     @property
-    def available_players_names(self) -> List[str]:
+    def available_players_names(self) -> list[str]:
         return list(set(player.name for player in self.available_players))
 
     @property
-    def available_referees(self) -> List[str]:
+    def available_referees(self) -> list[str]:
         return list(set(game.referee for game in self.games))
 
     @property
-    def available_coaches(self) -> List[str]:
+    def available_coaches(self) -> list[str]:
         return list(set(game.maccabi_team.coach for game in self.games))
 
     @property
-    def available_seasons(self) -> List[str]:
+    def available_seasons(self) -> list[str]:
         return sorted(list(set(game.season for game in self.games)))
 
     # endregion
@@ -238,7 +238,7 @@ class MaccabiGamesStats:
 
     # region free-style filters
 
-    def get_games_by_competition(self, competition_types: List[str] | str) -> MaccabiGamesStats:
+    def get_games_by_competition(self, competition_types: list[str] | str) -> MaccabiGamesStats:
         if isinstance(competition_types, str):
             competition_types = [competition_types]
 
@@ -315,7 +315,7 @@ class MaccabiGamesStats:
         """
         Returns a mapping between a player name to the games he participated
         """
-        players_games = defaultdict(list)
+        players_games: dict[str, list] = defaultdict(list)
 
         for game in self.games:
             for player in game.maccabi_team.played_players:
@@ -331,7 +331,7 @@ class MaccabiGamesStats:
         # Allow to return an empty list for unknown players
         return defaultdict(lambda: MaccabiGamesStats([]), games_by_player)
 
-    def played_games_by_player_and_team(self) -> Dict[str, DefaultDict[str, MaccabiGamesStats]]:
+    def played_games_by_player_and_team(self) -> dict[str, DefaultDict[str, MaccabiGamesStats]]:
         """
         Returns a mapping between a player name to a dict from team to games, means:
         {'player_name1': {'team1': game1,
@@ -358,7 +358,7 @@ class MaccabiGamesStats:
         # Allow to return an empty list for unknown players, same default dict as above but with MaccabiGamesStats
         return defaultdict(lambda: defaultdict(lambda: MaccabiGamesStats([])), games_by_player_and_team)
 
-    def create_maccabi_stats_from_games(self, games: List[GameData]) -> MaccabiGamesStats:
+    def create_maccabi_stats_from_games(self, games: list[GameData]) -> MaccabiGamesStats:
         return MaccabiGamesStats(games, description=self.description)
 
     @property
@@ -390,7 +390,7 @@ class MaccabiGamesStats:
 
         return round(calculate_points_for_games(self) / calculate_possible_points_for_games(self), 3)
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         summary = {
             "games": len(self),
             "wins": self.results.wins_count,

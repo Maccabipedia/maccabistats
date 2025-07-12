@@ -14,17 +14,16 @@ root_folder = Path.home()
 jsoned_games_path = root_folder / "maccabistats" / "sources" / "table-games.json"
 
 """
- Jsoned game format:
-
-        "referee": str,
-        "away_team": str,
-        "away_team_score": int,
-        "home_team_score": int,
-        "home_team": str,
-        "stadium": str,
-        "date": str date :"1955-02-05 00:00:00",
-        "fixture": int,
-        "season": str
+Jsoned game format:
+    "referee": str,
+    "away_team": str,
+    "away_team_score": int,
+    "home_team_score": int,
+    "home_team": str,
+    "stadium": str,
+    "date": str date :"1955-02-05 00:00:00",
+    "fixture": int,
+    "season": str
 """
 
 

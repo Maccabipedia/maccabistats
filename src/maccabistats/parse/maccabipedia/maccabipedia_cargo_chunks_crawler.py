@@ -3,7 +3,7 @@ import html
 import logging
 from collections import deque
 from collections.abc import Iterator
-from typing import Dict
+from typing import Any
 
 import requests
 
@@ -16,7 +16,7 @@ _MUST_HAVE_FIELDS = "_pageName"
 
 
 class MaccabiPediaCargoChunksCrawler(Iterator):
-    def __init__(self, tables_name, tables_fields, join_tables_on="", where_condition="1=1"):
+    def __init__(self, tables_name: str, tables_fields: str, join_tables_on: str = "", where_condition: str = "1=1"):
         """
 
         :param tables_name: The table name to crawl
@@ -87,7 +87,7 @@ class MaccabiPediaCargoChunksCrawler(Iterator):
         ]
 
     @staticmethod
-    def _decode_maccabipedia_data(maccabipedia_data) -> Dict:
+    def _decode_maccabipedia_data(maccabipedia_data) -> dict[str, Any]:
         if "Opponent" in maccabipedia_data:
             maccabipedia_data["Opponent"] = html.unescape(maccabipedia_data["Opponent"])
         if "Stadium" in maccabipedia_data:

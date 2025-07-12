@@ -15,7 +15,7 @@ class NamingErrorsFinder(object):
     ratio = 1.0 wont be print because we use set for all objects.
     """
 
-    def __init__(self, maccabi_games_stats, minimal_ratio_to_alert=SIMILARITY_MINIMAL_RATIO):
+    def __init__(self, maccabi_games_stats, minimal_ratio_to_alert: float = SIMILARITY_MINIMAL_RATIO):
         """
         :type maccabi_games_stats: maccabistats.stats.maccabi_games_stats.MaccabiGamesStats
         :param minimal_ratio_to_alert: the minimum ratio to report about naming similarity for.
@@ -72,7 +72,7 @@ class NamingErrorsFinder(object):
         return diff
 
     @staticmethod
-    def __similarity_of_two_names(first, second):
+    def __similarity_of_two_names(first: str, second: str):
         """
         Check the similarity of two names, returns the similarity between 0 and 1.
         :type first: str
@@ -83,7 +83,7 @@ class NamingErrorsFinder(object):
         return SequenceMatcher(None, first, second).ratio()
 
     @staticmethod
-    def get_similar_names(name, optional_similar_names, ratio=SIMILARITY_MINIMAL_RATIO):
+    def get_similar_names(name: str, optional_similar_names: list[str], ratio: float = SIMILARITY_MINIMAL_RATIO):
         """
         Returns the list of similar names from the given list (which above the given ratio)
         :param name: THe name to check similarity with

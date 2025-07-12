@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Tuple
+from typing import Tuple
 
 import aiohttp
 from bs4 import BeautifulSoup
@@ -19,7 +19,7 @@ FAKE_USER_AGENT = {"User-agent": "Mozilla/5.0"}
 # 1) Right click on this requests, copy as curl cmd, take this data to:
 # 2) https://curlconverter.com/ , convert to python and copy paste in here
 # 3) Remove the player name field value (inject without any escaping)
-def _get_predefined_request(player_name: str) -> Tuple[Dict, List]:
+def _get_predefined_request(player_name: str) -> Tuple[dict[str, str], list[Tuple[str, str]]]:
     headers = {
         "authority": "www.transfermarkt.com",
         "cache-control": "max-age=0",

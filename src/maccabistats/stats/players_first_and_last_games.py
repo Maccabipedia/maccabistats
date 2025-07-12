@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Callable, Dict, List, Tuple
+from typing import TYPE_CHECKING, Callable, Tuple
 
 from maccabistats.models.game_data import GameData
 
@@ -33,7 +33,7 @@ class MaccabiGamesPlayersFirstAndLastGamesStats(object):
 
     def _players_that_satisfy_condition_at_their_first_or_last_game(
         self, player_game_condition: Callable[[GameData, str], bool], player_game_to_search_for: PlayerGameMatcher
-    ) -> List[PlayerAndGame]:
+    ) -> list[PlayerAndGame]:
         """
         Check which players satisfy the given condition at their first or last game, like:
          * "which players score at their first game?"
@@ -43,7 +43,7 @@ class MaccabiGamesPlayersFirstAndLastGamesStats(object):
         :return: The players that satisfy the condition at their game + the first game, ordered by the game data ASC
         """
         games_by_player_name = self.maccabi_games_stats.played_games_by_player_name()
-        players_that_satisfy_condition: Dict[str, GameData] = dict()
+        players_that_satisfy_condition: dict[str, GameData] = dict()
 
         for player_name, player_games in games_by_player_name.items():
             if player_game_to_search_for.value == PlayerGameMatcher.LAST_GAME.value:
@@ -58,22 +58,22 @@ class MaccabiGamesPlayersFirstAndLastGamesStats(object):
 
         return sorted(players_that_satisfy_condition.items(), key=lambda item: item[1].date)
 
-    def players_that_scored_at_their_first_game(self, score_at_least: int = 1) -> List[PlayerAndGame]:
+    def players_that_scored_at_their_first_game(self, score_at_least: int = 1) -> list[PlayerAndGame]:
         return self._players_that_satisfy_condition_at_their_first_or_last_game(
             PlayerGamesCondition.create_score_x_goals_in_game__condition(score_at_least), PlayerGameMatcher.FIRST_GAME
         )
 
-    def players_that_scored_at_their_last_game(self, score_at_least: int = 1) -> List[PlayerAndGame]:
+    def players_that_scored_at_their_last_game(self, score_at_least: int = 1) -> list[PlayerAndGame]:
         return self._players_that_satisfy_condition_at_their_first_or_last_game(
             PlayerGamesCondition.create_score_x_goals_in_game__condition(score_at_least), PlayerGameMatcher.LAST_GAME
         )
 
-    def players_that_assisted_at_their_first_game(self, assist_at_least: int = 1) -> List[PlayerAndGame]:
+    def players_that_assisted_at_their_first_game(self, assist_at_least: int = 1) -> list[PlayerAndGame]:
         return self._players_that_satisfy_condition_at_their_first_or_last_game(
             PlayerGamesCondition.create_assist_x_goals_in_game__condition(assist_at_least), PlayerGameMatcher.FIRST_GAME
         )
 
-    def players_that_assisted_at_their_last_game(self, assist_at_least: int = 1) -> List[PlayerAndGame]:
+    def players_that_assisted_at_their_last_game(self, assist_at_least: int = 1) -> list[PlayerAndGame]:
         return self._players_that_satisfy_condition_at_their_first_or_last_game(
             PlayerGamesCondition.create_assist_x_goals_in_game__condition(assist_at_least), PlayerGameMatcher.LAST_GAME
         )

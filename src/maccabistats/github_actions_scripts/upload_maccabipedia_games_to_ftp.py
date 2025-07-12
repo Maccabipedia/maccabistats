@@ -26,8 +26,7 @@ def upload_maccabipedia_games_to_maccabipedia_ftp() -> None:
 
     full_remote_ftp_file_path = f"{MACCABIPEDIA_FTP_FOLDERS_PREFIX}{MACCABIPEDIA_GAMES_FILE_NAME_ON_FTP}"
     logging.info(
-        f"Starting to upload latest maccabipedia games file: {latest_maccabipedia_games_file} "
-        f"to FTP at: {full_remote_ftp_file_path}"
+        f"Starting to upload latest maccabipedia games file: {latest_maccabipedia_games_file} to FTP at: {full_remote_ftp_file_path}"
     )
 
     with open(latest_maccabipedia_games_file, "rb") as maccabipedia_games_file:

@@ -18,7 +18,7 @@ def show_double_league_fixtures(errors_finder: ErrorsFinder) -> None:
     if not problematic_games:
         return
 
-    logging.info(f"\nLeague games with the same season and fixture:")
+    logging.info("\nLeague games with the same season and fixture:")
     for fixture_and_season, maccabi_games_stats in problematic_games:
         logging.info(f"    {fixture_and_season}: {maccabi_games_stats.games}")
 
@@ -28,7 +28,7 @@ def show_games_with_difference_between_the_score_and_goals_amount(errors_finder:
     if not problematic_games:
         return
 
-    logging.info(f"\nGames with wrong team goals belonging:")
+    logging.info("\nGames with wrong team goals belonging:")
     for game in problematic_games:
         logging.info(f"    {game}")
 
@@ -38,7 +38,7 @@ def show_games_with_missing_goals_events(errors_finder: ErrorsFinder) -> None:
     if not problematic_games:
         return
 
-    logging.info(f"\nGames with missing goals events:")
+    logging.info("\nGames with missing goals events:")
     for game in problematic_games:
         logging.info(f"    {game}")
 
@@ -48,7 +48,7 @@ def show_games_with_incorrect_seasons(errors_finder: ErrorsFinder) -> None:
     if not problematic_games:
         return
 
-    logging.info(f"\nGames with incorrect season:")
+    logging.info("\nGames with incorrect season:")
     for record in problematic_games:
         logging.info(f"    {record}")
 
@@ -58,7 +58,7 @@ def show_games_without_11_lineup_players(errors_finder: ErrorsFinder) -> None:
     if not problematic_games:
         return
 
-    logging.info(f"\nGames without 11 players on lineup:")
+    logging.info("\nGames without 11 players on lineup:")
     for game in problematic_games:
         logging.info(f"    {game}")
 
@@ -68,7 +68,7 @@ def show_players_that_start_the_game_and_have_sub_in_event(errors_finder: Errors
     if not problematic_players:
         return
 
-    logging.info(f"\nPlayers that start the game and have sub-in event:")
+    logging.info("\nPlayers that start the game and have sub-in event:")
     for player_record in problematic_players:
         logging.info(f"    Player: {player_record[0].name}, Game: {player_record[1]}")
 
@@ -78,7 +78,7 @@ def show_players_with_unknown_events(errors_finder: ErrorsFinder) -> None:
     if not problematic_players:
         return
 
-    logging.info(f"\nPlayers with an unrecognized event:")
+    logging.info("\nPlayers with an unrecognized event:")
     for player_record in problematic_players:
         logging.info(
             f"    Player: {player_record[0].name}, Events: {player_record[0].events}, Game: {player_record[1]}"

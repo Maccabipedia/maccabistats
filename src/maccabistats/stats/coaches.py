@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from typing import TYPE_CHECKING, Callable, List, Tuple
+from typing import TYPE_CHECKING, Callable, Tuple
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -19,60 +19,60 @@ class MaccabiGamesCoachesStats(object):
 
     # region General scoring for coaches functions
     @property
-    def most_clean_sheet_games_coach(self) -> List[CoachStats]:
+    def most_clean_sheet_games_coach(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.not_maccabi_team.score == 0)
 
     @property
-    def most_games_with_goals_from_bench_coach(self) -> List[CoachStats]:
+    def most_games_with_goals_from_bench_coach(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: 1 if g.maccabi_team.has_goal_from_bench else 0)
 
     @property
-    def most_goals_for_maccabi_coach(self) -> List[CoachStats]:
+    def most_goals_for_maccabi_coach(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.maccabi_team.score)
 
     @property
-    def most_goals_against_maccabi_coach(self) -> List[CoachStats]:
+    def most_goals_against_maccabi_coach(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.not_maccabi_team.score)
 
     @property
-    def most_trained_coach(self) -> List[CoachStats]:
+    def most_trained_coach(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: 1)
 
     @property
-    def most_winner_coach(self) -> List[CoachStats]:
+    def most_winner_coach(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.is_maccabi_win)
 
     @property
-    def most_loser_coach(self) -> List[CoachStats]:
+    def most_loser_coach(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: g.maccabi_score_diff < 0)
 
     @property
-    def most_red_cards_to_players(self) -> List[CoachStats]:
+    def most_red_cards_to_players(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: sum(g.maccabi_team.red_carded_players_with_amount.values()))
 
     @property
-    def most_yellow_cards_to_players(self) -> List[CoachStats]:
+    def most_yellow_cards_to_players(self) -> list[CoachStats]:
         return self._calculate_coaches_stats(lambda g: sum(g.maccabi_team.yellow_carded_players_with_amount.values()))
 
     # endregion
 
     # region Percentage functions
-    def most_winner_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_winner_coach_by_percentage(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_winner_coach, calculate_as_percentage=True, minimum_games=minimum_games
         )
 
-    def most_loser_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_loser_coach_by_percentage(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_loser_coach, calculate_as_percentage=True, minimum_games=minimum_games
         )
 
-    def most_clean_sheet_games_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_clean_sheet_games_coach_by_percentage(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_clean_sheet_games_coach, calculate_as_percentage=True, minimum_games=minimum_games
         )
 
-    def most_games_with_goals_from_bench_coach_by_percentage(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_games_with_goals_from_bench_coach_by_percentage(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_games_with_goals_from_bench_coach, calculate_as_percentage=True, minimum_games=minimum_games
         )
@@ -80,22 +80,22 @@ class MaccabiGamesCoachesStats(object):
     # endregion
 
     # region Per game functions
-    def most_goals_for_maccabi_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_goals_for_maccabi_per_game_coach(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_goals_for_maccabi_coach, calculate_as_percentage=False, minimum_games=minimum_games
         )
 
-    def most_goals_against_maccabi_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_goals_against_maccabi_per_game_coach(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_goals_against_maccabi_coach, calculate_as_percentage=False, minimum_games=minimum_games
         )
 
-    def most_red_cards_to_players_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_red_cards_to_players_per_game_coach(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_red_cards_to_players, calculate_as_percentage=False, minimum_games=minimum_games
         )
 
-    def most_yellow_cards_to_players_per_game_coach(self, minimum_games: int = 0) -> List[CoachStats]:
+    def most_yellow_cards_to_players_per_game_coach(self, minimum_games: int = 0) -> list[CoachStats]:
         return self._calculate_coaches_stat_relate_to_game(
             self.most_yellow_cards_to_players, calculate_as_percentage=False, minimum_games=minimum_games
         )
@@ -103,8 +103,8 @@ class MaccabiGamesCoachesStats(object):
     # endregion
 
     def _calculate_coaches_stat_relate_to_game(
-        self, coaches_stats_dict: List[CoachStats], calculate_as_percentage: bool, minimum_games: int = 0
-    ) -> List[CoachStats]:
+        self, coaches_stats_dict: list[CoachStats], calculate_as_percentage: bool, minimum_games: int = 0
+    ) -> list[CoachStats]:
         """
         Calculate a property of coach stat with a ratio to the coach trained games,
         Like:
@@ -130,7 +130,7 @@ class MaccabiGamesCoachesStats(object):
 
         return coaches.most_common()
 
-    def _calculate_coaches_stats(self, game_score_callback: Callable) -> List[CoachStats]:
+    def _calculate_coaches_stats(self, game_score_callback: Callable) -> list[CoachStats]:
         """
         Calculate a stat for every coach, A stat is a property which gives a score to the coach for every game.
         Like:

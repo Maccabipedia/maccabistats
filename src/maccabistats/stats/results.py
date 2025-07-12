@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -86,7 +86,7 @@ class MaccabiGamesResultsStats(object):
 
         return round(self.clean_sheets_count / len(self.games), 3)
 
-    def json_dict(self) -> Dict[str, Any]:
+    def json_dict(self) -> dict[str, Any]:
         return dict(
             total_games_count=self.total_games_count,
             wins_count=self.wins_count,

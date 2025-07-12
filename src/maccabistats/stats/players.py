@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Dict, List, NamedTuple, Tuple
+from typing import TYPE_CHECKING, Callable, NamedTuple, Tuple
 
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_in_game import PlayerInGame
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 PlayerStats = Tuple[str, int]  # Player name to the current stat (an int ranking)
 
-PlayerNameToStat = Dict[str, float]
+PlayerNameToStat = dict[str, float]
 
 
 class _PlayerGamesPercentages(NamedTuple):
@@ -38,7 +38,7 @@ class MaccabiGamesPlayersStats(object):
 
     # region Top players by last minute goals related sorting
 
-    def get_top_scorers_on_last_minutes(self, from_minute: int = 75) -> List[PlayerStats]:
+    def get_top_scorers_on_last_minutes(self, from_minute: int = 75) -> list[PlayerStats]:
         from_this_minute_str = str(timedelta(minutes=from_minute))
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: len(
@@ -50,7 +50,7 @@ class MaccabiGamesPlayersStats(object):
             )
         )
 
-    def get_top_players_for_goals_per_game(self, minimum_games_played: int = 10) -> List[PlayerStats]:
+    def get_top_players_for_goals_per_game(self, minimum_games_played: int = 10) -> list[PlayerStats]:
         players_total_played = Counter(dict(self.most_played))
         players_total_goals = Counter(dict(self.best_scorers))
 
@@ -64,7 +64,7 @@ class MaccabiGamesPlayersStats(object):
 
         return best_players.most_common()
 
-    def get_top_players_for_goals_involvement_per_game(self, minimum_games_played: int = 10) -> List[PlayerStats]:
+    def get_top_players_for_goals_involvement_per_game(self, minimum_games_played: int = 10) -> list[PlayerStats]:
         players_total_played = Counter(dict(self.most_played))
         players_total_goals_involvement = Counter(dict(self.most_goals_involved))
 
@@ -83,73 +83,73 @@ class MaccabiGamesPlayersStats(object):
     # region Top players by goals related sorting
 
     @property
-    def best_scorers(self) -> List[PlayerStats]:
+    def best_scorers(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_SCORE) - p.goals_count_by_goal_type(GoalTypes.OWN_GOAL)
         )
 
     @property
-    def best_scorers_by_freekick(self) -> List[PlayerStats]:
+    def best_scorers_by_freekick(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.FREE_KICK)
         )
 
     @property
-    def best_scorers_by_penalty(self) -> List[PlayerStats]:
+    def best_scorers_by_penalty(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.PENALTY)
         )
 
     @property
-    def best_scorers_by_head(self) -> List[PlayerStats]:
+    def best_scorers_by_head(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.HEADER)
         )
 
     @property
-    def best_scorers_by_foot(self) -> List[PlayerStats]:
+    def best_scorers_by_foot(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.NORMAL_KICK)
         )
 
     @property
-    def best_scorers_by_own_goal(self) -> List[PlayerStats]:
+    def best_scorers_by_own_goal(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.goals_count_by_goal_type(GoalTypes.OWN_GOAL)
         )
 
     @property
-    def best_assisters(self) -> List[PlayerStats]:
+    def best_assisters(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.GOAL_ASSIST)
         )
 
     @property
-    def best_assisters_by_penalty_winning(self) -> List[PlayerStats]:
+    def best_assisters_by_penalty_winning(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.assists_count_by_assist_type(AssistTypes.PENALTY_WINNING_ASSIST)
         )
 
     @property
-    def best_assisters_by_corner(self) -> List[PlayerStats]:
+    def best_assisters_by_corner(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.assists_count_by_assist_type(AssistTypes.CORNER_ASSIST)
         )
 
     @property
-    def best_assisters_by_free_kick(self) -> List[PlayerStats]:
+    def best_assisters_by_free_kick(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.assists_count_by_assist_type(AssistTypes.FREE_KICK_ASSIST)
         )
 
     @property
-    def best_assisters_by_throw_in(self) -> List[PlayerStats]:
+    def best_assisters_by_throw_in(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.assists_count_by_assist_type(AssistTypes.THROW_IN_ASSIST)
         )
 
     @property
-    def most_goals_involved(self) -> List[PlayerStats]:
+    def most_goals_involved(self) -> list[PlayerStats]:
         """
         Top players which involved in goals (score or assist)
         """
@@ -164,50 +164,50 @@ class MaccabiGamesPlayersStats(object):
     # region Top players by other game events sorting
 
     @property
-    def most_yellow_carded(self) -> List[PlayerStats]:
+    def most_yellow_carded(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.YELLOW_CARD)
         )
 
     @property
-    def most_red_carded(self) -> List[PlayerStats]:
+    def most_red_carded(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.RED_CARD)
             + p.event_count_by_type(GameEventTypes.SECOND_YELLOW_CARD)
         )
 
     @property
-    def most_substitute_off(self) -> List[PlayerStats]:
+    def most_substitute_off(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_OUT)
         )
 
     @property
-    def most_substitute_in(self) -> List[PlayerStats]:
+    def most_substitute_in(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.SUBSTITUTION_IN)
         )
 
     @property
-    def most_lineup_players(self) -> List[PlayerStats]:
+    def most_lineup_players(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.LINE_UP)
         )
 
     @property
-    def most_captains(self) -> List[PlayerStats]:
+    def most_captains(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.CAPTAIN)
         )
 
     @property
-    def most_penalty_missed(self) -> List[PlayerStats]:
+    def most_penalty_missed(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.PENALTY_MISSED)
         )
 
     @property
-    def most_penalty_stopped(self) -> List[PlayerStats]:
+    def most_penalty_stopped(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: p.event_count_by_type(GameEventTypes.PENALTY_STOPPED)
         )
@@ -217,23 +217,23 @@ class MaccabiGamesPlayersStats(object):
     # region Top players by condition at the game level
 
     @property
-    def most_winners(self) -> List[PlayerStats]:
+    def most_winners(self) -> list[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.is_maccabi_win)
 
     @property
-    def most_losers(self) -> List[PlayerStats]:
+    def most_losers(self) -> list[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.maccabi_score_diff < 0)
 
     @property
-    def most_unbeaten(self) -> List[PlayerStats]:
+    def most_unbeaten(self) -> list[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.maccabi_score_diff >= 0)
 
     @property
-    def most_clean_sheet(self) -> List[PlayerStats]:
+    def most_clean_sheet(self) -> list[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: g.not_maccabi_team.score == 0)
 
     @property
-    def most_played(self) -> List[PlayerStats]:
+    def most_played(self) -> list[PlayerStats]:
         return self.__get_players_with_most_of_this_game_condition(lambda g: True)
 
     @staticmethod
@@ -266,7 +266,7 @@ class MaccabiGamesPlayersStats(object):
         return count_by_goals
 
     @property
-    def most_goals_after_sub_in(self) -> List[PlayerStats]:
+    def most_goals_after_sub_in(self) -> list[PlayerStats]:
         return self.__get_players_from_all_games_with_most_of_this_condition(
             lambda p: self.__goals_count_after_sub_in(p)
         )
@@ -275,7 +275,7 @@ class MaccabiGamesPlayersStats(object):
 
     # region Top players by game condition - percentages of games
 
-    def most_winners_by_percentage(self, minimum_games_played: int = 0) -> List[_PlayerGamesPercentages]:
+    def most_winners_by_percentage(self, minimum_games_played: int = 0) -> list[_PlayerGamesPercentages]:
         """
         Returns sorted list of (player, wins, played) for each player.
         """
@@ -283,7 +283,7 @@ class MaccabiGamesPlayersStats(object):
             dict(self.most_winners), minimum_games_played
         )
 
-    def most_losers_by_percentage(self, minimum_games_played: int = 0) -> List[_PlayerGamesPercentages]:
+    def most_losers_by_percentage(self, minimum_games_played: int = 0) -> list[_PlayerGamesPercentages]:
         """
         Returns sorted list of (player, losses, played) for each player.
         """
@@ -291,7 +291,7 @@ class MaccabiGamesPlayersStats(object):
             dict(self.most_losers), minimum_games_played
         )
 
-    def most_unbeaten_by_percentage(self, minimum_games_played: int = 0) -> List[_PlayerGamesPercentages]:
+    def most_unbeaten_by_percentage(self, minimum_games_played: int = 0) -> list[_PlayerGamesPercentages]:
         """
         Returns sorted list of (player, unbeaten, played) for each player.
         """
@@ -299,7 +299,7 @@ class MaccabiGamesPlayersStats(object):
             dict(self.most_unbeaten), minimum_games_played
         )
 
-    def most_clean_sheet_by_percentage(self, minimum_games_played: int = 0) -> List[_PlayerGamesPercentages]:
+    def most_clean_sheet_by_percentage(self, minimum_games_played: int = 0) -> list[_PlayerGamesPercentages]:
         """
         Returns sorted list of (player, clean_sheer, played) for each player.
         """
@@ -309,7 +309,7 @@ class MaccabiGamesPlayersStats(object):
 
     # endregion
 
-    def never_lost(self, minimum_games_to_player: int = 5) -> List[PlayerStats]:
+    def never_lost(self, minimum_games_to_player: int = 5) -> list[PlayerStats]:
         played_more_than_minimum_games = [player for player in self.most_played if player[1] >= minimum_games_to_player]
 
         players_that_lost = set(player[0] for player in self.most_losers)
@@ -318,7 +318,7 @@ class MaccabiGamesPlayersStats(object):
 
     def __get_players_from_all_games_with_most_of_this_condition(
         self, condition: Callable[[PlayerInGame], int]
-    ) -> List[PlayerStats]:
+    ) -> list[PlayerStats]:
         """
         :param condition: this function should get PlayerInGame as param, and return int.
                           0 wont count this player in the final summary.
@@ -335,7 +335,7 @@ class MaccabiGamesPlayersStats(object):
 
     def __get_players_with_most_of_this_game_condition(
         self, condition: Callable[[GameData], bool] = None
-    ) -> List[PlayerStats]:
+    ) -> list[PlayerStats]:
         """
         Return the players which played the most at games with the given condition,
         example: __get_players_with_most_of_this_game_condition(lambda g: g.is_maccabi_win)
@@ -358,7 +358,7 @@ class MaccabiGamesPlayersStats(object):
 
     def __get_most_players_by_percentage_with_this_game_condition(
         self, players_ordered_by_game_condition: PlayerNameToStat, minimum_games_played: int = 0
-    ) -> List[_PlayerGamesPercentages]:
+    ) -> list[_PlayerGamesPercentages]:
         """
         Return list of players ordered by their percentage of (played games with this condition) / (played games)
         example : __get_most_players_by_percentage_with_this_game_condition(self.most_winner)

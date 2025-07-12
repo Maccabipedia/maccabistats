@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, Tuple
 
 from maccabistats.models.player_game_events import GoalTypes
 
@@ -29,7 +29,7 @@ class MaccabiGamesImportantGoalsStats(object):
 
     def get_top_scorers(
         self, minimum_diff_for_maccabi: int = -2, maximum_diff_for_maccabi: int = 1, goal_condition=None
-    ) -> List[Tuple[str, float]]:
+    ) -> list[Tuple[str, float]]:
         if goal_condition is None:
             goal_condition = lambda x: True
 
@@ -59,7 +59,7 @@ class MaccabiGamesImportantGoalsStats(object):
         maximum_diff_for_maccabi: int = 1,
         minimum_important_goals: int = 10,
         goal_condition=None,
-    ) -> List[Tuple[str, float]]:
+    ) -> list[Tuple[str, float]]:
         """
         Return the important goals percentage for each player from his total goals.
         Only for those who scored at least (minimum_important_goals).
@@ -87,7 +87,7 @@ class MaccabiGamesImportantGoalsStats(object):
         maximum_diff_for_maccabi: int = 1,
         minimum_games: int = 10,
         goal_condition=None,
-    ) -> List[Tuple[str, float]]:
+    ) -> list[Tuple[str, float]]:
         """
         Return the important goals per game for each player, only for those who played at least (minimum_games).
         """
@@ -121,7 +121,7 @@ class MaccabiGamesImportantGoalsStats(object):
         maximum_diff_for_maccabi: int = 1,
         from_minute: int = 75,
         minimum_important_goals: int = 10,
-    ) -> List[Tuple[str, float]]:
+    ) -> list[Tuple[str, float]]:
         """
         Return the important goals percentage (in the last minutes) for each player from his total goals,
         Only for those who scored at least (minimum_important_goals).
@@ -139,7 +139,7 @@ class MaccabiGamesImportantGoalsStats(object):
         maximum_diff_for_maccabi: int = 1,
         minimum_games: int = 10,
         from_minute: int = 75,
-    ) -> List[Tuple[str, float]]:
+    ) -> list[Tuple[str, float]]:
         """
         Return the important goals per game for each player, only for those who played at least (minimum_games).
         """

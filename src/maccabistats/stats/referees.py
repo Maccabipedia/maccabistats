@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -21,19 +21,19 @@ class MaccabiGamesRefereesStats(object):
         self.games = maccabi_games_stats.games
 
     @property
-    def most_judged_referee(self) -> List[RefereeStats]:
+    def most_judged_referee(self) -> list[RefereeStats]:
         return Counter(game.referee for game in self.games).most_common()
 
     @property
-    def best_referee(self) -> List[RefereeStats]:
+    def best_referee(self) -> list[RefereeStats]:
         return Counter(game.referee for game in self.games if game.is_maccabi_win).most_common()
 
     @property
-    def worst_referee(self) -> List[RefereeStats]:
+    def worst_referee(self) -> list[RefereeStats]:
         return Counter(game.referee for game in self.games if game.maccabi_score_diff < 0).most_common()
 
     @property
-    def best_referee_by_percentage(self) -> List[RefereePercentageStats]:
+    def best_referee_by_percentage(self) -> list[RefereePercentageStats]:
         # Both return as Counter.most_common() which is list (of tuples)
         judged_games = Counter(dict(self.most_judged_referee))
         games_won_with_referees = Counter(dict(self.best_referee))
@@ -46,7 +46,7 @@ class MaccabiGamesRefereesStats(object):
         return best_referee.most_common()
 
     @property
-    def worst_referee_by_percentage(self) -> List[RefereePercentageStats]:
+    def worst_referee_by_percentage(self) -> list[RefereePercentageStats]:
         # Both return as Counter.most_common() which is list (of tuples)
         judged_games = Counter(dict(self.most_judged_referee))
         games_lost_with_referees = Counter(dict(self.worst_referee))

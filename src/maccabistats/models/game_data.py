@@ -1,6 +1,6 @@
 import datetime
 import json
-from typing import Dict, List
+from typing import Any
 
 from dateutil.parser import parse as datetime_parser
 
@@ -20,7 +20,7 @@ class GameData(object):
         home_team: TeamInGame,
         away_team: TeamInGame,
         season_string: str,
-        half_parsed_events: List[Dict],
+        half_parsed_events: list[dict[str, Any]],
         date: datetime.datetime | None = None,
         technical_result: bool = False,
     ):
@@ -122,7 +122,7 @@ class GameData(object):
         return self.maccabi_score_diff > 0
 
     @property
-    def events(self) -> List[Dict]:
+    def events(self) -> list[dict[str, Any]]:
         """
         Return all players events from maccabi_team in this game.
         :return: Each list entry contains:
@@ -158,7 +158,7 @@ class GameData(object):
 
         return sorted_players_events
 
-    def goals(self) -> List[Dict]:
+    def goals(self) -> list[dict[str, Any]]:
         """
         Return list of game events which their type is goal (ordered by time).
         Each event contains the results of the game as it was AFTER the goal was scored.
@@ -173,18 +173,17 @@ class GameData(object):
                     not_maccabi_score += 1
                 else:
                     maccabi_score += 1
+            elif goal["goal_type"] == GoalTypes.OWN_GOAL.value:
+                maccabi_score += 1
             else:
-                if goal["goal_type"] == GoalTypes.OWN_GOAL.value:
-                    maccabi_score += 1
-                else:
-                    not_maccabi_score += 1
+                not_maccabi_score += 1
 
             goal["maccabi_score"] = maccabi_score
             goal["not_maccabi_score"] = not_maccabi_score
 
         return goals_events
 
-    def maccabi_goals(self) -> List[Dict]:
+    def maccabi_goals(self) -> list[dict[str, Any]]:
         """
         Wrapper for self.goals, returns just maccabi goals (including own goals scored by the opponent)
         """
@@ -194,7 +193,7 @@ class GameData(object):
             if (goal["team"] != "מכבי תל אביב" and goal["goal_type"] == "Own goal") or goal["team"] == "מכבי תל אביב"
         ]
 
-    def json_dict(self) -> Dict:
+    def json_dict(self) -> dict[str, Any]:
         return dict(
             stadium=self.stadium,
             date=self.date.isoformat(),
@@ -225,11 +224,11 @@ class GameData(object):
 
     def full_description(self) -> str:
         return (
-            "Game between {self.home_team.name} (home) - {self.away_team.name} (away)\n"
-            "Results : {self.home_team.score} - {self.away_team.score}\n"
-            "Played on {self.stadium} at {self.date} with {self.crowd} viewers\n"
-            "As part of {self.competition}, round - {self.fixture}\n"
-            "Referee : {self.referee}\n"
-            "HomeTeam : {self.home_team}\n"
-            "AwayTeam : {self.away_team}\n\n".format(self=self)
+            f"Game between {self.home_team.name} (home) - {self.away_team.name} (away)\n"
+            f"Results : {self.home_team.score} - {self.away_team.score}\n"
+            f"Played on {self.stadium} at {self.date} with {self.crowd} viewers\n"
+            f"As part of {self.competition}, round - {self.fixture}\n"
+            f"Referee : {self.referee}\n"
+            f"HomeTeam : {self.home_team}\n"
+            f"AwayTeam : {self.away_team}\n\n"
         )

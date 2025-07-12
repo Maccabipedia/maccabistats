@@ -56,7 +56,7 @@ def __get_parsed_maccabi_games_from_web():
     :rtype: list of maccabistats.models.game_data.GameData
     """
     maccabi_games = []
-    start_to_parse_from_season_number = int(os.environ.get("START_SEASON_TO_CRAWL", 0))
+    start_to_parse_from_season_number = int(os.environ.get("START_SEASON_TO_CRAWL", "0"))
     season_to_crawl = MaccabiStatsConfigSingleton.maccabi_site.max_seasons_to_crawl
 
     logging.info(f"Crawling seasons from index: {start_to_parse_from_season_number}, to: {season_to_crawl}")
@@ -86,7 +86,7 @@ def __get_parsed_maccabi_games_from_web_multi_process():
     crawling_processes = MaccabiStatsConfigSingleton.maccabi_site.crawling_process_number
     logger.info("Crawling with {num} processes".format(num=crawling_processes))
 
-    start_to_parse_from_season_number = int(os.environ.get("START_SEASON_TO_CRAWL", 0))
+    start_to_parse_from_season_number = int(os.environ.get("START_SEASON_TO_CRAWL", "0"))
     seasons_to_crawl = MaccabiStatsConfigSingleton.maccabi_site.max_seasons_to_crawl
     maccabi_seasons_numbers = range(start_to_parse_from_season_number, seasons_to_crawl)
 

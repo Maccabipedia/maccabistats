@@ -3,7 +3,7 @@ import json
 import logging
 from pathlib import Path
 
-import aiohttp as aiohttp
+import aiohttp
 from aiopath import AsyncPath
 
 from maccabistats.stats.maccabi_games_stats import MaccabiGamesStats
@@ -36,7 +36,7 @@ class TransfermarktFetcher:
         _logger.info(f"Fetching data to {self.data_storage_folder}, force_refetch: {force_refetch}")
         self.data_storage_folder.mkdir(parents=True, exist_ok=True)
 
-        _logger.info(f"Fetching player by player, starting from these with the most appearances")
+        _logger.info("Fetching player by player, starting from these with the most appearances")
 
         lock = asyncio.Semaphore(10)
         tasks = asyncio.gather(
@@ -48,7 +48,7 @@ class TransfermarktFetcher:
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(tasks)
-        a = 6
+        _a = 6
 
     async def _fetch_one_player(self, player_name: str, force_refetch: bool, lock) -> None:
         async with lock:

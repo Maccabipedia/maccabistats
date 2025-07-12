@@ -1,5 +1,5 @@
 from pprint import pformat
-from typing import List, Tuple
+from typing import Tuple
 
 import matplotlib.pyplot as plt
 import plotly.express as px
@@ -10,7 +10,7 @@ from bidi import algorithm as bidialg
 from maccabistats import *
 
 
-def squarify_show_chart(best_players: List[Tuple]):
+def squarify_show_chart(best_players: list[Tuple]):
     sizes = [players_amount * players_amount for player_name, players_amount in top_players]
     labels = [f"{bidialg.get_display(player_name)} - {players_amount}" for player_name, players_amount in top_players]
     squarify.plot(sizes=sizes, label=labels, alpha=0.6, color=["black", "blue", "yellow"], pad=True)
@@ -18,18 +18,18 @@ def squarify_show_chart(best_players: List[Tuple]):
     plt.show()
 
 
-def plotly_show_chart(best_players: List[Tuple]):
+def plotly_show_chart(best_players: list[Tuple]):
     labels = [f"{bidialg.get_display(player_name)} - {players_amount}" for player_name, players_amount in top_players]
 
     fig = px.treemap(names=labels, parents=[""] * len(labels))
     fig.show()
 
 
-def plotly_horizontal_bar_chart(best_players: List[Tuple]):
+def plotly_horizontal_bar_chart(best_players: list[Tuple]):
     # Reversed in order to have the top player inserted last (shown at the top of the chart)
     sizes = [players_amount for player_name, players_amount in reversed(best_players)]
     names = [player_name for player_name, players_amount in reversed(best_players)]
-    quarter = int(len(best_players) / 4)
+    _quarter = int(len(best_players) / 4)
 
     colors = ["#195da6"] * (len(best_players) - 10)
     colors.extend(["#ffdd00"] * 10)  # Top 10 in yellow

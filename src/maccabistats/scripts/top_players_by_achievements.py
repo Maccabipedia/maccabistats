@@ -2,7 +2,7 @@ import json
 from collections import Counter, defaultdict
 from pathlib import Path
 from pprint import pformat
-from typing import Dict, Set
+from typing import Set
 
 from progressbar import ProgressBar
 
@@ -20,7 +20,7 @@ BASE_FOLDER = Path(r"C:\maccabipedia\infographics\titles")
 # https://www.maccabipedia.co.il/api.php?action=cargoquery&tables=Achievements&format=json&fields=ConnectedCompID,Season,Achievement&limit=1000
 
 
-def extract_seasons_with_titles() -> Dict[str, int]:
+def extract_seasons_with_titles() -> dict[str, int]:
     achievements_file_path = Path(__file__).absolute().parent / "achievements.json"
     titles_from_cargo = json.loads(achievements_file_path.read_text(encoding="utf8"))
     titles_from_cargo = titles_from_cargo["cargoquery"]
@@ -38,8 +38,8 @@ def extract_seasons_with_titles() -> Dict[str, int]:
     return titles_count_by_year
 
 
-def generate_season_to_played_players(maccabi_games: MaccabiGamesStats) -> Dict[str, Set[str]]:
-    print(f"Creating the list of played players for all seasons")
+def generate_season_to_played_players(maccabi_games: MaccabiGamesStats) -> dict[str, Set[str]]:
+    print("Creating the list of played players for all seasons")
 
     pbar = ProgressBar()
     seasons_to_players = defaultdict(set)
@@ -51,10 +51,10 @@ def generate_season_to_played_players(maccabi_games: MaccabiGamesStats) -> Dict[
     return seasons_to_players
 
 
-def find_top_players_by_achievements(maccabi_games: MaccabiGamesStats, titles_by_year: Dict[str, int]) -> Counter:
+def find_top_players_by_achievements(maccabi_games: MaccabiGamesStats, titles_by_year: dict[str, int]) -> Counter:
     season_to_players = generate_season_to_played_players(maccabi_games)
 
-    players_to_titles = defaultdict(int)
+    players_to_titles: dict[str, int] = defaultdict(int)
 
     for season, won_players in season_to_players.items():
         if season not in titles_by_year:

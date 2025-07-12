@@ -4,7 +4,7 @@ import json
 import logging
 import typing
 from collections import Counter
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable
 
 from maccabistats.models.player_game_events import GameEventTypes, GoalTypes
 from maccabistats.models.player_in_game import PlayerInGame
@@ -14,9 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class TeamInGame(Team):
-    def __init__(
-        self, name: str, coach: str, score: int, players: List[PlayerInGame], current_name: str | None = None
-    ):
+    def __init__(self, name: str, coach: str, score: int, players: list[PlayerInGame], current_name: str | None = None):
         super(TeamInGame, self).__init__(name)
 
         self.coach = coach
@@ -28,11 +26,11 @@ class TeamInGame(Team):
         self.current_name = current_name or name
 
     @property
-    def lineup_players(self) -> List[PlayerInGame]:
+    def lineup_players(self) -> list[PlayerInGame]:
         return [player for player in self.players if player.has_event_type(GameEventTypes.LINE_UP)]
 
     @property
-    def players_from_bench(self) -> List[PlayerInGame]:
+    def players_from_bench(self) -> list[PlayerInGame]:
         return [
             player
             for player in self.players
@@ -41,7 +39,7 @@ class TeamInGame(Team):
         ]
 
     @property
-    def not_played_players(self) -> List[PlayerInGame]:
+    def not_played_players(self) -> list[PlayerInGame]:
         return [
             player
             for player in self.players
@@ -50,19 +48,19 @@ class TeamInGame(Team):
         ]
 
     @property
-    def scored_players(self) -> List[PlayerInGame]:
+    def scored_players(self) -> list[PlayerInGame]:
         return [player for player in self.players if player.has_event_type(GameEventTypes.GOAL_SCORE)]
 
     @property
-    def assist_players(self) -> List[PlayerInGame]:
+    def assist_players(self) -> list[PlayerInGame]:
         return [player for player in self.players if player.has_event_type(GameEventTypes.GOAL_ASSIST)]
 
     @property
-    def yellow_carded_players(self) -> List[PlayerInGame]:
+    def yellow_carded_players(self) -> list[PlayerInGame]:
         return [player for player in self.players if player.has_event_type(GameEventTypes.YELLOW_CARD)]
 
     @property
-    def red_carded_players(self) -> List[PlayerInGame]:
+    def red_carded_players(self) -> list[PlayerInGame]:
         return [
             player
             for player in self.players
@@ -71,7 +69,7 @@ class TeamInGame(Team):
         ]
 
     @property
-    def played_players(self) -> List[PlayerInGame]:
+    def played_players(self) -> list[PlayerInGame]:
         return [player for player in self.players if player.played_in_game]
 
     @property
@@ -176,7 +174,7 @@ class TeamInGame(Team):
 
         return event_type_to_property_of_most_common_players[event_type]
 
-    def json_dict(self) -> Dict:
+    def json_dict(self) -> dict[str, Any]:
         return dict(name=self.name, score=self.score, coach=self.coach)
 
     def to_json(self) -> str:

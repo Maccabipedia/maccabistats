@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from maccabistats.models.game_data import GameData
 from maccabistats.models.player_game_events import GameEventTypes, GoalGameEvent, GoalTypes
-from maccabistats.models.player_in_game import GameEvent, GameEventTypes, PlayerInGame
+from maccabistats.models.player_in_game import GameEvent, PlayerInGame
 from maccabistats.models.team_in_game import TeamInGame
 
 logger = logging.getLogger(__name__)
