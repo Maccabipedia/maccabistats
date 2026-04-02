@@ -275,6 +275,50 @@ class ErrorsFinder:
 
         return players_and_games
 
+    def get_players_with_substitution_out_but_never_played(self) -> List[Tuple[str, GameData]]:
+        """
+        Players that have a substitution-out event but never appeared in the lineup or came on as a sub.
+        This indicates a data entry error on the wiki.
+        """
+        players_and_games = []
+        for game in self.maccabi_games_stats:
+            for player in game.maccabi_team.players:
+                if (player.has_event_type(GameEventTypes.SUBSTITUTION_OUT)
+                        and not player.has_event_type(GameEventTypes.LINE_UP)
+                        and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)):
+                    players_and_games.append((player.name, game))
+        return players_and_games
+
+    def get_games_with_same_player_on_both_teams(self) -> List[Tuple[str, GameData]]:
+        """
+        Games where the same player name appears on both Maccabi and the opponent team.
+        Usually indicates a naming collision or a data entry error.
+        """
+        results = []
+        for game in self.maccabi_games_stats:
+            maccabi_names = {p.name for p in game.maccabi_team.players}
+            opponent_names = {p.name for p in game.not_maccabi_team.players}
+            for name in maccabi_names & opponent_names:
+                results.append((name, game))
+        return results
+
+    def get_players_with_duplicate_events(self) -> List[Tuple[str, GameData]]:
+        """
+        Players that have two or more identical events (same type + same minute) in the same game.
+        Indicates a duplicate entry on the wiki.
+        """
+        results = []
+        for game in self.maccabi_games_stats:
+            for player in game.maccabi_team.players:
+                seen = set()
+                for event in player.events:
+                    key = (event.event_type, event.time_occur)
+                    if key in seen:
+                        results.append((player.name, game))
+                        break
+                    seen.add(key)
+        return results
+
     def get_all_errors_numbers(self):
         """ Iterate over all this class functions without this one, and summarize the results. """
         errors_finders = [func for func in dir(self) if
