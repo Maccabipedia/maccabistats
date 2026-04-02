@@ -283,9 +283,7 @@ class ErrorsFinder:
         players_and_games = []
         for game in self.maccabi_games_stats:
             for player in game.maccabi_team.players:
-                if (player.has_event_type(GameEventTypes.SUBSTITUTION_OUT)
-                        and not player.has_event_type(GameEventTypes.LINE_UP)
-                        and not player.has_event_type(GameEventTypes.SUBSTITUTION_IN)):
+                if player.has_event_type(GameEventTypes.SUBSTITUTION_OUT) and not player.played_in_game:
                     players_and_games.append((player.name, game))
         return players_and_games
 
