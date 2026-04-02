@@ -48,7 +48,9 @@ MACCABI_PEDIA_EVENTS = defaultdict(_unknown_event,
                                                                     83: GameEventTypes.PENALTY_STOPPED,
                                                                     84: _DUPLICATE_MACCABIPEDIA_EVENT}),
                                     # No support atm for penalty save
-                                    9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN})})
+                                    9: defaultdict(_unknown_event, {_EMPTY_SUB_EVENT: GameEventTypes.CAPTAIN}),
+                                   # EventType=13: "display only" events (e.g. goals in technically-cancelled games) — ignore for stats
+                                   13: defaultdict(lambda: _DUPLICATE_MACCABIPEDIA_EVENT, {})})
 
 MACCABIPEDIA_GOALS_TYPE = {30: GoalTypes.UNCATEGORIZED,
                            31: GoalTypes.NORMAL_KICK,
