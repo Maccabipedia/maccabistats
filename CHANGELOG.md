@@ -1,3 +1,7 @@
+## Version 2.53 ##
+
+    Add 3 new ErrorsFinder checks: sub-out without playing, same player on both teams, duplicate events
+
 ## Version 2.52 ##
 
     Ignore EventType=13 (display-only events) from MaccabiPedia parser
