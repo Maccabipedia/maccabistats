@@ -1,3 +1,7 @@
+## Version 2.52 ##
+
+    Ignore EventType=13 (display-only events) from MaccabiPedia parser
+
 ## Version 2.50 ##
 
     Minimum python version changed from 3.7 to 3.11 
